@@ -71,15 +71,15 @@ void Scene_Tool::Frame()
 		//Prefab* dog = ResMgrClass::GetInst()->LoadPrefab(L"dog.pref", L"contents\\assets\\dog\\dog.pref");
 		//AddNodeToScene(new ModelNode(*dog->GetModelNode()));
 
-		Prefab* man = ResMgrClass::GetInst()->LoadPrefab(L"man.pref", L"contents\\assets\\man\\man.pref");
-		ModelNode* node = new ModelNode(*man->GetModelNode());
-		AddNodeToScene(node);
+		//Prefab* man = ResMgrClass::GetInst()->LoadPrefab(L"man.pref", L"contents\\assets\\man\\man.pref");
+		//ModelNode* node = new ModelNode(*man->GetModelNode());
+		//AddNodeToScene(node);
 
-		Animation* anim = ResMgrClass::GetInst()->LoadAnimation(L"anim.pref", L"contents\\assets\\man\\animation\\mixamo.com.anim");
-		AnimationComp* animationComp = new AnimationComp;
-		animationComp->AddAnimation(anim);
+		//Animation* anim = ResMgrClass::GetInst()->LoadAnimation(L"anim.pref", L"contents\\assets\\man\\animation\\mixamo.com.anim");
+		//AnimationComp* animationComp = new AnimationComp;
+		//animationComp->AddAnimation(anim);
 
-		node->AddModelComp(animationComp);
+		//node->AddModelComp(animationComp);
 
 		init = true;
 	}
