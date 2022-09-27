@@ -1,0 +1,438 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{924a5241-255d-43c8-91e6-55f78d845b95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object">
+      <UniqueIdentifier>{db6a3541-22d6-4ca4-b73b-1f1fa48ca0c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header">
+      <UniqueIdentifier>{65aeb198-3430-422b-a4f0-a937f9a274ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Default">
+      <UniqueIdentifier>{abbc2990-3507-4a29-95b1-f99f43996077}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager">
+      <UniqueIdentifier>{8acb39da-9175-42ec-a695-d6157c127e3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\SceneMgr">
+      <UniqueIdentifier>{ebcef463-f20b-4bd5-849e-d27388695692}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{af917e80-4917-4443-bfcd-05234fe0c795}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\Scene_Tool">
+      <UniqueIdentifier>{ef2287a7-8f72-4a0b-ac10-a354d06232dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\KeyMgr">
+      <UniqueIdentifier>{d7b2ba01-7046-47f1-b31c-5936def042bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\ResMgrClass">
+      <UniqueIdentifier>{8768c9df-93e7-434c-ba3e-ca1d9d031a89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{fa0fcdb9-f347-4922-9e55-9d684d624662}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Sound">
+      <UniqueIdentifier>{6377cfd9-538c-45dc-bb38-5117d7f17ee6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Texture">
+      <UniqueIdentifier>{47ed6fd0-b3ab-4e79-beec-2f367cc50c08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\Scene_Start">
+      <UniqueIdentifier>{28c35781-6bd2-4ce3-9a75-478a1925ecec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Camera">
+      <UniqueIdentifier>{ab7d8ed6-f243-493d-9654-dc2f7b5616b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Object\Light">
+      <UniqueIdentifier>{a656886b-2e0f-482b-a025-1e4473829fab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\Scene_Final">
+      <UniqueIdentifier>{2fd252d2-b583-495d-b354-38f04bea8195}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Mesh">
+      <UniqueIdentifier>{d39839cd-6071-4f53-afdb-bf307993c27a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager\TimeMgr">
+      <UniqueIdentifier>{03a9b192-213f-4e89-8b9a-f29c87a11be3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Material">
+      <UniqueIdentifier>{c92da41d-a94d-4fcd-8533-83724e5c6740}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Prefab">
+      <UniqueIdentifier>{55d35f54-ad15-44d8-b7d6-fe7fcb40cfd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ModelInfo">
+      <UniqueIdentifier>{41ac8449-0856-42d9-ac6d-0c22395bddbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ModelInfo\Component">
+      <UniqueIdentifier>{4dcff0ed-e1b5-412d-8223-1fc1b7f26cd7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ModelInfo\Component\TransformComp">
+      <UniqueIdentifier>{9bf28812-f1ec-4de8-84a0-c8e7f5de2339}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ModelInfo\Component\MeshComp">
+      <UniqueIdentifier>{6c95531a-ffdd-4449-989d-f8138b684934}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ModelInfo\Component\AnimationComp">
+      <UniqueIdentifier>{6d4269cf-8229-47b8-b91f-dd45b0c334b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ModelInfo\Component\MaterialComp">
+      <UniqueIdentifier>{c0d81539-247c-4b30-99f0-708740b63c09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SceneInfo">
+      <UniqueIdentifier>{ad123861-131d-4f6a-b7ed-6a903da32be5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\Scene_Tool\UI">
+      <UniqueIdentifier>{d5fb774b-a606-44d3-b6f3-e336a55c706f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\Scene_Tool\UI\ImGui">
+      <UniqueIdentifier>{2091ecfd-9f99-41a3-9101-fa34313d895d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\Scene_Tool\UI\Panel">
+      <UniqueIdentifier>{50edd239-14ea-4500-a43a-057386d0d157}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\Scene_Tool\UI\Panel\ContentBrowser">
+      <UniqueIdentifier>{73759d34-9ba4-4b31-8dee-83903ba40ef5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\Scene_Tool\UI\Panel\Hierachy">
+      <UniqueIdentifier>{7c0af411-e8f1-44c6-a605-7c6a300defac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\Scene_Tool\UI\Panel\Inspector">
+      <UniqueIdentifier>{5b6d11e4-fac7-4d37-8eac-621364c72c49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\Scene_Tool\UI\Panel\Resource">
+      <UniqueIdentifier>{fe84b7b5-e9b1-4458-9762-96efff47de67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\Scene_Tool\UI\Panel\Scene">
+      <UniqueIdentifier>{b04ca1ce-f667-419b-9321-68d341a52e67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\Scene_Tool\UI\Panel\ViewPort">
+      <UniqueIdentifier>{fa7793ea-cedc-489f-9f3a-7344b7666104}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\Scene_Tool\UI\Resource">
+      <UniqueIdentifier>{fcbac8fd-9074-4cf7-ab98-a14bae946d73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\Scene_Tool\UI\Resource\Model">
+      <UniqueIdentifier>{0dcff7b5-f139-490a-aa1e-dbb4ad4baac4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\Scene_Tool\UI\Resource\Sound">
+      <UniqueIdentifier>{9ae9c83b-c357-40eb-849e-adbf34f3731d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\Scene_Tool\UI\Resource\Texture">
+      <UniqueIdentifier>{74a8ba86-bb11-4053-b2cc-a955d58d3e4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ModelInfo\ModelNode">
+      <UniqueIdentifier>{a684983b-9b43-41e2-8716-960acf30ad83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ModelInfo\Component\ModelInfoComp">
+      <UniqueIdentifier>{66238805-4a2f-46d6-b9ff-6d10c07b1364}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Animation">
+      <UniqueIdentifier>{40a57221-7a22-4beb-b315-37a0a1b79513}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="define.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Core.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="framework.h">
+      <Filter>Default</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene_Tool.h">
+      <Filter>Scene\Scene_Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneMgrClass.h">
+      <Filter>Manager\SceneMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyMgrClass.h">
+      <Filter>Manager\KeyMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="ResMgrClass.h">
+      <Filter>Manager\ResMgrClass</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceClass.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureClass.h">
+      <Filter>Resource\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundClass.h">
+      <Filter>Resource\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Resource\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene_Start.h">
+      <Filter>Scene\Scene_Start</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraClass.h">
+      <Filter>Object\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="LightClass.h">
+      <Filter>Object\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="objectzz.h">
+      <Filter>Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene_Final.h">
+      <Filter>Scene\Scene_Final</Filter>
+    </ClInclude>
+    <ClInclude Include="TimeMgrClass.h">
+      <Filter>Manager\TimeMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Resource\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="Prefab.h">
+      <Filter>Resource\Prefab</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationComp.h">
+      <Filter>ModelInfo\Component\AnimationComp</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshComp.h">
+      <Filter>ModelInfo\Component\MeshComp</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformComp.h">
+      <Filter>ModelInfo\Component\TransformComp</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelComp.h">
+      <Filter>ModelInfo\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialComp.h">
+      <Filter>ModelInfo\Component\MaterialComp</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneInfo.h">
+      <Filter>SceneInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="ContentBrowserPanel.h">
+      <Filter>Scene\Scene_Tool\UI\Panel\ContentBrowser</Filter>
+    </ClInclude>
+    <ClInclude Include="InspectorPanel.h">
+      <Filter>Scene\Scene_Tool\UI\Panel\Inspector</Filter>
+    </ClInclude>
+    <ClInclude Include="HierachyPanel.h">
+      <Filter>Scene\Scene_Tool\UI\Panel\Hierachy</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourcePanel.h">
+      <Filter>Scene\Scene_Tool\UI\Panel\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewPortPanel.h">
+      <Filter>Scene\Scene_Tool\UI\Panel\ViewPort</Filter>
+    </ClInclude>
+    <ClInclude Include="ScenePanel.h">
+      <Filter>Scene\Scene_Tool\UI\Panel\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Panel.h">
+      <Filter>Scene\Scene_Tool\UI\Panel</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceItem.h">
+      <Filter>Scene\Scene_Tool\UI\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundItem.h">
+      <Filter>Scene\Scene_Tool\UI\Resource\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelItem.h">
+      <Filter>Scene\Scene_Tool\UI\Resource\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureItem.h">
+      <Filter>Scene\Scene_Tool\UI\Resource\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="ImGuIRenderClass.h">
+      <Filter>Scene\Scene_Tool\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="library\imconfig.h">
+      <Filter>Scene\Scene_Tool\UI\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="library\imgui.h">
+      <Filter>Scene\Scene_Tool\UI\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="library\imgui_impl_dx11.h">
+      <Filter>Scene\Scene_Tool\UI\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="library\imgui_impl_win32.h">
+      <Filter>Scene\Scene_Tool\UI\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="library\imgui_internal.h">
+      <Filter>Scene\Scene_Tool\UI\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="library\ImGuizmo.h">
+      <Filter>Scene\Scene_Tool\UI\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="library\imstb_rectpack.h">
+      <Filter>Scene\Scene_Tool\UI\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="library\imstb_textedit.h">
+      <Filter>Scene\Scene_Tool\UI\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="library\imstb_truetype.h">
+      <Filter>Scene\Scene_Tool\UI\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelNode.h">
+      <Filter>ModelInfo\ModelNode</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelInfoComp.h">
+      <Filter>ModelInfo\Component\ModelInfoComp</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Resource\Animation</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Core.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="dllmain.cpp">
+      <Filter>Default</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene_Tool.cpp">
+      <Filter>Scene\Scene_Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneMgrClass.cpp">
+      <Filter>Manager\SceneMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyMgrClass.cpp">
+      <Filter>Manager\KeyMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="ResMgrClass.cpp">
+      <Filter>Manager\ResMgrClass</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceClass.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureClass.cpp">
+      <Filter>Resource\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundClass.cpp">
+      <Filter>Resource\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Resource\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene_Start.cpp">
+      <Filter>Scene\Scene_Start</Filter>
+    </ClCompile>
+    <ClCompile Include="CameraClass.cpp">
+      <Filter>Object\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="LightClass.cpp">
+      <Filter>Object\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="objectzz.cpp">
+      <Filter>Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene_Final.cpp">
+      <Filter>Scene\Scene_Final</Filter>
+    </ClCompile>
+    <ClCompile Include="TimeMgrClass.cpp">
+      <Filter>Manager\TimeMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Resource\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="Prefab.cpp">
+      <Filter>Resource\Prefab</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationComp.cpp">
+      <Filter>ModelInfo\Component\AnimationComp</Filter>
+    </ClCompile>
+    <ClCompile Include="MeshComp.cpp">
+      <Filter>ModelInfo\Component\MeshComp</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformComp.cpp">
+      <Filter>ModelInfo\Component\TransformComp</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelComp.cpp">
+      <Filter>ModelInfo\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialComp.cpp">
+      <Filter>ModelInfo\Component\MaterialComp</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneInfo.cpp">
+      <Filter>SceneInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="ContentBrowserPanel.cpp">
+      <Filter>Scene\Scene_Tool\UI\Panel\ContentBrowser</Filter>
+    </ClCompile>
+    <ClCompile Include="InspectorPanel.cpp">
+      <Filter>Scene\Scene_Tool\UI\Panel\Inspector</Filter>
+    </ClCompile>
+    <ClCompile Include="HierachyPanel.cpp">
+      <Filter>Scene\Scene_Tool\UI\Panel\Hierachy</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourcePanel.cpp">
+      <Filter>Scene\Scene_Tool\UI\Panel\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewPortPanel.cpp">
+      <Filter>Scene\Scene_Tool\UI\Panel\ViewPort</Filter>
+    </ClCompile>
+    <ClCompile Include="ScenePanel.cpp">
+      <Filter>Scene\Scene_Tool\UI\Panel\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Panel.cpp">
+      <Filter>Scene\Scene_Tool\UI\Panel</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceItem.cpp">
+      <Filter>Scene\Scene_Tool\UI\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundItem.cpp">
+      <Filter>Scene\Scene_Tool\UI\Resource\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelItem.cpp">
+      <Filter>Scene\Scene_Tool\UI\Resource\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureItem.cpp">
+      <Filter>Scene\Scene_Tool\UI\Resource\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="ImGuIRenderClass.cpp">
+      <Filter>Scene\Scene_Tool\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="library\imgui.cpp">
+      <Filter>Scene\Scene_Tool\UI\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="library\imgui_impl_dx11.cpp">
+      <Filter>Scene\Scene_Tool\UI\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="library\imgui_impl_win32.cpp">
+      <Filter>Scene\Scene_Tool\UI\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="library\ImGuizmo.cpp">
+      <Filter>Scene\Scene_Tool\UI\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="library\imgui_tables.cpp">
+      <Filter>Scene\Scene_Tool\UI\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="library\imgui_widgets.cpp">
+      <Filter>Scene\Scene_Tool\UI\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="library\imgui_draw.cpp">
+      <Filter>Scene\Scene_Tool\UI\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelNode.cpp">
+      <Filter>ModelInfo\ModelNode</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelInfoComp.cpp">
+      <Filter>ModelInfo\Component\ModelInfoComp</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>Resource\Animation</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>

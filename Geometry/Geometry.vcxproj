@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{7e2c789e-93cb-4e46-8ce6-facada056257}</ProjectGuid>
+    <RootNamespace>Geometry</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)Output\bin_debug\</OutDir>
+    <IncludePath>
+    </IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)Output\bin\</OutDir>
+    <IncludePath>
+    </IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;CREATEDLL_EXPORTS;HAS_STD_BYTE=0</PreprocessorDefinitions>
+      <ConformanceMode>false</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)Geometry\include\;$(SolutionDir)Geometry\library\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(SolutionDir)Geometry\lib\vs2015\x86\debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libfbxsdk.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;CREATEDLL_EXPORTS;HAS_STD_BYTE=0</PreprocessorDefinitions>
+      <ConformanceMode>false</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>$(SolutionDir)Geometrylibrary\;$(SolutionDir)Geometry\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>$(SolutionDir)Geometry\lib\vs2015\x86\release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;GEOMETRY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;GEOMETRY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="Animation.h" />
+    <ClInclude Include="AnimationComp.h" />
+    <ClInclude Include="CameraClass.h" />
+    <ClInclude Include="ContentBrowserPanel.h" />
+    <ClInclude Include="define.h" />
+    <ClInclude Include="HierachyPanel.h" />
+    <ClInclude Include="ImGuIRenderClass.h" />
+    <ClInclude Include="InspectorPanel.h" />
+    <ClInclude Include="library\imconfig.h" />
+    <ClInclude Include="library\imgui.h" />
+    <ClInclude Include="library\ImGuizmo.h" />
+    <ClInclude Include="library\imgui_impl_dx11.h" />
+    <ClInclude Include="library\imgui_impl_win32.h" />
+    <ClInclude Include="library\imgui_internal.h" />
+    <ClInclude Include="library\imstb_rectpack.h" />
+    <ClInclude Include="library\imstb_textedit.h" />
+    <ClInclude Include="library\imstb_truetype.h" />
+    <ClInclude Include="Material.h" />
+    <ClInclude Include="framework.h" />
+    <ClInclude Include="KeyMgrClass.h" />
+    <ClInclude Include="LightClass.h" />
+    <ClInclude Include="Core.h" />
+    <ClInclude Include="MaterialComp.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshComp.h" />
+    <ClInclude Include="ModelComp.h" />
+    <ClInclude Include="ModelInfoComp.h" />
+    <ClInclude Include="ModelItem.h" />
+    <ClInclude Include="ModelNode.h" />
+    <ClInclude Include="objectzz.h" />
+    <ClInclude Include="Panel.h" />
+    <ClInclude Include="Prefab.h" />
+    <ClInclude Include="ResourceItem.h" />
+    <ClInclude Include="ResourcePanel.h" />
+    <ClInclude Include="SceneInfo.h" />
+    <ClInclude Include="ScenePanel.h" />
+    <ClInclude Include="Scene_Final.h" />
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="ResMgrClass.h" />
+    <ClInclude Include="ResourceClass.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="SceneMgrClass.h" />
+    <ClInclude Include="Scene_Start.h" />
+    <ClInclude Include="Scene_Tool.h" />
+    <ClInclude Include="SoundClass.h" />
+    <ClInclude Include="SoundItem.h" />
+    <ClInclude Include="TextureClass.h" />
+    <ClInclude Include="TextureItem.h" />
+    <ClInclude Include="TimeMgrClass.h" />
+    <ClInclude Include="TransformComp.h" />
+    <ClInclude Include="ViewPortPanel.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="AnimationComp.cpp" />
+    <ClCompile Include="CameraClass.cpp" />
+    <ClCompile Include="ContentBrowserPanel.cpp" />
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="HierachyPanel.cpp" />
+    <ClCompile Include="ImGuIRenderClass.cpp" />
+    <ClCompile Include="InspectorPanel.cpp" />
+    <ClCompile Include="library\imgui.cpp" />
+    <ClCompile Include="library\ImGuizmo.cpp" />
+    <ClCompile Include="library\imgui_draw.cpp" />
+    <ClCompile Include="library\imgui_impl_dx11.cpp" />
+    <ClCompile Include="library\imgui_impl_win32.cpp" />
+    <ClCompile Include="library\imgui_tables.cpp" />
+    <ClCompile Include="library\imgui_widgets.cpp" />
+    <ClCompile Include="Material.cpp" />
+    <ClCompile Include="KeyMgrClass.cpp" />
+    <ClCompile Include="LightClass.cpp" />
+    <ClCompile Include="Core.cpp" />
+    <ClCompile Include="MaterialComp.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="MeshComp.cpp" />
+    <ClCompile Include="ModelComp.cpp" />
+    <ClCompile Include="ModelInfoComp.cpp" />
+    <ClCompile Include="ModelItem.cpp" />
+    <ClCompile Include="ModelNode.cpp" />
+    <ClCompile Include="objectzz.cpp" />
+    <ClCompile Include="Panel.cpp" />
+    <ClCompile Include="Prefab.cpp" />
+    <ClCompile Include="ResourceItem.cpp" />
+    <ClCompile Include="ResourcePanel.cpp" />
+    <ClCompile Include="SceneInfo.cpp" />
+    <ClCompile Include="ScenePanel.cpp" />
+    <ClCompile Include="Scene_Final.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="ResMgrClass.cpp" />
+    <ClCompile Include="ResourceClass.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SceneMgrClass.cpp" />
+    <ClCompile Include="Scene_Start.cpp" />
+    <ClCompile Include="Scene_Tool.cpp" />
+    <ClCompile Include="SoundClass.cpp" />
+    <ClCompile Include="SoundItem.cpp" />
+    <ClCompile Include="TextureClass.cpp" />
+    <ClCompile Include="TextureItem.cpp" />
+    <ClCompile Include="TimeMgrClass.cpp" />
+    <ClCompile Include="TransformComp.cpp" />
+    <ClCompile Include="ViewPortPanel.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
