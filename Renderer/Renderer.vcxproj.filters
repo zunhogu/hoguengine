@@ -22,12 +22,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="NormalShaderClass.h">
-      <Filter>ShaderClass</Filter>
-    </ClInclude>
-    <ClInclude Include="DefaultShaderClass.h">
-      <Filter>ShaderClass</Filter>
-    </ClInclude>
     <ClInclude Include="D3DClass.h">
       <Filter>Render</Filter>
     </ClInclude>
@@ -53,12 +47,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DefaultShaderClass.cpp">
-      <Filter>ShaderClass</Filter>
-    </ClCompile>
-    <ClCompile Include="NormalShaderClass.cpp">
-      <Filter>ShaderClass</Filter>
-    </ClCompile>
     <ClCompile Include="D3DClass.cpp">
       <Filter>Render</Filter>
     </ClCompile>

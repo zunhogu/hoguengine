@@ -12,8 +12,6 @@
 #include "define.h"
 #include "D3DClass.h"
 #include "RenderTextureClass.h"
-#include "DefaultShaderClass.h"
-#include "NormalShaderClass.h"
 #include "ModelShader.h"
 
 //Graphics는 SystemClass가 생성하는 또 다른 객체로 이 어플리케이션의 모든 그래픽 기능이 이 객체 안에 캡슐화 되어있다.
@@ -32,8 +30,6 @@ private:
 	//D3DClass를 참조하는 포인터를 선언한다.
 	D3DClass* m_D3D;
 	RenderTextureClass* m_RenderTexture;
-	DefaultShaderClass* m_DefaultShader;
-	NormalShaderClass* m_NormalShader;
 	ModelShader* m_modelShader;
 
 public:
@@ -57,8 +53,6 @@ public:
 	void BeginScene(float, float, float, float);
 	void EndScene();
 
-	bool RenderDefault(int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT3 cameraPos, XMFLOAT4 diffuseColor, XMFLOAT3 lightPos, XMFLOAT4 ambientColor, ID3D11ShaderResourceView* texture);
-	bool RenderNormal(int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT3 cameraPos, XMFLOAT4 diffuseColor, XMFLOAT3 lightPos, XMFLOAT4 ambientColor, ID3D11ShaderResourceView* texture);
 	bool Render(int indexcount,
 		XMMATRIX worldMatrix,
 		XMMATRIX veiwMatrix, XMFLOAT3 cameraPos,

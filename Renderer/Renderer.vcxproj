@@ -159,12 +159,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="D3DClass.h" />
-    <ClInclude Include="DefaultShaderClass.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GraphicsClass.h" />
     <ClInclude Include="ModelShader.h" />
-    <ClInclude Include="NormalShaderClass.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="RenderTextureClass.h" />
     <ClInclude Include="resource.h" />
@@ -172,11 +170,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3DClass.cpp" />
-    <ClCompile Include="DefaultShaderClass.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="GraphicsClass.cpp" />
     <ClCompile Include="ModelShader.cpp" />
-    <ClCompile Include="NormalShaderClass.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
