@@ -47,8 +47,8 @@ FileSystem.dll : 로컬 영역에 존재하는 파일을 Store / Load 등의 기
   
 * Manager 
   * Manager는 엔진에서 발생하는 특정 작업을 수행하기 위한 클래스로 Singleton 패턴으로 구현
-  * Scene Manager : Scene과 Scene 안에 있는 Object를 관리
-  * Resource Manager : 엔진에서 사용하는 Resource를 관리
+  * Scene Manager : Scene을 생성 삭제하거나 Scene 안에 있는 Object 생성 삭제 하는 기능을 수행하는 Manager Class
+  * Resource Manager : 엔진에서 사용하는 Resource를 관리, 모든 Resource들은 해당 Manager Class를 통해서 수행된다.
   * Timer Manager : 엔진의 FPS와 Delta Time을 실시간으로 계산
   * Key Manager : DirectX Input을 통한 키보드, 마우스 입력 감지
   * Path Manager : 작업 영역의 절대경로 계산
