@@ -1,6 +1,28 @@
 # hoguengine
 프로젝트에 대한 설명
 
+
+## 프로젝트 구조
+
+프로젝트의 구조는 다음과 같다.
+
+![structure](https://user-images.githubusercontent.com/97880907/193234230-b50a2010-93e3-43b0-9de8-04e0f6835ce0.png)
+
+각각의 dll은 상위 Layer에 Implicit Linking 되어 사용된다.
+
+Client.exe : Win32 응용프로그램의 윈도우가 생성되고 출력되고 루프되는 Layer
+
+Geometry.dll : 엔진의 Core가 되는 부분으로 해당 dll에서 Manager Class들이 동작하면서 모든 작업을 관리하는 Layer
+
+Renderer.dll : Rendering을 담당하는 dll로 DirectX11를 초기화 하거나 렌더 타겟 뷰 변경, 그래픽 파이프라인 바인딩 등 렌더링에 관련된 작업을 수행하는 Layer
+
+Collision.dll : Geometry상에서 정보를 받아 Collision Test를 담당하는 Layer
+
+FileSystem.dll : 로컬 영역에 존재하는 파일을 Store / Load 등의 기능을 수행하는 Layer
+
+
+상세 링크 : <https://blog.naver.com/junhogoo/222886954474>
+
 ## 구현 목록
 
 * FBX SDK Import
@@ -21,7 +43,7 @@
   * Content Browser Panel : 로컬 작업영역의 디렉토리를 순회하며 디렉토리와 파일을 조회 및 Drag and Drop 기능으로 파일 
 
 * Animation
-  * FBX 기준으로 맞춰진 Animation Frame을 엔진에 맞는 Frame으로 구면 보간
+  * FBX 기준으로 맞춰진 Animation KeyFrame에 대한 Transform 정보를 엔진에 맞는 Transform으로 쿼터니언을 이용한 구면 보간
   
 * Manager 
   * Manager는 엔진에서 발생하는 특정 작업을 수행하기 위한 클래스로 Singleton 패턴으로 구현
@@ -31,13 +53,6 @@
   * Key Manager : DirectX Input을 통한 키보드, 마우스 입력 감지
   * Path Manager : 작업 영역의 절대경로 계산
   
-
-## 프로젝트 구조
-
-![structure](https://user-images.githubusercontent.com/97880907/193234230-b50a2010-93e3-43b0-9de8-04e0f6835ce0.png)
-
-
-상세 링크 : <https://blog.naver.com/junhogoo/222886954474>
 
 ## 시연 영상
 
