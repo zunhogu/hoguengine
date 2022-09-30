@@ -33,7 +33,7 @@ FileSystem.dll : 로컬 영역에 존재하는 파일을 Store / Load 등의 기
     * ViewPort Picking : 비용을 줄이기 위해 1차 피킹(월드공간상에서 경계입체와 반직선 충돌 체크)를 통과한 오브젝트를 2차 피킹(로컬공간에서 메시와 반직선 충돌 체크) 
     * ImGuizmo의 Gizmo를 이용한 Object의 Node별로 Translation, Rotation, Scale 변환  
     * Frustum Culling : Frustum Culling을 통한 렌더링 연산 감소  
-  * Hierachy : Object의 Node를 트리구조로 출력
+  * Hierachy : Object의 Node를 트리구조로 출력, Object Delete, Copy, Paste 기능 
   * Inspector : Object의 Node가 가지고있는 Component에 대한 상세정보를 출력 및 편집
     * Model Info Component : Object의 기본정보를 담고 있는 Component
     * Transform Component : Obejct의 Transform 정보를 담고 있는 Component
