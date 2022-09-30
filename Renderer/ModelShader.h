@@ -1,4 +1,4 @@
-#pragma once
+s#pragma once
 
 #include "ShaderClass.h"
 

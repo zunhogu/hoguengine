@@ -4,7 +4,6 @@
 // functions in Class
 GraphicsClass::GraphicsClass() {
 	m_D3D = 0;
-	m_NormalShader = 0;
 }
 
 GraphicsClass::GraphicsClass(const GraphicsClass& other) {}
@@ -39,32 +38,6 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd) {
 		return false;
 	}
 
-	// DefaultShaderClass 객체 생성
-	m_DefaultShader = new DefaultShaderClass();
-	if (!m_DefaultShader) {
-		return false;
-	}
-
-	// DefaultShaderClas 객체 초기화
-	result = m_DefaultShader->Initialize(m_D3D->GetDevice(), hwnd);
-	if (!result) {
-		MessageBox(hwnd, "Could not initialize the default shader object.", "Error", MB_OK);
-		return false;
-	}
-
-	// NormalShaderClass 객체 생성
-	m_NormalShader = new NormalShaderClass;
-	if (!m_NormalShader) {
-		return false;
-	}
-
-	// NormalShaderClass 객체 초기화
-	result = m_NormalShader->Initialize(m_D3D->GetDevice(), hwnd);
-	if (!result) {
-		MessageBox(hwnd, "Could not initialize the normal shader object.", "Error", MB_OK);
-		return false;
-	}
-
 	m_modelShader = new ModelShader;
 	if (!m_modelShader) {
 		return false;
@@ -77,18 +50,6 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd) {
 }
 
 void GraphicsClass::Shutdown() {
-
-	if (m_NormalShader) {
-		m_NormalShader->Shutdown();
-		delete m_NormalShader;
-		m_NormalShader = 0;
-	}
-
-	if (m_DefaultShader) {
-		m_DefaultShader->Shutdown();
-		delete m_DefaultShader;
-		m_DefaultShader = 0;
-	}
 
 	if (m_RenderTexture) {
 		m_RenderTexture->Shutdown();
@@ -167,39 +128,6 @@ void GraphicsClass::RenderToTextureEnd()
 
 	// 뷰포트도 원래대로 돌린다.
 	m_D3D->ResetViewport();
-}
-
-bool GraphicsClass::RenderDefault(int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT3 cameraPos, XMFLOAT4 diffuseColor, XMFLOAT3 lightPos, XMFLOAT4 ambientColor, ID3D11ShaderResourceView* texture)
-{
-	bool result;
-	XMMATRIX projectionMatrix;
-
-	projectionMatrix = m_D3D->GetProjectionMatrix();
-	m_D3D->SetViewMatrix(viewMatrix);
-
-	// DefaultShader 실행
-	result = m_DefaultShader->Render(m_D3D->GetDeviceContext(), indexCount, worldMatrix, viewMatrix, projectionMatrix, texture);
-	if (!result) {
-		return false;
-	}
-
-	return true;
-}
-
-bool GraphicsClass::RenderNormal(int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT3 cameraPos, XMFLOAT4 diffuseColor, XMFLOAT3 lightPos, XMFLOAT4 ambientColor, ID3D11ShaderResourceView* texture)
-{
-	//bool result;
-	//XMMATRIX projectionMatrix;
-
-	//m_D3D->GetProjectionMatrix(projectionMatrix);
-
-	////	// NormalShader 실행
-	//result = m_NormalShader->Render(m_D3D->GetDeviceContext(), indexCount, worldMatrix, viewMatrix, projectionMatrix, textureArray, diffuseColor, lightPos, ambientColor, cameraPos);
-	//if (!result) {
-	//	return false;
-	//}
-
-	return true;
 }
 
 bool GraphicsClass::Render(int indexcount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT3 cameraPos, XMFLOAT4 lightColor, XMFLOAT3 lightPos, XMFLOAT4 ambientColor, XMFLOAT4 emmisvieColor, XMFLOAT4 diffuseColor, XMFLOAT4 specularColor, float shinnes, ID3D11ShaderResourceView* ambientTexture, ID3D11ShaderResourceView* emmisiveTexture, ID3D11ShaderResourceView* diffuseTexture, ID3D11ShaderResourceView* specularTexture, ID3D11ShaderResourceView* normalTexture, XMMATRIX boneScale, XMMATRIX* boneMatrixArray, UINT skinning)
