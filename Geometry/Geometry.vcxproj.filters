@@ -86,9 +86,6 @@
     <Filter Include="ModelInfo\Component\MaterialComp">
       <UniqueIdentifier>{c0d81539-247c-4b30-99f0-708740b63c09}</UniqueIdentifier>
     </Filter>
-    <Filter Include="SceneInfo">
-      <UniqueIdentifier>{ad123861-131d-4f6a-b7ed-6a903da32be5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Scene\Scene_Tool\UI">
       <UniqueIdentifier>{d5fb774b-a606-44d3-b6f3-e336a55c706f}</UniqueIdentifier>
     </Filter>
@@ -115,18 +112,6 @@
     </Filter>
     <Filter Include="Scene\Scene_Tool\UI\Panel\ViewPort">
       <UniqueIdentifier>{fa7793ea-cedc-489f-9f3a-7344b7666104}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Scene\Scene_Tool\UI\Resource">
-      <UniqueIdentifier>{fcbac8fd-9074-4cf7-ab98-a14bae946d73}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Scene\Scene_Tool\UI\Resource\Model">
-      <UniqueIdentifier>{0dcff7b5-f139-490a-aa1e-dbb4ad4baac4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Scene\Scene_Tool\UI\Resource\Sound">
-      <UniqueIdentifier>{9ae9c83b-c357-40eb-849e-adbf34f3731d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Scene\Scene_Tool\UI\Resource\Texture">
-      <UniqueIdentifier>{74a8ba86-bb11-4053-b2cc-a955d58d3e4a}</UniqueIdentifier>
     </Filter>
     <Filter Include="ModelInfo\ModelNode">
       <UniqueIdentifier>{a684983b-9b43-41e2-8716-960acf30ad83}</UniqueIdentifier>
@@ -185,9 +170,6 @@
     <ClInclude Include="LightClass.h">
       <Filter>Object\Light</Filter>
     </ClInclude>
-    <ClInclude Include="objectzz.h">
-      <Filter>Object</Filter>
-    </ClInclude>
     <ClInclude Include="Scene_Final.h">
       <Filter>Scene\Scene_Final</Filter>
     </ClInclude>
@@ -215,9 +197,6 @@
     <ClInclude Include="MaterialComp.h">
       <Filter>ModelInfo\Component\MaterialComp</Filter>
     </ClInclude>
-    <ClInclude Include="SceneInfo.h">
-      <Filter>SceneInfo</Filter>
-    </ClInclude>
     <ClInclude Include="ContentBrowserPanel.h">
       <Filter>Scene\Scene_Tool\UI\Panel\ContentBrowser</Filter>
     </ClInclude>
@@ -238,18 +217,6 @@
     </ClInclude>
     <ClInclude Include="Panel.h">
       <Filter>Scene\Scene_Tool\UI\Panel</Filter>
-    </ClInclude>
-    <ClInclude Include="ResourceItem.h">
-      <Filter>Scene\Scene_Tool\UI\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="SoundItem.h">
-      <Filter>Scene\Scene_Tool\UI\Resource\Sound</Filter>
-    </ClInclude>
-    <ClInclude Include="ModelItem.h">
-      <Filter>Scene\Scene_Tool\UI\Resource\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureItem.h">
-      <Filter>Scene\Scene_Tool\UI\Resource\Texture</Filter>
     </ClInclude>
     <ClInclude Include="ImGuIRenderClass.h">
       <Filter>Scene\Scene_Tool\UI</Filter>
@@ -335,9 +302,6 @@
     <ClCompile Include="LightClass.cpp">
       <Filter>Object\Light</Filter>
     </ClCompile>
-    <ClCompile Include="objectzz.cpp">
-      <Filter>Object</Filter>
-    </ClCompile>
     <ClCompile Include="Scene_Final.cpp">
       <Filter>Scene\Scene_Final</Filter>
     </ClCompile>
@@ -365,9 +329,6 @@
     <ClCompile Include="MaterialComp.cpp">
       <Filter>ModelInfo\Component\MaterialComp</Filter>
     </ClCompile>
-    <ClCompile Include="SceneInfo.cpp">
-      <Filter>SceneInfo</Filter>
-    </ClCompile>
     <ClCompile Include="ContentBrowserPanel.cpp">
       <Filter>Scene\Scene_Tool\UI\Panel\ContentBrowser</Filter>
     </ClCompile>
@@ -388,18 +349,6 @@
     </ClCompile>
     <ClCompile Include="Panel.cpp">
       <Filter>Scene\Scene_Tool\UI\Panel</Filter>
-    </ClCompile>
-    <ClCompile Include="ResourceItem.cpp">
-      <Filter>Scene\Scene_Tool\UI\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="SoundItem.cpp">
-      <Filter>Scene\Scene_Tool\UI\Resource\Sound</Filter>
-    </ClCompile>
-    <ClCompile Include="ModelItem.cpp">
-      <Filter>Scene\Scene_Tool\UI\Resource\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureItem.cpp">
-      <Filter>Scene\Scene_Tool\UI\Resource\Texture</Filter>
     </ClCompile>
     <ClCompile Include="ImGuIRenderClass.cpp">
       <Filter>Scene\Scene_Tool\UI</Filter>

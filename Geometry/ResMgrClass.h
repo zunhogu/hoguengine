@@ -1,10 +1,5 @@
 #pragma once
 
-#include "ResourceItem.h"
-#include "ModelItem.h"
-#include "TextureItem.h"
-#include "SoundItem.h"
-
 class Prefab;
 class Mesh;
 class TextureClass;

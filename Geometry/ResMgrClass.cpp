@@ -178,10 +178,6 @@ TextureClass* ResMgrClass::LoadTexture(ID3D11Device* device, const wstring& _str
 	// ¸Ê¿¡ ³ÖÀ½ 
 	m_mapTex.insert(make_pair(_strKey, pTex));
 
-
-	TextureItem* item = new TextureItem(Core::ConvWcharTochar(_strKey), Core::ConvWcharTochar(strFilePath));
-	item->SetTextureView(pTex->GetTexture());
-
 	return pTex;
 }
 

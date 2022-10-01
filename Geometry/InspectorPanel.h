@@ -22,7 +22,5 @@ public:
 	void ShowTransformComponent(TransformComp* transformComp);
 	bool ShowMeshComponent(MeshComp* meshComp);
 	void ShowPopUp();
-
-	ResourceItem* GetResourceItem(char* id);
 };
 

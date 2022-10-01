@@ -2,8 +2,6 @@
 #pragma warning(disable : 4251) 
 
 #include "pch.h"
-#include "SceneInfo.h"
-#include "ResourceItem.h"
 
 class Panel;
 class ResourceItem;

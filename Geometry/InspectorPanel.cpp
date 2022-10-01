@@ -9,7 +9,6 @@
 #include "BoneComp.h"
 #include "ImGuIRenderClass.h"
 #include "ResourcePanel.h"
-#include "TextureItem.h"
 #include "ContentBrowserPanel.h"
 #include "Core.h"
 #include "ModelNode.h"
@@ -382,17 +381,5 @@ void InspectorPanel::ShowPopUp()
 		ImGui::SetCursorPosX(5.0f);
 		if (ImGui::MenuItem("Collider")) {}
 		ImGui::EndPopup();
-	}
-}
-
-ResourceItem* InspectorPanel::GetResourceItem(char* id)
-{
-	for (int i = 0; i < m_vResources->size(); i++)
-	{
-		ResourceItem* item = m_vResources->at(i);
-		if (strcmp(item->GetID(), id) == 0)
-		{
-			return item;
-		}
 	}
 }
