@@ -56,6 +56,11 @@ FileSystem.dll : 로컬 영역에 존재하는 파일을 Store / Load 등의 기
 
 ## 시연 영상
 
+## 업데이트 내역
+
+- 2022.10.02 : Node에 Component 추가 기능 구현
+
+
 ## 외부라이브러리
 * ImGui
 * ImGuizmo
