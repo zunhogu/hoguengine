@@ -17,9 +17,6 @@ extern vector<ModelNode*> g_selectedNodes;
 extern IMGUI_WINDOW_TYPE g_focusedWindow;
 extern IMGUI_WINDOW_TYPE g_iCurMousePosWindowID;
 
-extern wstring g_resourceRelativePath;
-extern RESOURCE_TYPE g_rosourceType;
-
 HierachyPanel::HierachyPanel()
 {
 	m_type = IMGUI_WINDOW_TYPE::HIERACHY;
@@ -49,8 +46,8 @@ void HierachyPanel::Render()
 		ImGuiPayload* payload = ImGuIRenderClass::DragAndDropToWindow("CONTENT_BROWSER_ITEM");
 		ProcessDragAndDropPayload(payload);
 
-		//// popup 
-		//ShowPopUp();
+		// popup 
+		ShowPopUp();
 
 		// 씬 안에 있는 모든 Root Node들 
 		Scene* scene = SceneMgrClass::GetInst()->GetCurScene();
@@ -203,20 +200,20 @@ void HierachyPanel::ShowPopUp()
 				string item = items[i];
 				if (ImGui::MenuItem(item.c_str()))
 				{
+					wstring path = L"";
 					if (item == "Cube")
-						g_resourceRelativePath = L"default\\fbx\\id_cube.fbx";
+						path = L"default\\fbx\\id_cube.fbx";
 					else if (item == "Sphere")
-						g_resourceRelativePath = L"default\\fbx\\id_sphere.fbx";
+						path = L"default\\fbx\\id_sphere.fbx";
 					else if (item == "Cone")
-						g_resourceRelativePath = L"default\\fbx\\id_cone.fbx";
+						path = L"default\\fbx\\id_cone.fbx";
 					else if (item == "Cylinder")
-						g_resourceRelativePath = L"default\\fbx\\id_cylinder.fbx";
+						path = L"default\\fbx\\id_cylinder.fbx";
 					else if (item == "Plane")
-						g_resourceRelativePath = L"default\\fbx\\id_plane.fbx";
+						path = L"default\\fbx\\id_plane.fbx";
 					else if (item == "Empthy Obejct")
-						g_resourceRelativePath = L"Emphty_Object";
+						path = L"Emphty_Object";
 
-					g_rosourceType = RESOURCE_TYPE::MODEL;
 				}
 			}
 			ImGui::EndMenu();
