@@ -5,6 +5,9 @@
 TransformComp::TransformComp()
 {
 	m_componentType = COMPONENT_TYPE::TRANSFORM;
+	m_position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_rotation = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	m_scale = XMFLOAT3(1.0f, 1.0f, 1.0f);
 }
 
 TransformComp::TransformComp(const TransformComp& transformComp)

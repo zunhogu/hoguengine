@@ -14,6 +14,7 @@ ModelNode* g_currNode = nullptr;
 ModelNode::ModelNode()
 {
 	m_parentindex = -1;
+	m_treeDepth = 0;
     m_isOpenedInHierachy = false;
     m_isClickedHierachy = false;
 }

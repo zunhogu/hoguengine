@@ -59,7 +59,7 @@ void MeshPartComp::Render(ID3D11DeviceContext* devicecContext)
 MeshComp::MeshComp()
 {
 	m_componentType = COMPONENT_TYPE::MESH;
-	m_meshID = "";
+	m_meshID = "NONE";
 	m_isRender = true;
 	m_isDelete = true;
 }

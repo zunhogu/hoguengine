@@ -5,6 +5,9 @@
 ModelInfoComp::ModelInfoComp()
 {
 	m_componentType = COMPONENT_TYPE::MODELINFO;
+	m_modelName = L"Empty Object";
+	m_isActive = true;
+	m_isFrustumCulling = true;
 }
 
 ModelInfoComp::ModelInfoComp(const ModelInfoComp& modelInfoComp)

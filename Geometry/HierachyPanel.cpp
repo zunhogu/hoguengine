@@ -10,6 +10,7 @@
 #include "ModelInfoComp.h"
 #include "Prefab.h"
 #include "ResMgrClass.h"
+#include "TransformComp.h"
 using namespace std;
 
 extern vector<ModelNode*> g_selectedNodes;
@@ -191,7 +192,7 @@ void HierachyPanel::ShowPopUp()
 
 	if (ImGui::BeginPopup(buff))
 	{
-		static string items[] = { "Cube", "Sphere", "Cone", "Cylinder", "Plane", "Empthy Obejct" };
+		static string items[] = { "Cube", "Sphere", "Cone", "Cylinder", "Plane", "Empty Obejct" };
 
 		if (ImGui::BeginMenu("3D Object")) {
 			for (int i = 0; i < IM_ARRAYSIZE(items); i++)
@@ -200,25 +201,31 @@ void HierachyPanel::ShowPopUp()
 				string item = items[i];
 				if (ImGui::MenuItem(item.c_str()))
 				{
-					wstring path = L"";
-					if (item == "Cube")
+					if (item == "Empty Obejct")
 					{
-						Prefab* cube = ResMgrClass::GetInst()->LoadPrefab(L"default_cube", L"default\\id_cube\\id_cube.pref");
-						SceneMgrClass::GetInst()->GetCurScene()->AddNodeToScene(new ModelNode(*cube->GetModelNode()));
+						ModelNode* empty = new ModelNode;
+						empty->AddModelComp(new ModelInfoComp);
+						empty->AddModelComp(new TransformComp);
+						empty->AddPathToRootNode(empty);
+						SceneMgrClass::GetInst()->GetCurScene()->AddNodeToScene(empty);
 					}
-					else if (item == "Sphere")
-						path = L"default\\fbx\\id_sphere.fbx";
-					else if (item == "Cone")
-						path = L"default\\fbx\\id_cone.fbx";
-					else if (item == "Cylinder")
-						path = L"default\\fbx\\id_cylinder.fbx";
-					else if (item == "Plane")
-						path = L"default\\fbx\\id_plane.fbx";
-					else if (item == "Empthy Obejct")
-						path = L"Emphty_Object";
+					else
+					{
+						Prefab* prefab = nullptr;
+						wstring path = L"";
+						if (item == "Cube")
+							prefab = ResMgrClass::GetInst()->LoadPrefab(L"id_cube", L"contents\\assets\\id_cube\\id_cube.pref");
+						else if (item == "Sphere")
+							prefab = ResMgrClass::GetInst()->LoadPrefab(L"id_sphere", L"contents\\assets\\id_sphere\\id_sphere.pref");
+						else if (item == "Cone")
+							prefab = ResMgrClass::GetInst()->LoadPrefab(L"id_cone", L"contents\\assets\\id_cone\\id_cone.pref");
+						else if (item == "Cylinder")
+							prefab = ResMgrClass::GetInst()->LoadPrefab(L"id_cylinder", L"contents\\assets\\id_cylinder\\id_cylinder.pref");
+						else if (item == "Plane")
+							prefab = ResMgrClass::GetInst()->LoadPrefab(L"id_plane", L"contents\\assets\\id_plane\\id_plane.pref");
 
-					
-
+						SceneMgrClass::GetInst()->GetCurScene()->AddNodeToScene(new ModelNode(*prefab->GetModelNode()));
+					}
 				}
 			}
 			ImGui::EndMenu();

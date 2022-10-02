@@ -133,232 +133,6 @@ bool InspectorPanel::ShowMeshComponent(MeshComp* meshComp)
 		ImGuiInputTextFlags input_text_flags = ImGuiInputTextFlags_CharsDecimal;
 
 		vector<MeshPartComp*> meshParts = *meshComp->GetMeshParts();
-
-		//for (int i = 0; i < meshParts.size(); i++)
-		//{
-		//	if (ImGui::TreeNode(meshParts[i]->GetMeshName()))
-		//	{
-		//		vector <MaterialPart*> materialParts = *meshParts[i]->GetMaterialParts();
-		//		for (int j = 0; j < materialParts.size(); j++)
-		//		{
-		//			if (ImGui::TreeNode(materialParts[j]->GetMaterialName()))
-		//			{
-		//				MaterialComp* material = materialParts[j]->GetMaterial();
-
-		//				// color
-		//				static bool alpha_preview = true;
-		//				static bool alpha_half_preview = false;
-		//				static bool drag_and_drop = true;
-		//				static bool options_menu = true;
-		//				static bool hdr = false;
-		//				ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
-
-		//				XMFLOAT4 ambientColor = material->GetAmbientColor();
-		//				XMFLOAT4 emissiveColor = material->GetEmissiveColor();
-		//				XMFLOAT4 diffuseColor = material->GetDiffuseColor();
-		//				XMFLOAT4 specularColor = material->GetSpecularColor();
-		//				float shinness = material->GetShinness();
-
-		//				ImVec4 imAmbientColor = ImVec4(ambientColor.x, ambientColor.y, ambientColor.z, ambientColor.w);
-		//				ImGui::Text("AmbientColor ");
-		//				ImGui::SameLine();
-		//				ImGui::PushItemWidth(150.0f);
-		//				IsChanged = ImGui::ColorEdit3("##AmbientColor", (float*)&imAmbientColor, misc_flags);
-		//				if (IsChanged)
-		//				{
-		//					material->SetAmibientColor(XMFLOAT4(imAmbientColor.x, imAmbientColor.y, imAmbientColor.z, imAmbientColor.w));
-		//				}
-		//				ImVec4 imEmissiveColor = ImVec4(emissiveColor.x, emissiveColor.y, emissiveColor.z, emissiveColor.w);
-		//				ImGui::Text("EmissiveColor");
-		//				ImGui::SameLine();
-		//				IsChanged = ImGui::ColorEdit3("##EmissiveColor", (float*)&imEmissiveColor, misc_flags);
-		//				if (IsChanged)
-		//				{
-		//					material->SetEmissiveColor(XMFLOAT4(imEmissiveColor.x, imEmissiveColor.y, imEmissiveColor.z, imEmissiveColor.w));
-		//				}
-		//				ImVec4 imDiffuseColor = ImVec4(diffuseColor.x, diffuseColor.y, diffuseColor.z, diffuseColor.w);
-		//				ImGui::Text("DiffuseColor ");
-		//				ImGui::SameLine();
-		//				IsChanged = ImGui::ColorEdit3("##DiffuseColor", (float*)&imDiffuseColor, misc_flags);
-		//				if (IsChanged)
-		//				{
-		//					material->SetDiffuseColor(XMFLOAT4(imDiffuseColor.x, imDiffuseColor.y, imDiffuseColor.z, imDiffuseColor.w));
-		//				}
-		//				ImVec4 imSpecularColor = ImVec4(specularColor.x, specularColor.y, specularColor.z, specularColor.w);
-		//				ImGui::Text("SpecularColor");
-		//				ImGui::SameLine();
-		//				IsChanged = ImGui::ColorEdit3("##SpecularColor", (float*)&imSpecularColor, misc_flags);
-		//				if (IsChanged)
-		//				{
-		//					material->SetSpecularColor(XMFLOAT4(imSpecularColor.x, imSpecularColor.y, imSpecularColor.z, imSpecularColor.w));
-		//				}
-
-		//				ImGui::Text("Shinness     ");
-		//				ImGui::SameLine();
-		//				IsChanged = ImGui::SliderFloat("##shinness", &shinness, 0.0f, 1.0f);
-		//				if (IsChanged)
-		//				{
-		//					material->SetShinness(shinness);
-		//				}
-
-
-		//				// texture
-		//				float textureWidth = 200.f;
-		//				float textureHeight = 200.f;
-		//				float textWidth = 100.0f;
-		//				wstring fileName = L"";
-		//				ImGuiPayload* payload = nullptr;
-
-		//				ImGui::PushItemWidth(textWidth);
-		//				ImGui::Text("AmbeintTexture  "); ImGui::SameLine();
-		//				ImRect rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(textWidth, ImGui::GetItemRectSize().y));
-		//				strcpy(buff, material->GetAmbientTextureID().c_str());
-		//				IsChanged = ImGui::InputText("##AmbientTexture", buff, sizeof(buff), input_text_flags);
-
-		//				payload = ImGuIRenderClass::DraAndDropToItem(rect, ImGui::GetMousePos(), "CONTENT_BROWSER_ITEM");
-		//				fileName = ProcessDragAndDropPayloadTexture(payload);
-		//				if (fileName != L"")
-		//				{
-		//					material->SetAmibentTextureID(ImGuIRenderClass::ConvWcharTochar(fileName));
-		//					IsChanged = true;
-		//				}
-
-		//				if (IsChanged)
-		//				{
-		//				}
-		//				ImGui::SameLine();
-		//				if (ImGui::SmallButton("View##ambeint"))
-		//				{
-		//					ImGui::OpenPopup("ambientview");
-		//				}
-		//				if (ImGui::BeginPopup("ambientview"))
-		//				{
-		//					TextureItem* item = (TextureItem*)GetResourceItem((char*)material->GetAmbientTextureID().c_str());
-		//					ID3D11ShaderResourceView* texture = item->GetTextureView();
-		//					ImGui::Image((ImTextureID)texture, ImVec2(textureWidth, textureHeight), ImVec2(0, 0), ImVec2(1, 1));
-		//					ImGui::EndPopup();
-		//				}
-
-
-		//				ImGui::Text("EmissiveTexture "); ImGui::SameLine();
-		//				rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(textWidth, ImGui::GetItemRectSize().y));
-		//				strcpy(buff, material->GetEmissiveTextureID().c_str());
-		//				IsChanged = ImGui::InputText("##EmissiveTexture", buff, sizeof(buff), input_text_flags);
-
-		//				payload = ImGuIRenderClass::DraAndDropToItem(rect, ImGui::GetMousePos(), "CONTENT_BROWSER_ITEM");
-		//				fileName = ProcessDragAndDropPayloadTexture(payload);
-		//				if (fileName != L"")
-		//				{
-		//					material->SetEmissiveTextureID(ImGuIRenderClass::ConvWcharTochar(fileName));
-		//					IsChanged = true;
-		//				}
-		//				if (IsChanged)
-		//				{
-		//				}
-		//				ImGui::SameLine();
-		//				if (ImGui::SmallButton("View##emissive"))
-		//				{
-		//					ImGui::OpenPopup("emissiveview");
-		//				}
-		//				if (ImGui::BeginPopup("emissiveview"))
-		//				{
-		//					TextureItem* item = (TextureItem*)GetResourceItem((char*)material->GetEmissiveTextureID().c_str());
-		//					ID3D11ShaderResourceView* texture = item->GetTextureView();
-		//					ImGui::Image((ImTextureID)texture, ImVec2(textureWidth, textureHeight), ImVec2(0, 0), ImVec2(1, 1));
-		//					ImGui::EndPopup();
-		//				}
-
-		//				ImGui::Text("DiffuseTexture  "); ImGui::SameLine();
-		//				rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(textWidth, ImGui::GetItemRectSize().y));
-		//				strcpy(buff, material->GetDiffuseTextureID().c_str());
-		//				IsChanged = ImGui::InputText("##DiffuseTexture", buff, sizeof(buff), input_text_flags);
-
-		//				payload = ImGuIRenderClass::DraAndDropToItem(rect, ImGui::GetMousePos(), "CONTENT_BROWSER_ITEM");
-		//				fileName = ProcessDragAndDropPayloadTexture(payload);
-		//				if (fileName != L"")
-		//				{
-		//					material->SetDiffuseTextureID(ImGuIRenderClass::ConvWcharTochar(fileName));
-		//					IsChanged = true;
-		//				}
-		//				if (IsChanged)
-		//				{
-		//				}
-		//				ImGui::SameLine();
-		//				if (ImGui::SmallButton("View##diffuse"))
-		//				{
-		//					ImGui::OpenPopup("diffuseview");
-		//				}
-		//				if (ImGui::BeginPopup("diffuseview"))
-		//				{
-		//					TextureItem* item = (TextureItem*)GetResourceItem((char*)material->GetDiffuseTextureID().c_str());
-		//					ID3D11ShaderResourceView* texture = item->GetTextureView();
-		//					ImGui::Image((ImTextureID)texture, ImVec2(textureWidth, textureHeight), ImVec2(0, 0), ImVec2(1, 1));
-		//					ImGui::EndPopup();
-		//				}
-
-		//				ImGui::Text("SpecularTexture "); ImGui::SameLine();
-		//				rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(textWidth, ImGui::GetItemRectSize().y));
-		//				strcpy(buff, material->GetSpecularTextureID().c_str());
-		//				IsChanged = ImGui::InputText("##SpecularTexture", buff, sizeof(buff), input_text_flags);
-
-		//				payload = ImGuIRenderClass::DraAndDropToItem(rect, ImGui::GetMousePos(), "CONTENT_BROWSER_ITEM");
-		//				fileName = ProcessDragAndDropPayloadTexture(payload);
-		//				if (fileName != L"")
-		//				{
-		//					material->SetSpecularTextureID(ImGuIRenderClass::ConvWcharTochar(fileName));
-		//					IsChanged = true;
-		//				}
-		//				if (IsChanged)
-		//				{
-
-		//				}
-		//				ImGui::SameLine();
-		//				if (ImGui::SmallButton("View##specular"))
-		//				{
-		//					ImGui::OpenPopup("specularview");
-		//				}
-		//				if (ImGui::BeginPopup("specularview"))
-		//				{
-		//					TextureItem* item = (TextureItem*)GetResourceItem((char*)material->GetSpecularTextureID().c_str());
-		//					ID3D11ShaderResourceView* texture = item->GetTextureView();
-		//					ImGui::Image((ImTextureID)texture, ImVec2(textureWidth, textureHeight), ImVec2(0, 0), ImVec2(1, 1));
-		//					ImGui::EndPopup();
-		//				}
-
-		//				ImGui::Text("NormalMapTexture"); ImGui::SameLine();
-		//				rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(textWidth, ImGui::GetItemRectSize().y));
-		//				strcpy(buff, material->GetNormalTextureID().c_str());
-		//				IsChanged = ImGui::InputText("##NormalMapTexture", buff, sizeof(buff), input_text_flags);
-
-		//				payload = ImGuIRenderClass::DraAndDropToItem(rect, ImGui::GetMousePos(), "CONTENT_BROWSER_ITEM");
-		//				fileName = ProcessDragAndDropPayloadTexture(payload);
-		//				if (fileName != L"")
-		//				{
-		//					material->SetNormalTextureID(ImGuIRenderClass::ConvWcharTochar(fileName));
-		//					IsChanged = true;
-		//				}
-		//				if (IsChanged)
-		//				{
-		//				}
-		//				ImGui::SameLine();
-		//				if (ImGui::SmallButton("View##normal"))
-		//				{
-		//					ImGui::OpenPopup("normalmapview");
-		//				}
-		//				if (ImGui::BeginPopup("normalmapview"))
-		//				{
-		//					TextureItem* item = (TextureItem*)GetResourceItem((char*)material->GetNormalTextureID().c_str());
-		//					ID3D11ShaderResourceView* texture = item->GetTextureView();
-		//					ImGui::Image((ImTextureID)texture, ImVec2(textureWidth, textureHeight), ImVec2(0, 0), ImVec2(1, 1));
-		//					ImGui::EndPopup();
-		//				}
-
-		//				ImGui::TreePop();
-		//			}
-		//		}
-		//		ImGui::TreePop();
-		//	}
-		//}
 	}
 
 	return true;
@@ -373,10 +147,19 @@ void InspectorPanel::ShowPopUp()
 
 	if (ImGui::BeginPopup(buff))
 	{
+		ModelNode* selectedNode = nullptr;
+		if (!g_selectedNodes.empty())
+			selectedNode = g_selectedNodes[g_selectedNodes.size() - 1];
+
 		ImGui::SetCursorPosX(5.0f);
 		if (ImGui::MenuItem("MeshRenderer"))
 		{
-			g_component = COMPONENT_TYPE::MESH;
+			if (selectedNode != nullptr)
+			{
+				MeshComp* meshComp = new MeshComp();
+				selectedNode->AddModelComp(meshComp);
+			}
+
 		}
 		ImGui::SetCursorPosX(5.0f);
 		if (ImGui::MenuItem("Collider")) {}

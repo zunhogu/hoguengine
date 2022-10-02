@@ -68,7 +68,11 @@ void Scene_Tool::Frame()
 	{
 		GetScene((UINT)SCENE_TYPE::SCNENE1);
 
-		ResMgrClass::GetInst()->LoadPrefab(L"default_cube", L"contents\\assets\\id_cube\\id_cube.pref");
+		ResMgrClass::GetInst()->LoadPrefab(L"i_cube", L"contents\\assets\\id_cube\\id_cube.pref");
+		ResMgrClass::GetInst()->LoadPrefab(L"id_sphere", L"contents\\assets\\id_sphere\\id_sphere.pref");
+		ResMgrClass::GetInst()->LoadPrefab(L"id_cone", L"contents\\assets\\id_cone\\id_cone.pref");
+		ResMgrClass::GetInst()->LoadPrefab(L"id_cylinder", L"contents\\assets\\id_cylinder\\id_cylinder.pref");
+		ResMgrClass::GetInst()->LoadPrefab(L"id_plane", L"contents\\assets\\id_plane\\id_plane.pref");
 
 		//Prefab* man = ResMgrClass::GetInst()->LoadPrefab(L"man.pref", L"contents\\assets\\man\\man.pref");
 		//ModelNode* node = new ModelNode(*man->GetModelNode());
@@ -333,14 +337,26 @@ void Scene_Tool::PickingCheckInViewPort()
 		rayDir = XMVector3Normalize(rayDir);
 
 		int pickedIndex = -1;
+
 		// node가 pick 되있지 않다면 모든 씬 안의 모든 Root Node에 대해 피킹 선별 진행
 		for (int i = 0; i < m_allNode->size(); i++)
 		{
+			float distance = 0.0f;
+
+			// 자신의 노드에 대한 picking test
+			if (m_allNode->at(i)->CheckPicking(rayOrigin, rayDir, distance))
+			{
+				if (minDistance >= distance)
+				{
+					minDistance = distance;
+					pickedIndex = i;
+				}
+			}
+
 			vector<ModelNode*> childNodes = m_allNode->at(i)->GetAllChildNodes();
 
 			for (int j = 0; j < childNodes.size(); j++)
 			{
-				float distance = 0.0f;
 				if (childNodes[j]->CheckPicking(rayOrigin, rayDir, distance))
 				{
 					if (minDistance >= distance)
