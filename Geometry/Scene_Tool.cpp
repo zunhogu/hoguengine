@@ -68,8 +68,7 @@ void Scene_Tool::Frame()
 	{
 		GetScene((UINT)SCENE_TYPE::SCNENE1);
 
-		//Prefab* dog = ResMgrClass::GetInst()->LoadPrefab(L"dog.pref", L"contents\\assets\\dog\\dog.pref");
-		//AddNodeToScene(new ModelNode(*dog->GetModelNode()));
+		ResMgrClass::GetInst()->LoadPrefab(L"default_cube", L"contents\\assets\\id_cube\\id_cube.pref");
 
 		//Prefab* man = ResMgrClass::GetInst()->LoadPrefab(L"man.pref", L"contents\\assets\\man\\man.pref");
 		//ModelNode* node = new ModelNode(*man->GetModelNode());

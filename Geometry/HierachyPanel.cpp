@@ -202,7 +202,10 @@ void HierachyPanel::ShowPopUp()
 				{
 					wstring path = L"";
 					if (item == "Cube")
-						path = L"default\\fbx\\id_cube.fbx";
+					{
+						Prefab* cube = ResMgrClass::GetInst()->LoadPrefab(L"default_cube", L"default\\id_cube\\id_cube.pref");
+						SceneMgrClass::GetInst()->GetCurScene()->AddNodeToScene(new ModelNode(*cube->GetModelNode()));
+					}
 					else if (item == "Sphere")
 						path = L"default\\fbx\\id_sphere.fbx";
 					else if (item == "Cone")
@@ -213,6 +216,8 @@ void HierachyPanel::ShowPopUp()
 						path = L"default\\fbx\\id_plane.fbx";
 					else if (item == "Empthy Obejct")
 						path = L"Emphty_Object";
+
+					
 
 				}
 			}
