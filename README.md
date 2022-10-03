@@ -1,5 +1,5 @@
 # hoguengine
-프로젝트에 대한 설명
+hoguengine은 DirectX11을 기반으로하는 3D 게임 개발을 위한 게임엔진이다.
 
 
 ## 프로젝트 구조
@@ -45,7 +45,7 @@ FileSystem.dll : 로컬 영역에 존재하는 파일을 Store / Load 등의 기
 * Animation
   * FBX 기준으로 맞춰진 Animation KeyFrame에 대한 Transform 정보를 엔진에 맞는 Transform으로 쿼터니언을 이용한 구면 보간
   
-* Manager 
+* Manager Class로 엔진 관리
   * Manager는 엔진에서 발생하는 특정 작업을 수행하기 위한 클래스로 Singleton 패턴으로 구현
   * Scene Manager : Scene을 생성 삭제하거나 Scene 안에 있는 Object 생성 삭제 하는 기능을 수행하는 Manager Class
   * Resource Manager : 엔진에서 사용하는 Resource를 관리, 모든 Resource들은 해당 Manager Class를 통해서 수행된다.
