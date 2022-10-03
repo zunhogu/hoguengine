@@ -144,6 +144,10 @@ void AnimationComp::Render(ModelNode* node)
 					deltaTime = 1 / m_animations[n]->GetFPS();
 					m_currAnimIndex = n;
 					m_progress = 0.0f;
+					m_currKeyFrame = 0;
+					m_nextKeyFrame = 0;
+					m_accumulateDirectXDeltaTime = 0;
+					m_keyFrameFactor = 0;
 				}
 			}
 			ImGui::EndCombo();
@@ -154,8 +158,12 @@ void AnimationComp::Render(ModelNode* node)
 		{
 			if (!animate)
 			{
-				m_progress = 0;
+				m_currKeyFrame = 0;
+				m_nextKeyFrame = 0;
+				m_accumulateDirectXDeltaTime = 0;
+				m_keyFrameFactor = 0;
 				m_isSkinning = false;
+				m_currKeyFrame = 0;
 			}
 		}
 
