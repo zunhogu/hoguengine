@@ -317,7 +317,6 @@ void ModelShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATR
 	// 마지막으로 정점 셰이더의 상수 버퍼를 바뀐 값으로 바꾼다.
 	deviceContext->VSSetConstantBuffers(vertexShaderBufferCount, 1, &m_matrixBuffer);
 
-
 	// LightBuffer
 	deviceContext->Map(m_LightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 

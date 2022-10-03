@@ -7,6 +7,7 @@
 #include "Mesh.h"
 #include "Material.h"
 #include "TextureClass.h"
+#include "HeightMapTexture.h"
 #include "SoundClass.h"
 #include "Animation.h"
 
@@ -156,22 +157,33 @@ Material* ResMgrClass::FindMaterial(const wstring& _strKey)
 	return iter->second;
 }
 
-TextureClass* ResMgrClass::LoadTexture(ID3D11Device* device, const wstring& _strKey, const wstring& strRelationPath)
+TextureClass* ResMgrClass::LoadTexture(ID3D11Device* device, const wstring& _strKey, const wstring& strRelationPath, TEXTURE_TYPE type)
 {
 	// 만약 동일한 리소스가 있다면?
 	TextureClass* pTex = FindTexture(_strKey);
 	if (pTex != nullptr)
-	{
 		return pTex;
-	}
 	
 	wstring strFilePath = PathMgr::GetInst()->GetContentPath();
 	strFilePath += strRelationPath;
 
-	// 기본 텍스처 초기화
-	pTex = new TextureClass;
-	pTex->Initialize(device, strFilePath);
+	// 텍스처 생성
 
+	switch (type)
+	{
+	case TEXTURE_TYPE::DEFAULT:
+		pTex = new TextureClass;
+		break;
+	case TEXTURE_TYPE::HEIGHTMAP:
+		pTex = new HeightMapTexture;
+		break;
+	case TEXTURE_TYPE::END:
+		break;
+	default:
+		break;
+	}
+
+	pTex->Initialize(strFilePath);
 	pTex->SetKey(_strKey);
 	pTex->SetRelativePath(strFilePath);
 

@@ -5,7 +5,6 @@
 #include "HierachyPanel.h"
 #include "InspectorPanel.h"
 #include "ScenePanel.h"
-#include "ResourcePanel.h"
 #include "ContentBrowserPanel.h"
 #include "Core.h"
 
@@ -118,10 +117,8 @@ bool ImGuIRenderClass::Initialize(HWND hWnd)
 	Panel* hierahcyPanel = new HierachyPanel();
 	Panel* inspectorPanel = new InspectorPanel();
 	Panel* scenePanel = new ScenePanel();
-	Panel* resorucePanel = new ResourcePanel();
 	Panel* contentBrowserPanel = new ContentBrowserPanel();
 	m_vPanels.push_back(scenePanel);
-	m_vPanels.push_back(resorucePanel);
 	m_vPanels.push_back(hierahcyPanel);
 	m_vPanels.push_back(inspectorPanel);
 	m_vPanels.push_back(contentBrowserPanel);

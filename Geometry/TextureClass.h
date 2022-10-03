@@ -2,22 +2,23 @@
 #include "ResourceClass.h"
 
 
-class TextureClass :
-    public ResourceClass
+class TextureClass : public ResourceClass
 {
-private:
-    ID3D11ShaderResourceView* m_Texture;
-public:
-    TextureClass();
-    ~TextureClass();
+protected:
+    ID3D11Device* m_device;
+    ID3D11ShaderResourceView* m_resourceView;
 
 public:
-    void Initialize(ID3D11Device* device, const wstring& _strFilePath);
+    TextureClass();
+    virtual ~TextureClass();
+
+public:
+    virtual void Initialize(const wstring& _strFilePath);
     void Shutdown();
 
     DirectX::ScratchImage LoadTexture(const wstring& _strFilePath);
 
-    ID3D11ShaderResourceView* GetTexture() { return m_Texture; }
+    ID3D11ShaderResourceView* GetTexture() { return m_resourceView; }
 
     friend class ResMgrClass;
 };

@@ -38,7 +38,7 @@ public:
 	Material* LoadMaterial(const wstring& _strKey, const wstring& strRelationPath = L"");
 	Material* FindMaterial(const wstring& _strKey);
 
-	TextureClass* LoadTexture(ID3D11Device* device, const wstring& _strKey, const wstring& strRelationPath = L"");
+	TextureClass* LoadTexture(ID3D11Device* device, const wstring& _strKey, const wstring& strRelationPath = L"", TEXTURE_TYPE type = TEXTURE_TYPE::DEFAULT);
 	TextureClass* FindTexture(const wstring& _strKey);
 
 	Animation* LoadAnimation(const wstring& _strKey, const wstring& strRelationPath = L"");

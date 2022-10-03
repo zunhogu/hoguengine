@@ -8,7 +8,6 @@
 #include "AnimationComp.h"
 #include "BoneComp.h"
 #include "ImGuIRenderClass.h"
-#include "ResourcePanel.h"
 #include "ContentBrowserPanel.h"
 #include "Core.h"
 #include "ModelNode.h"

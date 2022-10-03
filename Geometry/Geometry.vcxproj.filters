@@ -104,9 +104,6 @@
     <Filter Include="Scene\Scene_Tool\UI\Panel\Inspector">
       <UniqueIdentifier>{5b6d11e4-fac7-4d37-8eac-621364c72c49}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Scene\Scene_Tool\UI\Panel\Resource">
-      <UniqueIdentifier>{fe84b7b5-e9b1-4458-9762-96efff47de67}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Scene\Scene_Tool\UI\Panel\Scene">
       <UniqueIdentifier>{b04ca1ce-f667-419b-9321-68d341a52e67}</UniqueIdentifier>
     </Filter>
@@ -121,6 +118,9 @@
     </Filter>
     <Filter Include="Resource\Animation">
       <UniqueIdentifier>{40a57221-7a22-4beb-b315-37a0a1b79513}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource\Texture\HeightMapTexture">
+      <UniqueIdentifier>{4d8b4af5-d53b-4d77-9416-58901088783f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -206,9 +206,6 @@
     <ClInclude Include="HierachyPanel.h">
       <Filter>Scene\Scene_Tool\UI\Panel\Hierachy</Filter>
     </ClInclude>
-    <ClInclude Include="ResourcePanel.h">
-      <Filter>Scene\Scene_Tool\UI\Panel\Resource</Filter>
-    </ClInclude>
     <ClInclude Include="ViewPortPanel.h">
       <Filter>Scene\Scene_Tool\UI\Panel\ViewPort</Filter>
     </ClInclude>
@@ -256,6 +253,9 @@
     </ClInclude>
     <ClInclude Include="Animation.h">
       <Filter>Resource\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="HeightMapTexture.h">
+      <Filter>Resource\Texture\HeightMapTexture</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -338,9 +338,6 @@
     <ClCompile Include="HierachyPanel.cpp">
       <Filter>Scene\Scene_Tool\UI\Panel\Hierachy</Filter>
     </ClCompile>
-    <ClCompile Include="ResourcePanel.cpp">
-      <Filter>Scene\Scene_Tool\UI\Panel\Resource</Filter>
-    </ClCompile>
     <ClCompile Include="ViewPortPanel.cpp">
       <Filter>Scene\Scene_Tool\UI\Panel\ViewPort</Filter>
     </ClCompile>
@@ -382,6 +379,9 @@
     </ClCompile>
     <ClCompile Include="Animation.cpp">
       <Filter>Resource\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="HeightMapTexture.cpp">
+      <Filter>Resource\Texture\HeightMapTexture</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

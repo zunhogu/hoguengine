@@ -56,6 +56,14 @@ enum class RESOURCE_TYPE
 	END,
 };
 
+enum class TEXTURE_TYPE
+{
+	DEFAULT,
+	HEIGHTMAP,
+
+	END,
+};
+
 struct VertexType
 {
 	XMFLOAT3 position;

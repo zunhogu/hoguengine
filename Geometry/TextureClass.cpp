@@ -1,8 +1,10 @@
 #include "pch.h"
 #include "TextureClass.h"
+#include "Core.h"
 
 TextureClass::TextureClass()
 {
+	m_device = Core::GetDevice();
 }
 
 TextureClass::~TextureClass()
@@ -10,22 +12,23 @@ TextureClass::~TextureClass()
 }
 
 
-void TextureClass::Initialize(ID3D11Device* device, const wstring& _strFilePath)
+void TextureClass::Initialize(const wstring& _strFilePath)
 {
-	// 텍스처 가져옴
+	// ScratchImge -> ResourceView
+	
 	DirectX::ScratchImage image = LoadTexture(_strFilePath);
 
-	// 로드한 텍스처를 가지고 자원뷰를 만든다. 
-	DirectX::CreateShaderResourceView(device, image.GetImages(), image.GetImageCount(), image.GetMetadata(), &m_Texture);
+	// ResourceView
+	DirectX::CreateShaderResourceView(m_device, image.GetImages(), image.GetImageCount(), image.GetMetadata(), &m_resourceView);
 }
 
 void TextureClass::Shutdown()
 {
-	if (m_Texture)
+	if (m_resourceView)
 	{
-		m_Texture->Release();
-		delete m_Texture;
-		m_Texture = 0;
+		m_resourceView->Release();
+		delete m_resourceView;
+		m_resourceView = 0;
 	}
 }
 

@@ -170,6 +170,7 @@
     <ClInclude Include="CameraClass.h" />
     <ClInclude Include="ContentBrowserPanel.h" />
     <ClInclude Include="define.h" />
+    <ClInclude Include="HeightMapTexture.h" />
     <ClInclude Include="HierachyPanel.h" />
     <ClInclude Include="ImGuIRenderClass.h" />
     <ClInclude Include="InspectorPanel.h" />
@@ -195,7 +196,6 @@
     <ClInclude Include="ModelNode.h" />
     <ClInclude Include="Panel.h" />
     <ClInclude Include="Prefab.h" />
-    <ClInclude Include="ResourcePanel.h" />
     <ClInclude Include="ScenePanel.h" />
     <ClInclude Include="Scene_Final.h" />
     <ClInclude Include="pch.h" />
@@ -217,6 +217,7 @@
     <ClCompile Include="CameraClass.cpp" />
     <ClCompile Include="ContentBrowserPanel.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="HeightMapTexture.cpp" />
     <ClCompile Include="HierachyPanel.cpp" />
     <ClCompile Include="ImGuIRenderClass.cpp" />
     <ClCompile Include="InspectorPanel.cpp" />
@@ -239,7 +240,6 @@
     <ClCompile Include="ModelNode.cpp" />
     <ClCompile Include="Panel.cpp" />
     <ClCompile Include="Prefab.cpp" />
-    <ClCompile Include="ResourcePanel.cpp" />
     <ClCompile Include="ScenePanel.cpp" />
     <ClCompile Include="Scene_Final.cpp" />
     <ClCompile Include="pch.cpp">
