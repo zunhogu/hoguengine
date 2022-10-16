@@ -20,6 +20,12 @@
     <Filter Include="ShaderClass\ModelShader">
       <UniqueIdentifier>{fc4995a5-34de-4087-83c3-f9fdff0aa1eb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ShaderClass\GridShdaer">
+      <UniqueIdentifier>{3a0dc8a9-a934-4793-8bf9-ac2a56d9e337}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShaderClass\SkyDomeShaderClass">
+      <UniqueIdentifier>{88d8ce90-8fe1-4e5f-b3a9-2bdfa03d5f1f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D3DClass.h">
@@ -48,6 +54,12 @@
     <ClInclude Include="ShaderManagerClass.h">
       <Filter>ShaderClass</Filter>
     </ClInclude>
+    <ClInclude Include="GridShader.h">
+      <Filter>ShaderClass\GridShdaer</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyDomeShader.h">
+      <Filter>ShaderClass\SkyDomeShaderClass</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3DClass.cpp">
@@ -71,6 +83,12 @@
     </ClCompile>
     <ClCompile Include="ShaderManagerClass.cpp">
       <Filter>ShaderClass</Filter>
+    </ClCompile>
+    <ClCompile Include="GridShader.cpp">
+      <Filter>ShaderClass\GridShdaer</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyDomeShader.cpp">
+      <Filter>ShaderClass\SkyDomeShaderClass</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

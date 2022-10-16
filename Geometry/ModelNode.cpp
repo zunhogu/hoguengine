@@ -396,15 +396,15 @@ void ModelNode::RenderMesh(MeshComp* meshComp, XMMATRIX worldMatrix, XMMATRIX vi
 				if (material->GetNormalTextureID() != "NONE")
 					normalTexture = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)material->GetNormalTextureID().c_str()));
 
-				GraphicsClass::GetInst()->Render(meshParts[i]->GetIndexCount(), worldMatrix, viewMatirx,
-												cameraPos, lightColor, lightPos,
-												ambientColor, emissiveColor, diffuseColor, specularColor, shiness,
-												ambientTexture->GetTexture(),
-												emissiveTexture->GetTexture(),
-												diffuseTexture->GetTexture(),
-												specularTexture->GetTexture(),
-												normalTexture->GetTexture(),
-												boneScale, boneMatrixArray, skinning);
+				GraphicsClass::GetInst()->RenderModel(meshParts[i]->GetIndexCount(), worldMatrix, viewMatirx,
+													cameraPos, lightColor, lightPos,
+													ambientColor, emissiveColor, diffuseColor, specularColor, shiness,
+													ambientTexture->GetTexture(),
+													emissiveTexture->GetTexture(),
+													diffuseTexture->GetTexture(),
+													specularTexture->GetTexture(),
+													normalTexture->GetTexture(),
+													boneScale, boneMatrixArray, skinning);
 			}
 		}
 	}

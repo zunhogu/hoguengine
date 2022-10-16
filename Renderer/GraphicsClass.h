@@ -49,13 +49,19 @@ public:
 	ID3D11RenderTargetView* const* GetRenderTargetView();
 	ID3D11ShaderResourceView* GetShaderResourceView();
 
+	void TurnZBufferOn();
+	void TurnZBufferOff();
+	
+	void TurnOnCulling();
+	void TurnOffCulling();
+
 	XMMATRIX GetProjectionMatrix();
 	XMMATRIX GetViewMatrix();
 
 	void BeginScene(float, float, float, float);
 	void EndScene();
 
-	bool Render(int indexcount,
+	void RenderModel(int indexcount,
 		XMMATRIX worldMatrix,
 		XMMATRIX veiwMatrix, XMFLOAT3 cameraPos,
 		XMFLOAT4 lightColor, XMFLOAT3 lightPos,
@@ -64,6 +70,8 @@ public:
 		XMMATRIX boneScale, XMMATRIX* boneMatrixArray, UINT skinning
 	);
 
+	void RenderGrid(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix);
+	void RenderSkyDome(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT4 apexColor, XMFLOAT4 centerColor);
 
 	void RenderToTextureStart();
 	void RenderToTextureEnd();

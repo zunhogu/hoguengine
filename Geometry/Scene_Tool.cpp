@@ -26,6 +26,7 @@ Scene_Tool::~Scene_Tool()
 
 bool Scene_Tool::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 {
+	bool result = true;
 
 	m_iScreenWidth = screenWidth;
 	m_iScreenHeight = screenHeight;
@@ -40,9 +41,28 @@ bool Scene_Tool::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	if (!m_Light)
 		return false;
 
+	m_Grid = new GridClass;
+	if (!m_Grid)
+		return false;
+
+	result = m_Grid->Initialize(Core::GetDevice());
+	if (!result)
+	{
+		MessageBox(hwnd, "Could not initialize the Grid in Scene Tool.", "Error", MB_OK);
+		return false;
+	}
+
+	m_SkyDome = new SkyDomeClass;
+	result = m_SkyDome->Initialize(Core::GetDevice());
+	if (!result)
+	{
+		MessageBox(hwnd, "Could not initialize the Sky Dome in Scene Tool.", "Error", MB_OK);
+		return false;
+	}
+
 	m_allNode = new vector<ModelNode*>;
 
-	return true;
+	return result;
 }
 
 void Scene_Tool::Shutdown()
@@ -148,9 +168,29 @@ void Scene_Tool::Render()
 	XMFLOAT3 cameraPos = m_Camera->GetPosition();// 카메라 위치
 
 	GraphicsClass::GetInst()->BeginScene(0.45f, 0.55f, 0.60f, 1.00f);
+
+	// ImGui Rendering
 	ImGuIRenderClass::GetInst()->RenderMain();
 
 	GraphicsClass::GetInst()->RenderToTextureStart();
+
+	// SkyDome Rendering
+	GraphicsClass::GetInst()->TurnOffCulling();
+	GraphicsClass::GetInst()->TurnZBufferOff();
+
+	m_SkyDome->Render(Core::GetDeviceContext());
+	GraphicsClass::GetInst()->RenderSkyDome(Core::GetDeviceContext(), m_Grid->GetIndexCount(), XMMatrixTranslation(cameraPos.x, cameraPos.y, cameraPos.z), m_Camera->GetViewMatrix(), m_SkyDome->GetApexColor(), m_SkyDome->GetCenterColor());
+
+	GraphicsClass::GetInst()->TurnOnCulling();
+	GraphicsClass::GetInst()->TurnZBufferOn();
+
+	// Grid Rendering
+	m_Grid->Render(Core::GetDeviceContext());
+
+	GraphicsClass::GetInst()->RenderGrid(Core::GetDeviceContext(), m_Grid->GetIndexCount(), m_Grid->GetWorldMatrix(), m_Camera->GetViewMatrix());
+
+
+	// Model Rendering
 
 	for (int i = 0; i < m_allNode->size(); ++i)
 	{

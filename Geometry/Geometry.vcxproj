@@ -170,6 +170,7 @@
     <ClInclude Include="CameraClass.h" />
     <ClInclude Include="ContentBrowserPanel.h" />
     <ClInclude Include="define.h" />
+    <ClInclude Include="GridClass.h" />
     <ClInclude Include="HeightMapTexture.h" />
     <ClInclude Include="HierachyPanel.h" />
     <ClInclude Include="ImGuIRenderClass.h" />
@@ -205,6 +206,7 @@
     <ClInclude Include="SceneMgrClass.h" />
     <ClInclude Include="Scene_Start.h" />
     <ClInclude Include="Scene_Tool.h" />
+    <ClInclude Include="SkyDomeClass.h" />
     <ClInclude Include="SoundClass.h" />
     <ClInclude Include="TextureClass.h" />
     <ClInclude Include="TimeMgrClass.h" />
@@ -217,6 +219,7 @@
     <ClCompile Include="CameraClass.cpp" />
     <ClCompile Include="ContentBrowserPanel.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="GridClass.cpp" />
     <ClCompile Include="HeightMapTexture.cpp" />
     <ClCompile Include="HierachyPanel.cpp" />
     <ClCompile Include="ImGuIRenderClass.cpp" />
@@ -254,6 +257,7 @@
     <ClCompile Include="SceneMgrClass.cpp" />
     <ClCompile Include="Scene_Start.cpp" />
     <ClCompile Include="Scene_Tool.cpp" />
+    <ClCompile Include="SkyDomeClass.cpp" />
     <ClCompile Include="SoundClass.cpp" />
     <ClCompile Include="TextureClass.cpp" />
     <ClCompile Include="TimeMgrClass.cpp" />

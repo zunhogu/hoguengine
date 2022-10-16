@@ -11,6 +11,8 @@ private:
 		XMFLOAT3 position;
 		XMFLOAT4 color;
 	};
+
+	XMMATRIX worldMatrix;
 public:
 	GridClass();
 	GridClass(const GridClass&);
@@ -20,6 +22,8 @@ public:
 	void Shutdown();
 	void Render(ID3D11DeviceContext* deviceContext);
 
+	int GetIndexCount();
+	XMMATRIX GetWorldMatrix();
 private:
 	bool InitializeBuffers(ID3D11Device*);
 	void ShutdownBuffers();

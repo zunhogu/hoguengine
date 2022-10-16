@@ -4,6 +4,8 @@
 #include "ShaderClass.h"
 
 class ModelShader;
+class GridShader;
+class SkyDomeShader;
 
 class ShaderManagerClass
 {
@@ -11,6 +13,8 @@ class ShaderManagerClass
 	HWND m_hwnd;
 
 	ModelShader* m_modelShader;
+	GridShader* m_gridShader;
+	SkyDomeShader* m_skyDomeShader;
 
 public:
 	ShaderManagerClass();
@@ -28,5 +32,9 @@ public:
 						   ID3D11ShaderResourceView* diffuseTexture, ID3D11ShaderResourceView* specularTexture, ID3D11ShaderResourceView* normalTexture,
 						   XMMATRIX boneScale, XMMATRIX* boneMatrixArray, UINT skinning
 						   );
+
+	void RenderGridShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix);
+
+	void RenderSkyDomeShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 apexColor, XMFLOAT4 centerColor);
 };
 

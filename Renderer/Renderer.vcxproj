@@ -162,17 +162,20 @@
     <ClInclude Include="define.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GraphicsClass.h" />
+    <ClInclude Include="GridShader.h" />
     <ClInclude Include="ModelShader.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="RenderTextureClass.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ShaderClass.h" />
     <ClInclude Include="ShaderManagerClass.h" />
+    <ClInclude Include="SkyDomeShader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3DClass.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="GraphicsClass.cpp" />
+    <ClCompile Include="GridShader.cpp" />
     <ClCompile Include="ModelShader.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -183,6 +186,7 @@
     <ClCompile Include="RenderTextureClass.cpp" />
     <ClCompile Include="ShaderClass.cpp" />
     <ClCompile Include="ShaderManagerClass.cpp" />
+    <ClCompile Include="SkyDomeShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Renderer.rc" />

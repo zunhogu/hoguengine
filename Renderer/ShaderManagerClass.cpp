@@ -1,12 +1,16 @@
 #include "pch.h"
 #include "ShaderManagerClass.h"
 #include "ModelShader.h"
+#include "GridShader.h"
+#include "SkyDomeShader.h"
 
 ShaderManagerClass::ShaderManagerClass()
 {
 	m_D3D = 0;
 
 	m_modelShader = 0;
+	m_gridShader = 0;
+	m_skyDomeShader = 0;
 }
 
 ShaderManagerClass::ShaderManagerClass(const ShaderManagerClass&)
@@ -28,6 +32,19 @@ bool ShaderManagerClass::Initialize(D3DClass* d3d, HWND hwnd)
 
 	m_modelShader->Initialize(m_D3D->GetDevice(), m_hwnd);
 
+	m_gridShader = new GridShader;
+	if (!m_gridShader)
+		return false;
+
+	m_gridShader->Initialize(m_D3D->GetDevice(), m_hwnd);
+
+
+	m_skyDomeShader = new SkyDomeShader;
+	if (!m_skyDomeShader)
+		return false;
+
+	m_skyDomeShader->Initialize(m_D3D->GetDevice(), m_hwnd);
+
 	return true;
 }
 
@@ -44,5 +61,15 @@ void ShaderManagerClass::Shutdown()
 void ShaderManagerClass::RenderModelShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT3 cameraPos, XMFLOAT4 lightColor, XMFLOAT3 lightPos, XMFLOAT4 ambientColor, XMFLOAT4 emmisiveColor, XMFLOAT4 diffuseColor, XMFLOAT4 specularColor, FLOAT shinness, ID3D11ShaderResourceView* ambientTexture, ID3D11ShaderResourceView* emmisiveTexture, ID3D11ShaderResourceView* diffuseTexture, ID3D11ShaderResourceView* specularTexture, ID3D11ShaderResourceView* normalTexture, XMMATRIX boneScale, XMMATRIX* boneMatrixArray, UINT skinning)
 {
 	m_modelShader->Render(m_D3D->GetDeviceContext(), indexCount, worldMatrix, viewMatrix, projectionMatrix, cameraPos, lightColor, lightPos, ambientColor, emmisiveColor, diffuseColor, specularColor, shinness, ambientTexture, emmisiveTexture, diffuseTexture, specularTexture, normalTexture, boneScale, boneMatrixArray, skinning);
+}
+
+void ShaderManagerClass::RenderGridShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix)
+{
+	m_gridShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix);
+}
+
+void ShaderManagerClass::RenderSkyDomeShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 apexColor, XMFLOAT4 centerColor)
+{
+	m_skyDomeShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, apexColor, centerColor);
 }
 

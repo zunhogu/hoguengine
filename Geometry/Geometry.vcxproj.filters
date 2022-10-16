@@ -8,9 +8,6 @@
     <Filter Include="Core">
       <UniqueIdentifier>{924a5241-255d-43c8-91e6-55f78d845b95}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Object">
-      <UniqueIdentifier>{db6a3541-22d6-4ca4-b73b-1f1fa48ca0c1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header">
       <UniqueIdentifier>{65aeb198-3430-422b-a4f0-a937f9a274ea}</UniqueIdentifier>
     </Filter>
@@ -46,12 +43,6 @@
     </Filter>
     <Filter Include="Scene\Scene_Start">
       <UniqueIdentifier>{28c35781-6bd2-4ce3-9a75-478a1925ecec}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Object\Camera">
-      <UniqueIdentifier>{ab7d8ed6-f243-493d-9654-dc2f7b5616b2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Object\Light">
-      <UniqueIdentifier>{a656886b-2e0f-482b-a025-1e4473829fab}</UniqueIdentifier>
     </Filter>
     <Filter Include="Scene\Scene_Final">
       <UniqueIdentifier>{2fd252d2-b583-495d-b354-38f04bea8195}</UniqueIdentifier>
@@ -122,6 +113,21 @@
     <Filter Include="Resource\Texture\HeightMapTexture">
       <UniqueIdentifier>{4d8b4af5-d53b-4d77-9416-58901088783f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scene\Scene_Tool\Object">
+      <UniqueIdentifier>{db6a3541-22d6-4ca4-b73b-1f1fa48ca0c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\Scene_Tool\Object\Camera">
+      <UniqueIdentifier>{ab7d8ed6-f243-493d-9654-dc2f7b5616b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\Scene_Tool\Object\Light">
+      <UniqueIdentifier>{a656886b-2e0f-482b-a025-1e4473829fab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\Scene_Tool\Object\Grid">
+      <UniqueIdentifier>{e3d79645-7609-4fa9-b87b-4583c4caf9c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene\Scene_Tool\Object\SkyDome">
+      <UniqueIdentifier>{0e899905-196e-4f2b-8169-b323f9b026e8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="define.h">
@@ -165,10 +171,10 @@
       <Filter>Scene\Scene_Start</Filter>
     </ClInclude>
     <ClInclude Include="CameraClass.h">
-      <Filter>Object\Camera</Filter>
+      <Filter>Scene\Scene_Tool\Object\Camera</Filter>
     </ClInclude>
     <ClInclude Include="LightClass.h">
-      <Filter>Object\Light</Filter>
+      <Filter>Scene\Scene_Tool\Object\Light</Filter>
     </ClInclude>
     <ClInclude Include="Scene_Final.h">
       <Filter>Scene\Scene_Final</Filter>
@@ -257,6 +263,12 @@
     <ClInclude Include="HeightMapTexture.h">
       <Filter>Resource\Texture\HeightMapTexture</Filter>
     </ClInclude>
+    <ClInclude Include="GridClass.h">
+      <Filter>Scene\Scene_Tool\Object\Grid</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyDomeClass.h">
+      <Filter>Scene\Scene_Tool\Object\SkyDome</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core.cpp">
@@ -297,10 +309,10 @@
       <Filter>Scene\Scene_Start</Filter>
     </ClCompile>
     <ClCompile Include="CameraClass.cpp">
-      <Filter>Object\Camera</Filter>
+      <Filter>Scene\Scene_Tool\Object\Camera</Filter>
     </ClCompile>
     <ClCompile Include="LightClass.cpp">
-      <Filter>Object\Light</Filter>
+      <Filter>Scene\Scene_Tool\Object\Light</Filter>
     </ClCompile>
     <ClCompile Include="Scene_Final.cpp">
       <Filter>Scene\Scene_Final</Filter>
@@ -382,6 +394,12 @@
     </ClCompile>
     <ClCompile Include="HeightMapTexture.cpp">
       <Filter>Resource\Texture\HeightMapTexture</Filter>
+    </ClCompile>
+    <ClCompile Include="GridClass.cpp">
+      <Filter>Scene\Scene_Tool\Object\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyDomeClass.cpp">
+      <Filter>Scene\Scene_Tool\Object\SkyDome</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

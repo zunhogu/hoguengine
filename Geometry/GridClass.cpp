@@ -24,6 +24,8 @@ bool GridClass::Initialize(ID3D11Device* device)
 	m_terrainWidth = 100;
 	m_terrainHeight = 100;
 
+	worldMatrix = XMMatrixTranslation(-m_terrainWidth/2, 0.0f , -m_terrainHeight/2);
+
 	// Initialize the vertex and index buffer that hold the geometry for the terrain.
 	result = InitializeBuffers(device);
 	if (!result)
@@ -46,6 +48,16 @@ void GridClass::Render(ID3D11DeviceContext* deviceContext)
 	RenderBuffers(deviceContext);
 }
 
+int GridClass::GetIndexCount()
+{
+	return m_indexCount;
+}
+
+XMMATRIX GridClass::GetWorldMatrix()
+{
+	return worldMatrix;
+}
+
 bool GridClass::InitializeBuffers(ID3D11Device* device)
 {
 	VertexType* vertices;
@@ -58,7 +70,7 @@ bool GridClass::InitializeBuffers(ID3D11Device* device)
 
 
 	// Calculate the number of vertices in the terrain mesh.
-	m_vertexCount = (m_terrainWidth - 1) * (m_terrainHeight - 1) * 6;
+	m_vertexCount = (m_terrainWidth - 1) * (m_terrainHeight - 1) * 12;
 
 	// Set the index count to the same as the vertex count.
 	m_indexCount = m_vertexCount;
@@ -247,7 +259,7 @@ void GridClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 	deviceContext->IASetIndexBuffer(m_indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
 	// Set the type of primitive that should be rendered from this vertex buffer, in this case a line list.
-	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 
 	return;
 }

@@ -100,6 +100,26 @@ ID3D11ShaderResourceView* GraphicsClass::GetShaderResourceView()
 	return m_RenderTexture->GetShaderResourceView();
 }
 
+void GraphicsClass::TurnZBufferOn()
+{
+	m_D3D->TurnZBufferOn();
+}
+
+void GraphicsClass::TurnZBufferOff()
+{
+	m_D3D->TurnZBufferOff();
+}
+
+void GraphicsClass::TurnOnCulling()
+{
+	m_D3D->TurnOnCulling();
+}
+
+void GraphicsClass::TurnOffCulling()
+{
+	m_D3D->TurnOffCulling();
+}
+
 XMMATRIX GraphicsClass::GetProjectionMatrix() {
 	XMMATRIX projectionMatrix;
 	projectionMatrix = m_D3D->GetProjectionMatrix();
@@ -141,15 +161,29 @@ void GraphicsClass::RenderToTextureEnd()
 	m_D3D->ResetViewport();
 }
 
-bool GraphicsClass::Render(int indexcount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT3 cameraPos, XMFLOAT4 lightColor, XMFLOAT3 lightPos, XMFLOAT4 ambientColor, XMFLOAT4 emmisvieColor, XMFLOAT4 diffuseColor, XMFLOAT4 specularColor, float shinnes, ID3D11ShaderResourceView* ambientTexture, ID3D11ShaderResourceView* emmisiveTexture, ID3D11ShaderResourceView* diffuseTexture, ID3D11ShaderResourceView* specularTexture, ID3D11ShaderResourceView* normalTexture, XMMATRIX boneScale, XMMATRIX* boneMatrixArray, UINT skinning)
+void GraphicsClass::RenderModel(int indexcount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT3 cameraPos, XMFLOAT4 lightColor, XMFLOAT3 lightPos, XMFLOAT4 ambientColor, XMFLOAT4 emmisvieColor, XMFLOAT4 diffuseColor, XMFLOAT4 specularColor, float shinnes, ID3D11ShaderResourceView* ambientTexture, ID3D11ShaderResourceView* emmisiveTexture, ID3D11ShaderResourceView* diffuseTexture, ID3D11ShaderResourceView* specularTexture, ID3D11ShaderResourceView* normalTexture, XMMATRIX boneScale, XMMATRIX* boneMatrixArray, UINT skinning)
 {
-	bool result;
 	XMMATRIX projectionMatrix;
-
 	projectionMatrix = m_D3D->GetProjectionMatrix();
 	m_D3D->SetViewMatrix(viewMatrix);
 
 	m_shaderMgr->RenderModelShader(m_D3D->GetDeviceContext(), indexcount, worldMatrix, viewMatrix, projectionMatrix, cameraPos, lightColor, lightPos, ambientColor, emmisvieColor, diffuseColor, specularColor, shinnes, ambientTexture, emmisiveTexture, diffuseTexture, specularTexture, normalTexture, boneScale, boneMatrixArray, skinning);
+}
 
-	return true;
+void GraphicsClass::RenderGrid(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix)
+{
+	XMMATRIX projectionMatrix;
+	projectionMatrix = m_D3D->GetProjectionMatrix();
+	m_D3D->SetViewMatrix(viewMatrix);
+
+	m_shaderMgr->RenderGridShader(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix);
+}
+
+void GraphicsClass::RenderSkyDome(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT4 apexColor, XMFLOAT4 centerColor)
+{
+	XMMATRIX projectionMatrix;
+	projectionMatrix = m_D3D->GetProjectionMatrix();
+	m_D3D->SetViewMatrix(viewMatrix);
+
+	m_shaderMgr->RenderSkyDomeShader(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, apexColor, centerColor);
 }

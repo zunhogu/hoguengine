@@ -40,6 +40,7 @@ private:
 	ID3D11DepthStencilView* m_depthStencilView;  // 깊이-스텐실 뷰 
 
 	ID3D11RasterizerState* m_rasterState; // 레스터화기 변수
+	ID3D11RasterizerState* m_rasterStateNoCulling; // 레스터화기 변수2
 
 	XMMATRIX m_worldMatrix;   // 월드 투영공간 행렬
 	XMMATRIX m_viewMatrix;  // 뷰 행렬 
@@ -85,6 +86,10 @@ public:
 	// 이는 글자의 배경색이 투명색으로 변경된다.
 	void TurnOnAlphaBlending();
 	void TurnOffAlphaBlending();
+
+	// 후면 컬링 on/off
+	void TurnOnCulling();
+	void TurnOffCulling();
 
 	ID3D11RenderTargetView* const* GetRenderTargetView();
 	ID3D11DepthStencilView* GetDepthStencilView();

@@ -11,6 +11,7 @@ D3DClass::D3DClass() {
 	m_depthStencilState = 0;
 	m_depthStencilView = 0;
 	m_rasterState = 0;
+	m_rasterStateNoCulling = 0;
 	m_depthDisabledStencilState = 0;
 	m_alphaEnableBlendingState = 0;
 	m_alphaDisableBlendingState = 0;
@@ -477,6 +478,25 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 		return false;
 	}
 
+	// 후면컬링을 끈 상태에대한 레스터화기 상태를 기술한다.
+	rasterDesc.AntialiasedLineEnable = false;
+	rasterDesc.CullMode = D3D11_CULL_NONE;
+	rasterDesc.DepthBias = 0;
+	rasterDesc.DepthBiasClamp = 0.0f;
+	rasterDesc.DepthClipEnable = true;
+	rasterDesc.FillMode = D3D11_FILL_SOLID;
+	rasterDesc.FrontCounterClockwise = false;
+	rasterDesc.MultisampleEnable = false;
+	rasterDesc.ScissorEnable = false;
+	rasterDesc.SlopeScaledDepthBias = 0.0f;
+
+	// 후면컬링 off 레스터화기 상태 생성
+	result = m_device->CreateRasterizerState(&rasterDesc, &m_rasterStateNoCulling);
+	if (FAILED(result))
+	{
+		return false;
+	}
+
 	// 래스터화기 상태를 설정합니다.
 	m_deviceContext->RSSetState(m_rasterState);
 	/////////////////////////////////////////////////////////////////////////////////////
@@ -711,6 +731,18 @@ void D3DClass::TurnOffAlphaBlending() {
 	m_deviceContext->OMSetBlendState(m_alphaDisableBlendingState, blendFactor, 0xffffffff);
 
 	return;
+}
+
+void D3DClass::TurnOnCulling()
+{
+	// Set the culling rasterizer state.
+	m_deviceContext->RSSetState(m_rasterState);
+}
+
+void D3DClass::TurnOffCulling()
+{
+	// Set the no back face culling rasterizer state.
+	m_deviceContext->RSSetState(m_rasterStateNoCulling);
 }
 
 ID3D11RenderTargetView* const* D3DClass::GetRenderTargetView() {
