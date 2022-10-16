@@ -56,6 +56,9 @@ FileSystem.dll : 로컬 영역에 존재하는 파일을 Store / Load 등의 기
   
 
 ## 시연 영상
+![20221016_애니메이션](https://user-images.githubusercontent.com/97880907/196042037-8d3d6ead-131c-4832-8ec7-988205129b36.gif)
+![20221016_편집](https://user-images.githubusercontent.com/97880907/196042041-8ebd2c20-6d01-43e7-8d7e-f4a8347f1fdd.gif)
+
 
 ## 업데이트 내역
 - 2022.09.27 : Create Repository
