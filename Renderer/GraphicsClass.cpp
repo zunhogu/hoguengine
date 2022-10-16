@@ -4,6 +4,7 @@
 // functions in Class
 GraphicsClass::GraphicsClass() {
 	m_D3D = 0;
+	m_shaderMgr = 0;
 }
 
 GraphicsClass::GraphicsClass(const GraphicsClass& other) {}
@@ -26,6 +27,17 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd) {
 		return false;
 	}
 
+	m_shaderMgr = new ShaderManagerClass;
+	if (!m_shaderMgr)
+		return false;
+
+	result = m_shaderMgr->Initialize(m_D3D, hwnd);
+	if(!result) 
+	{
+		MessageBox(hwnd, "Could not initialize ShaderManagerClass", "Error", MB_OK);
+		return false;
+	}
+
 	// RTT °´Ã¼ »ý¼º 
 	m_RenderTexture = new RenderTextureClass;
 	if (!m_RenderTexture) {
@@ -38,14 +50,6 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd) {
 		return false;
 	}
 
-	m_modelShader = new ModelShader;
-	if (!m_modelShader) {
-		return false;
-	}
-
-	// NormalShaderClass °´Ã¼ ÃÊ±âÈ­
-	m_modelShader->Initialize(m_D3D->GetDevice(), hwnd);
-
 	return true;
 }
 
@@ -55,6 +59,13 @@ void GraphicsClass::Shutdown() {
 		m_RenderTexture->Shutdown();
 		delete m_RenderTexture;
 		m_RenderTexture = 0;
+	}
+
+	if (m_shaderMgr)
+	{
+		m_shaderMgr->Shutdown();
+		delete m_shaderMgr;
+		m_shaderMgr = 0;
 	}
 
 	// Direct3D °´Ã¼ ¹ÝÈ¯
@@ -138,7 +149,7 @@ bool GraphicsClass::Render(int indexcount, XMMATRIX worldMatrix, XMMATRIX viewMa
 	projectionMatrix = m_D3D->GetProjectionMatrix();
 	m_D3D->SetViewMatrix(viewMatrix);
 
-	m_modelShader->Render(m_D3D->GetDeviceContext(), indexcount, worldMatrix, viewMatrix, projectionMatrix, cameraPos, lightColor, lightPos, ambientColor, emmisvieColor, diffuseColor, specularColor, shinnes, ambientTexture, emmisiveTexture, diffuseTexture, specularTexture, normalTexture, boneScale, boneMatrixArray, skinning);
+	m_shaderMgr->RenderModelShader(m_D3D->GetDeviceContext(), indexcount, worldMatrix, viewMatrix, projectionMatrix, cameraPos, lightColor, lightPos, ambientColor, emmisvieColor, diffuseColor, specularColor, shinnes, ambientTexture, emmisiveTexture, diffuseTexture, specularTexture, normalTexture, boneScale, boneMatrixArray, skinning);
 
 	return true;
 }

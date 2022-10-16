@@ -13,7 +13,8 @@ ShaderClass::ShaderClass() {
 ShaderClass::ShaderClass(const ShaderClass& other) {}
 
 
-ShaderClass::~ShaderClass() {
+ShaderClass::~ShaderClass()
+{
 	if (m_matrixBuffer) {
 		m_matrixBuffer->Release();
 		m_matrixBuffer = 0;
@@ -40,6 +41,10 @@ ShaderClass::~ShaderClass() {
 		m_sampleState->Release();
 		m_sampleState = 0;
 	}
+}
+
+void ShaderClass::Shutdown()
+{
 }
 
 //OutputShaderErrorMessage 함수에서는 정점 / 픽셀 셰이더의 컴파일 도중 오류로 인해 만들어진 에러 메세지를 출력하는 일을 한다.

@@ -13,6 +13,7 @@
 #include "D3DClass.h"
 #include "RenderTextureClass.h"
 #include "ModelShader.h"
+#include "ShaderManagerClass.h"
 
 //Graphics는 SystemClass가 생성하는 또 다른 객체로 이 어플리케이션의 모든 그래픽 기능이 이 객체 안에 캡슐화 되어있다.
 //헤더에 풀스크린 모드와 같은 그래픽과 관련된 전역변수 선언을 하였다.
@@ -30,7 +31,8 @@ private:
 	//D3DClass를 참조하는 포인터를 선언한다.
 	D3DClass* m_D3D;
 	RenderTextureClass* m_RenderTexture;
-	ModelShader* m_modelShader;
+
+	ShaderManagerClass* m_shaderMgr;
 
 public:
 

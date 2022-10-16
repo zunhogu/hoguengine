@@ -77,7 +77,7 @@ void Scene_Tool::Frame()
 
 		ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), L"heightmap", L"contents\\texture\\heightmap.png", TEXTURE_TYPE::HEIGHTMAP);
 
-		//Prefab* dino = ResMgrClass::GetInst()->LoadPrefab(L"Ankylosaurus.pref", L"contents\\assets\\Ankylosaurus\\Ankylosaurus.pref");
+	//Prefab* dino = ResMgrClass::GetInst()->LoadPrefab(L"Ankylosaurus.pref", L"contents\\assets\\Ankylosaurus\\Ankylosaurus.pref");
 		//ModelNode* node = new ModelNode(*dino->GetModelNode());
 		//AddNodeToScene(node);
 

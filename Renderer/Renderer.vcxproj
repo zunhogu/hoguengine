@@ -167,6 +167,7 @@
     <ClInclude Include="RenderTextureClass.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ShaderClass.h" />
+    <ClInclude Include="ShaderManagerClass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3DClass.cpp" />
@@ -181,6 +182,7 @@
     </ClCompile>
     <ClCompile Include="RenderTextureClass.cpp" />
     <ClCompile Include="ShaderClass.cpp" />
+    <ClCompile Include="ShaderManagerClass.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Renderer.rc" />

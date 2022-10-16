@@ -48,7 +48,7 @@ public:
 	~ModelShader();
 
 	void Initialize(ID3D11Device* device, HWND hwnd);
-	void Shutdown();
+	virtual void Shutdown();
 
 	void InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilename, WCHAR* psFilename);
 	void ShutdownShader();

@@ -31,6 +31,8 @@ public:
 	ShaderClass(const ShaderClass&);
 	virtual ~ShaderClass();
 
+	virtual void Shutdown();
+
 protected:
 	void OutputShaderErrorMessage(ID3D10Blob*, HWND, WCHAR*);
 };

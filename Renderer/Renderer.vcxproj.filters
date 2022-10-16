@@ -45,6 +45,9 @@
     <ClInclude Include="RenderTextureClass.h">
       <Filter>Render</Filter>
     </ClInclude>
+    <ClInclude Include="ShaderManagerClass.h">
+      <Filter>ShaderClass</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3DClass.cpp">
@@ -65,6 +68,9 @@
     </ClCompile>
     <ClCompile Include="RenderTextureClass.cpp">
       <Filter>Render</Filter>
+    </ClCompile>
+    <ClCompile Include="ShaderManagerClass.cpp">
+      <Filter>ShaderClass</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
