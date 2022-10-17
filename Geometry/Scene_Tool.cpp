@@ -97,7 +97,7 @@ void Scene_Tool::Frame()
 
 		ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), L"heightmap", L"contents\\texture\\heightmap.png", TEXTURE_TYPE::HEIGHTMAP);
 
-	//Prefab* dino = ResMgrClass::GetInst()->LoadPrefab(L"Ankylosaurus.pref", L"contents\\assets\\Ankylosaurus\\Ankylosaurus.pref");
+		//Prefab* dino = ResMgrClass::GetInst()->LoadPrefab(L"Ankylosaurus.pref", L"contents\\assets\\Ankylosaurus\\Ankylosaurus.pref");
 		//ModelNode* node = new ModelNode(*dino->GetModelNode());
 		//AddNodeToScene(node);
 
@@ -179,15 +179,15 @@ void Scene_Tool::Render()
 	GraphicsClass::GetInst()->TurnZBufferOff();
 
 	m_SkyDome->Render(Core::GetDeviceContext());
-	GraphicsClass::GetInst()->RenderSkyDome(Core::GetDeviceContext(), m_Grid->GetIndexCount(), XMMatrixTranslation(cameraPos.x, cameraPos.y, cameraPos.z), m_Camera->GetViewMatrix(), m_SkyDome->GetApexColor(), m_SkyDome->GetCenterColor());
+	GraphicsClass::GetInst()->RenderSkyDome(Core::GetDeviceContext(), m_SkyDome->GetIndexCount(), XMMatrixTranslation(cameraPos.x, cameraPos.y, cameraPos.z), m_Camera->GetViewMatrix(), m_SkyDome->GetApexColor(), m_SkyDome->GetCenterColor());
 
 	GraphicsClass::GetInst()->TurnOnCulling();
 	GraphicsClass::GetInst()->TurnZBufferOn();
 
 	// Grid Rendering
-	m_Grid->Render(Core::GetDeviceContext());
+	//m_Grid->Render(Core::GetDeviceContext());
 
-	GraphicsClass::GetInst()->RenderGrid(Core::GetDeviceContext(), m_Grid->GetIndexCount(), m_Grid->GetWorldMatrix(), m_Camera->GetViewMatrix());
+	//GraphicsClass::GetInst()->RenderGrid(Core::GetDeviceContext(), m_Grid->GetIndexCount(), m_Grid->GetWorldMatrix(), m_Camera->GetViewMatrix());
 
 
 	// Model Rendering

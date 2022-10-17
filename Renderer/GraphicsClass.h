@@ -70,7 +70,8 @@ public:
 		XMMATRIX boneScale, XMMATRIX* boneMatrixArray, UINT skinning
 	);
 
-	void RenderGrid(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix);
+	void RenderGridShaderSetParam(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix);
+	void RenderGirdShader(ID3D11DeviceContext* deviceContext, int indexCount);
 	void RenderSkyDome(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT4 apexColor, XMFLOAT4 centerColor);
 
 	void RenderToTextureStart();

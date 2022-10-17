@@ -269,6 +269,9 @@
     <ClInclude Include="SkyDomeClass.h">
       <Filter>Scene\Scene_Tool\Object\SkyDome</Filter>
     </ClInclude>
+    <ClInclude Include="GridQuadTreeClass.h">
+      <Filter>Scene\Scene_Tool\Object\Grid</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core.cpp">
@@ -400,6 +403,9 @@
     </ClCompile>
     <ClCompile Include="SkyDomeClass.cpp">
       <Filter>Scene\Scene_Tool\Object\SkyDome</Filter>
+    </ClCompile>
+    <ClCompile Include="GridQuadTreeClass.cpp">
+      <Filter>Scene\Scene_Tool\Object\Grid</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

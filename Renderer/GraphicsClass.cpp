@@ -170,13 +170,18 @@ void GraphicsClass::RenderModel(int indexcount, XMMATRIX worldMatrix, XMMATRIX v
 	m_shaderMgr->RenderModelShader(m_D3D->GetDeviceContext(), indexcount, worldMatrix, viewMatrix, projectionMatrix, cameraPos, lightColor, lightPos, ambientColor, emmisvieColor, diffuseColor, specularColor, shinnes, ambientTexture, emmisiveTexture, diffuseTexture, specularTexture, normalTexture, boneScale, boneMatrixArray, skinning);
 }
 
-void GraphicsClass::RenderGrid(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix)
+void GraphicsClass::RenderGridShaderSetParam(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix)
 {
 	XMMATRIX projectionMatrix;
 	projectionMatrix = m_D3D->GetProjectionMatrix();
 	m_D3D->SetViewMatrix(viewMatrix);
 
-	m_shaderMgr->RenderGridShader(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix);
+	m_shaderMgr->RenderGridShaderSetParam(deviceContext, worldMatrix, viewMatrix, projectionMatrix);
+}
+
+void GraphicsClass::RenderGirdShader(ID3D11DeviceContext* deviceContext, int indexCount)
+{
+	m_shaderMgr->RenderGridShader(deviceContext, indexCount);
 }
 
 void GraphicsClass::RenderSkyDome(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT4 apexColor, XMFLOAT4 centerColor)

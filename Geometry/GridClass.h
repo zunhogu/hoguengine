@@ -13,6 +13,10 @@ private:
 	};
 
 	XMMATRIX worldMatrix;
+
+	int m_terrainWidth, m_terrainHeight;
+	int m_vertexCount;
+	VertexType* m_vertices;
 public:
 	GridClass();
 	GridClass(const GridClass&);
@@ -20,17 +24,13 @@ public:
 
 	bool Initialize(ID3D11Device* device);
 	void Shutdown();
-	void Render(ID3D11DeviceContext* deviceContext);
 
-	int GetIndexCount();
+	int GetVertexCount();
 	XMMATRIX GetWorldMatrix();
-private:
-	bool InitializeBuffers(ID3D11Device*);
-	void ShutdownBuffers();
-	void RenderBuffers(ID3D11DeviceContext*);
+	void CopyVertexArray(void* vertexList);
 
-	int m_terrainWidth, m_terrainHeight;
-	int m_vertexCount, m_indexCount;
-	ID3D11Buffer* m_vertexBuffer, * m_indexBuffer;
+private:
+	bool InitializeBuffers(ID3D11Device* device);
+	void ShutdownBuffers();
 };
 
