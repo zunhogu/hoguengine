@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "GridQuadTreeClass.h"
+#include "Core.h"
 
 GridQuadTreeClass::GridQuadTreeClass()
 {
@@ -226,22 +227,19 @@ void GridQuadTreeClass::CreateTreeNode(NodeType* node, float positionX, float po
 
 			// Get the three vertices of this triangle from the vertex list.
 			vertices[index].position = m_vertexList[vertexIndex].position;
-			vertices[index].texture = m_vertexList[vertexIndex].texture;
-			vertices[index].normal = m_vertexList[vertexIndex].normal;
+			vertices[index].color = m_vertexList[vertexIndex].color;
 			indices[index] = index;
 			index++;
 
 			vertexIndex++;
 			vertices[index].position = m_vertexList[vertexIndex].position;
-			vertices[index].texture = m_vertexList[vertexIndex].texture;
-			vertices[index].normal = m_vertexList[vertexIndex].normal;
+			vertices[index].color = m_vertexList[vertexIndex].color;
 			indices[index] = index;
 			index++;
 
 			vertexIndex++;
 			vertices[index].position = m_vertexList[vertexIndex].position;
-			vertices[index].texture = m_vertexList[vertexIndex].texture;
-			vertices[index].normal = m_vertexList[vertexIndex].normal;
+			vertices[index].color = m_vertexList[vertexIndex].color;
 			indices[index] = index;
 			index++;
 		}
@@ -448,7 +446,7 @@ void GridQuadTreeClass::RenderNode(NodeType* node, ID3D11DeviceContext* deviceCo
 	deviceContext->IASetIndexBuffer(node->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
 	// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
-	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 
 	// Determine the number of indices in this node.
 	indexCount = node->triangleCount * 3;

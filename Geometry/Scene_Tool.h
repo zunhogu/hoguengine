@@ -4,6 +4,7 @@
 #include "CameraClass.h"
 #include "LightClass.h"
 #include "GridClass.h"
+#include "GridQuadTreeClass.h"
 #include "SkyDomeClass.h"
 #include "ModelComp.h"
 #include "TransformComp.h"
@@ -24,6 +25,8 @@ private:
 	CameraClass* m_Camera;
 	LightClass* m_Light;
 	GridClass* m_Grid;
+	GridQuadTreeClass* m_GridQuadTree;
+	
 	SkyDomeClass* m_SkyDome;
 
 	// 뷰포트 상에서 카메라 이동을 위한 멤버변수들

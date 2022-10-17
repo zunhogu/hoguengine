@@ -52,6 +52,17 @@ bool Scene_Tool::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
+	m_GridQuadTree = new GridQuadTreeClass;
+	if (!m_GridQuadTree)
+		return false;
+
+	result = m_GridQuadTree->Initialize(m_Grid, Core::GetDevice());
+	if (!result)
+	{
+		MessageBox(hwnd, "Could not initialize the Grid Quad Tree in Scene Tool.", "Error", MB_OK);
+		return false;
+	}
+
 	m_SkyDome = new SkyDomeClass;
 	result = m_SkyDome->Initialize(Core::GetDevice());
 	if (!result)
@@ -67,6 +78,20 @@ bool Scene_Tool::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 void Scene_Tool::Shutdown()
 {
+	if (m_GridQuadTree)
+	{
+		m_GridQuadTree->Shutdown();
+		delete m_GridQuadTree;
+		m_GridQuadTree = 0;
+	}
+
+	if (m_Grid)
+	{
+		m_Grid->Shutdown();
+		delete m_Grid;
+		m_Grid = 0;
+	}
+
 	if (m_Light)
 	{
 		delete m_Light;
@@ -185,10 +210,10 @@ void Scene_Tool::Render()
 	GraphicsClass::GetInst()->TurnZBufferOn();
 
 	// Grid Rendering
-	//m_Grid->Render(Core::GetDeviceContext());
 
-	//GraphicsClass::GetInst()->RenderGrid(Core::GetDeviceContext(), m_Grid->GetIndexCount(), m_Grid->GetWorldMatrix(), m_Camera->GetViewMatrix());
+	GraphicsClass::GetInst()->RenderGridShaderSetParam(Core::GetDeviceContext(), m_Grid->GetWorldMatrix(), m_Camera->GetViewMatrix());
 
+	m_GridQuadTree->Render(Core::GetDeviceContext());
 
 	// Model Rendering
 

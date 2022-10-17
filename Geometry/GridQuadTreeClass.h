@@ -1,9 +1,8 @@
 #pragma once
 
-const int MAX_TRIANGLES = 10000;
+const int MAX_TRIANGLES = 1000;
 
 #include "GridClass.h"
-#include "Core.h"
 
 // GridQuadTreeClass는 쿼드 트리의 노드가 될 클래스로 TerrainClass의 정보를 받아온다.
 class GridQuadTreeClass
@@ -12,8 +11,7 @@ private:
 	struct VertexType
 	{
 		XMFLOAT3 position;
-		XMFLOAT2 texture;
-		XMFLOAT3 normal;
+		XMFLOAT4 color;
 	};
 
 	// 쿼드 트리의 노드(서브 쿼드)가 가지고 있는 정보를 담는 구조체다.

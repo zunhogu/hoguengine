@@ -17,6 +17,7 @@ private:
 	int m_terrainWidth, m_terrainHeight;
 	int m_vertexCount;
 	VertexType* m_vertices;
+
 public:
 	GridClass();
 	GridClass(const GridClass&);

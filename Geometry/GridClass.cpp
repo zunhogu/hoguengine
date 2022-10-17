@@ -20,8 +20,8 @@ bool GridClass::Initialize(ID3D11Device* device)
 	bool result;
 
 	// Manually set the width and height of the terrain.
-	m_terrainWidth = 500;
-	m_terrainHeight = 500;
+	m_terrainWidth = 100;
+	m_terrainHeight = 100;
 
 	worldMatrix = XMMatrixTranslation(-m_terrainWidth/2, 0.0f , -m_terrainHeight/2);
 
@@ -63,7 +63,7 @@ bool GridClass::InitializeBuffers(ID3D11Device* device)
 	float positionX, positionZ;
 
 	// Calculate the number of vertices in the terrain mesh.
-	m_vertexCount = (m_terrainWidth - 1) * (m_terrainHeight - 1) * 6;
+	m_vertexCount = (m_terrainWidth - 1) * (m_terrainHeight - 1) * 12;
 
 	// Create the vertex array.
 	m_vertices = new VertexType[m_vertexCount];
@@ -78,7 +78,8 @@ bool GridClass::InitializeBuffers(ID3D11Device* device)
 	{
 		for (i = 0; i < (m_terrainWidth - 1); i++)
 		{
-			// Upper left
+			// LINE 1
+			// Upper left.
 			positionX = (float)i;
 			positionZ = (float)(j + 1);
 
@@ -94,14 +95,7 @@ bool GridClass::InitializeBuffers(ID3D11Device* device)
 			m_vertices[index].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 			index++;
 
-			// Bottom left
-			positionX = (float)i;
-			positionZ = (float)j;
-
-			m_vertices[index].position = XMFLOAT3(positionX, 0.0f, positionZ);
-			m_vertices[index].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-			index++;
-
+			// LINE 2
 			// Upper right.
 			positionX = (float)(i + 1);
 			positionZ = (float)(j + 1);
@@ -118,9 +112,35 @@ bool GridClass::InitializeBuffers(ID3D11Device* device)
 			m_vertices[index].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 			index++;
 
+			// LINE 3
+			// Bottom right.
+			positionX = (float)(i + 1);
+			positionZ = (float)j;
+
+			m_vertices[index].position = XMFLOAT3(positionX, 0.0f, positionZ);
+			m_vertices[index].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+			index++;
+
 			// Bottom left.
 			positionX = (float)i;
 			positionZ = (float)j;
+
+			m_vertices[index].position = XMFLOAT3(positionX, 0.0f, positionZ);
+			m_vertices[index].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+			index++;
+
+			// LINE 4
+			// Bottom left.
+			positionX = (float)i;
+			positionZ = (float)j;
+
+			m_vertices[index].position = XMFLOAT3(positionX, 0.0f, positionZ);
+			m_vertices[index].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+			index++;
+
+			// Upper left.
+			positionX = (float)i;
+			positionZ = (float)(j + 1);
 
 			m_vertices[index].position = XMFLOAT3(positionX, 0.0f, positionZ);
 			m_vertices[index].color = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
