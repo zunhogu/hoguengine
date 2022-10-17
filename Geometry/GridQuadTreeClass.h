@@ -1,6 +1,6 @@
 #pragma once
 
-const int MAX_TRIANGLES = 1000;
+const int MAX_SQUARE = 2000;
 
 #include "GridClass.h"
 
@@ -18,7 +18,7 @@ private:
 	struct NodeType
 	{
 		float positionX, positionZ, width;
-		int triangleCount;
+		int squareCount;
 		ID3D11Buffer* vertexBuffer, * indexBuffer;
 		NodeType* nodes[4];
 	};
@@ -37,13 +37,13 @@ public:
 private:
 	void CalculateMeshDimensions(int vertexCount, float& centerX, float& centerZ, float& meshWidth);
 	void CreateTreeNode(NodeType* node, float positionX, float positionZ, float width, ID3D11Device* device);
-	int CountTriangles(float positionX, float positionZ, float width);
-	bool IsTriangleContained(int index, float positionX, float positionZ, float width);
+	int CountSquares(float positionX, float positionZ, float width);
+	bool IsSquareContained(int index, float positionX, float positionZ, float width);
 	void ReleaseNode(NodeType* node);
 	void RenderNode(NodeType* node, ID3D11DeviceContext* deviceContext);
 
 private:
-	int m_triangleCount, m_drawCount;
+	int m_squareCount, m_drawCount;
 
 	// 부모 쿼드로부터 물려받을 정점들을 담기 위한 배열
 	VertexType* m_vertexList;

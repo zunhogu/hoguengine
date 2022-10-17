@@ -26,8 +26,8 @@ bool GridQuadTreeClass::Initialize(GridClass* grid, ID3D11Device* device)
 	// terrain으로부터 vertexCount를 얻는다.
 	vertexCount = grid->GetVertexCount();
 
-	// vertexList를 초기화 하기위해서 triangleCount를 계산한다.
-	m_triangleCount = vertexCount / 3;
+	// vertexList를 초기화 하기위해서 squareCount를 계산한다.
+	m_squareCount = vertexCount / 8;
 
 	// vertexList를 초기화한다.
 	m_vertexList = new VertexType[vertexCount];
@@ -140,7 +140,7 @@ void GridQuadTreeClass::CalculateMeshDimensions(int vertexCount, float& centerX,
 
 void GridQuadTreeClass::CreateTreeNode(NodeType* node, float positionX, float positionZ, float width, ID3D11Device* device)
 {
-	int numTriangles, i, count, vertexCount, index, vertexIndex;
+	int numSquares, i, count, vertexCount, index, vertexIndex;
 	float offsetX, offsetZ;
 	VertexType* vertices;
 	unsigned long* indices;
@@ -154,7 +154,7 @@ void GridQuadTreeClass::CreateTreeNode(NodeType* node, float positionX, float po
 	node->width = width;
 
 	// Initialize the triangle count to zero for the node.
-	node->triangleCount = 0;
+	node->squareCount = 0;
 
 	// Initialize the vertex and index buffer to null.
 	node->vertexBuffer = 0;
@@ -167,16 +167,16 @@ void GridQuadTreeClass::CreateTreeNode(NodeType* node, float positionX, float po
 	node->nodes[3] = 0;
 
 	// 현재 노드의 triangle Count를 계싼한다. 
-	numTriangles = CountTriangles(positionX, positionZ, width);
+	numSquares = CountSquares(positionX, positionZ, width);
 
 	// triangle의 Count에 따라 현재 노드가 어떻게 진행될지 결정되는데
 
 	// Case 1 : 노드 안에 triangle 0개 일때 그냥 노드 완성
-	if (numTriangles == 0)
+	if (numSquares == 0)
 		return;
 
-	// Case 2 : 노드 안에 triangle이 MAX_TRIANGLES을 넘어서서 쿼드가 split 되어야 할때 
-	if (numTriangles > MAX_TRIANGLES)
+	// Case 2 : 노드 안에 triangle이 MAX_SQUARES을 넘어서서 쿼드가 split 되어야 할때 
+	if (numSquares > MAX_SQUARE)
 	{
 		for (i = 0; i < 4; i++)
 		{
@@ -185,7 +185,7 @@ void GridQuadTreeClass::CreateTreeNode(NodeType* node, float positionX, float po
 			offsetZ = (((i % 4) < 2) ? -1.0f : 1.0f) * (width / 4.0f);
 
 			// See if there are any triangles in the new node.
-			count = CountTriangles((positionX + offsetX), (positionZ + offsetZ), (width / 2.0f));
+			count = CountSquares((positionX + offsetX), (positionZ + offsetZ), (width / 2.0f));
 			if (count > 0)
 			{
 				// If there are triangles inside where this new node would be then create the child node.
@@ -199,12 +199,12 @@ void GridQuadTreeClass::CreateTreeNode(NodeType* node, float positionX, float po
 		return;
 	}
 
-	// Case3 : MAX_TRIANGLES 이하의 triangle Count를 가진다면 정점 및 인덱스 버퍼를 만들고 노드로 로드한다.
+	// Case3 : MAX_SQUARE 이하의 square Count를 가진다면 정점 및 인덱스 버퍼를 만들고 노드로 로드한다.
 	// 해당 노드는 리프노드여야 한다.
-	node->triangleCount = numTriangles;
+	node->squareCount = numSquares;
 
 	// Calculate the number of vertices.
-	vertexCount = numTriangles * 3;
+	vertexCount = numSquares * 8;
 
 	// Create the vertex array.
 	vertices = new VertexType[vertexCount];
@@ -216,28 +216,58 @@ void GridQuadTreeClass::CreateTreeNode(NodeType* node, float positionX, float po
 	index = 0;
 
 	// Go through all the triangles in the vertex list.
-	for (i = 0; i < m_triangleCount; i++)
+	for (i = 0; i < m_squareCount; i++)
 	{
 		// If the triangle is inside this node then add it to the vertex array.
-		result = IsTriangleContained(i, positionX, positionZ, width);
+		result = IsSquareContained(i, positionX, positionZ, width);
 		if (result == true)
 		{
 			// Calculate the index into the terrain vertex list.
-			vertexIndex = i * 3;
+			vertexIndex = i * 8;
 
 			// Get the three vertices of this triangle from the vertex list.
 			vertices[index].position = m_vertexList[vertexIndex].position;
 			vertices[index].color = m_vertexList[vertexIndex].color;
 			indices[index] = index;
 			index++;
-
 			vertexIndex++;
+
 			vertices[index].position = m_vertexList[vertexIndex].position;
 			vertices[index].color = m_vertexList[vertexIndex].color;
 			indices[index] = index;
 			index++;
-
 			vertexIndex++;
+
+			vertices[index].position = m_vertexList[vertexIndex].position;
+			vertices[index].color = m_vertexList[vertexIndex].color;
+			indices[index] = index;
+			index++;
+			vertexIndex++;
+
+			vertices[index].position = m_vertexList[vertexIndex].position;
+			vertices[index].color = m_vertexList[vertexIndex].color;
+			indices[index] = index;
+			index++;
+			vertexIndex++;
+
+			vertices[index].position = m_vertexList[vertexIndex].position;
+			vertices[index].color = m_vertexList[vertexIndex].color;
+			indices[index] = index;
+			index++;
+			vertexIndex++;
+
+			vertices[index].position = m_vertexList[vertexIndex].position;
+			vertices[index].color = m_vertexList[vertexIndex].color;
+			indices[index] = index;
+			index++;
+			vertexIndex++;
+
+			vertices[index].position = m_vertexList[vertexIndex].position;
+			vertices[index].color = m_vertexList[vertexIndex].color;
+			indices[index] = index;
+			index++;
+			vertexIndex++;
+
 			vertices[index].position = m_vertexList[vertexIndex].position;
 			vertices[index].color = m_vertexList[vertexIndex].color;
 			indices[index] = index;
@@ -287,7 +317,7 @@ void GridQuadTreeClass::CreateTreeNode(NodeType* node, float positionX, float po
 	return;
 }
 
-int GridQuadTreeClass::CountTriangles(float positionX, float positionZ, float width)
+int GridQuadTreeClass::CountSquares(float positionX, float positionZ, float width)
 {
 	int count, i;
 	bool result;
@@ -296,24 +326,22 @@ int GridQuadTreeClass::CountTriangles(float positionX, float positionZ, float wi
 	count = 0;
 
 	// Go through all the triangles in the entire mesh and check which ones should be inside this node.
-	for (i = 0; i < m_triangleCount; i++)
+	for (i = 0; i < m_squareCount; i++)
 	{
 		// If the triangle is inside the node then increment the count by one.
-		result = IsTriangleContained(i, positionX, positionZ, width);
+		result = IsSquareContained(i, positionX, positionZ, width);
 		if (result == true)
-		{
-			count++;
-		}
+			count += 1;
 	}
 
 	return count;
 }
 
-bool GridQuadTreeClass::IsTriangleContained(int index, float positionX, float positionZ, float width)
+bool GridQuadTreeClass::IsSquareContained(int index, float positionX, float positionZ, float width)
 {
 	float radius;
 	int vertexIndex;
-	float x1, z1, x2, z2, x3, z3;
+	float x1, z1, x2, z2, x3, z3, x4, z4;
 	float minimumX, maximumX, minimumZ, maximumZ;
 
 
@@ -321,47 +349,40 @@ bool GridQuadTreeClass::IsTriangleContained(int index, float positionX, float po
 	radius = width / 2.0f;
 
 	// Get the index into the vertex list.
-	vertexIndex = index * 3;
+	vertexIndex = index * 8;
 
 	// Get the three vertices of this triangle from the vertex list.
 	x1 = m_vertexList[vertexIndex].position.x;
 	z1 = m_vertexList[vertexIndex].position.z;
-	vertexIndex++;
+	vertexIndex += 2;
 
 	x2 = m_vertexList[vertexIndex].position.x;
 	z2 = m_vertexList[vertexIndex].position.z;
-	vertexIndex++;
+	vertexIndex += 2;
 
 	x3 = m_vertexList[vertexIndex].position.x;
 	z3 = m_vertexList[vertexIndex].position.z;
+	vertexIndex += 2;
 
-	// Check to see if the minimum of the x coordinates of the triangle is inside the node.
-	minimumX = min(x1, min(x2, x3));
+	x4 = m_vertexList[vertexIndex].position.x;
+	z4 = m_vertexList[vertexIndex].position.z;
+
+	// first triangle
+	minimumX = min(x1, min(x2, min(x3, x4)));
 	if (minimumX > (positionX + radius))
-	{
 		return false;
-	}
 
-	// Check to see if the maximum of the x coordinates of the triangle is inside the node.
-	maximumX = max(x1, max(x2, x3));
+	maximumX = max(x1, max(x2, max(x3, x4)));
 	if (maximumX < (positionX - radius))
-	{
 		return false;
-	}
 
-	// Check to see if the minimum of the z coordinates of the triangle is inside the node.
-	minimumZ = min(z1, min(z2, z3));
+	minimumZ = min(z1, min(z2, min(z3, z4)));
 	if (minimumZ > (positionZ + radius))
-	{
 		return false;
-	}
 
-	// Check to see if the maximum of the z coordinates of the triangle is inside the node.
-	maximumZ = max(z1, max(z2, z3));
+	maximumZ = max(z1, max(z2, max(z3, z4)));
 	if (maximumZ < (positionZ - radius))
-	{
 		return false;
-	}
 
 	return true;
 }
@@ -415,6 +436,7 @@ void GridQuadTreeClass::RenderNode(NodeType* node, ID3D11DeviceContext* deviceCo
 
 	// Frustum Check
 	result = CollisionClass::GetInst()->CheckCube(node->positionX, 0.0f, node->positionZ, (node->width / 2.0f));
+	cout << result << endl;
 	if (!result)
 		return;
 
@@ -448,14 +470,15 @@ void GridQuadTreeClass::RenderNode(NodeType* node, ID3D11DeviceContext* deviceCo
 	// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 
+
 	// Determine the number of indices in this node.
-	indexCount = node->triangleCount * 3;
+	indexCount = node->squareCount * 8;
 
 	// Call the terrain shader to render the polygons in this node.
 	GraphicsClass::GetInst()->RenderGirdShader(deviceContext, indexCount);
 
 	// Increase the count of the number of polygons that have been rendered during this frame.
-	m_drawCount += node->triangleCount;
+	m_drawCount += node->squareCount;
 
 	return;
 }

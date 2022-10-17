@@ -63,7 +63,7 @@ bool GridClass::InitializeBuffers(ID3D11Device* device)
 	float positionX, positionZ;
 
 	// Calculate the number of vertices in the terrain mesh.
-	m_vertexCount = (m_terrainWidth - 1) * (m_terrainHeight - 1) * 12;
+	m_vertexCount = (m_terrainWidth - 1) * (m_terrainHeight - 1) * 8;
 
 	// Create the vertex array.
 	m_vertices = new VertexType[m_vertexCount];
