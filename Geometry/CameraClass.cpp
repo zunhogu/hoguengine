@@ -137,5 +137,6 @@ void CameraClass::UpdateViewMatrix() {
 
 	m_viewMatrix = XMLoadFloat4x4(&viewMatrix);
 
+
 	return;
 }

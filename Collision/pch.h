@@ -11,6 +11,8 @@
 #include "framework.h"
 #include "define.h"
 
+#include <iostream>
+using namespace std;
 #include <DirectXMath.h>
 using namespace DirectX;
 

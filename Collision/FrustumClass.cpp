@@ -113,6 +113,9 @@ bool FrustumClass::CheckCube(float xCenter, float yCenter, float zCenter, float 
 	int i;
 	XMFLOAT3 cubeVec;
 	float result = 0.0f;
+
+	cout << "(" << xCenter<<", " << yCenter <<", "<< zCenter <<"), "<< radius <<endl;
+
 	for (i = 0; i < 6; i++) {
 		cubeVec = XMFLOAT3(xCenter - radius, yCenter - radius, zCenter - radius);
 		result = m_planes[i].x * cubeVec.x + m_planes[i].y * cubeVec.y + m_planes[i].z * cubeVec.z + m_planes[i].w * 1.0f;

@@ -194,7 +194,8 @@ void Scene_Tool::Render()
 
 	// Render 함수의 큰 변화는 매 프레임마다 뷰 행렬에 근거하여 시야 프러스텀을 구축하는 것이다.
 	// 이 구축 과정은 뷰행렬이 바뀌거나 우리의 프러스텀 확인이 맞지 않을때 발생한다.
-	CollisionClass::GetInst()->ConstructFrustum(SCREEN_DEPTH, m_ProjectionMatrix, m_ViewMatrix);
+
+	CollisionClass::GetInst()->ConstructFrustum(SCREEN_DEPTH, Core::GetProjectionMatrix(), m_ViewMatrix);
 
 	GraphicsClass::GetInst()->BeginScene(0.45f, 0.55f, 0.60f, 1.00f);
 

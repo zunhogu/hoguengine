@@ -436,7 +436,6 @@ void GridQuadTreeClass::RenderNode(NodeType* node, ID3D11DeviceContext* deviceCo
 
 	// Frustum Check
 	result = CollisionClass::GetInst()->CheckCube(node->positionX, 0.0f, node->positionZ, (node->width / 2.0f));
-	cout << result << endl;
 	if (!result)
 		return;
 
