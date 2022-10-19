@@ -19,9 +19,6 @@ private:
 
 	wstring m_sCurProjectPath;
 
-	XMMATRIX m_ViewMatrix;
-	XMMATRIX m_ProjectionMatrix;
-
 	CameraClass* m_Camera;
 	LightClass* m_Light;
 	GridClass* m_Grid;

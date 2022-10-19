@@ -1,5 +1,11 @@
 #pragma once
+#pragma comment(lib, "pdh.lib")
 
+
+//////////////
+// INCLUDES //
+//////////////
+#include <pdh.h>
 // CTimeMgr는 다양한 컴퓨터 사양에 대해서 렌더링 속도를 현실시간과 동일하게 해줌 
 // 이동량 * 1 / 프레임 (한 프레임에 걸리는 실제 시간)
 
@@ -15,6 +21,13 @@ class TimeMgrClass
 
 	double m_dDT;  // 한 프레임에 걸린 시간
 	double m_dAcc;  // 누적된 시간
+
+	bool m_canReadCpu;
+	HQUERY m_queryHandle;
+	HCOUNTER m_counterHandle;
+	unsigned long m_lastSampleTime;
+	long m_cpuUsage;
+
 public:
 	SINGLE(TimeMgrClass);
 	TimeMgrClass();
@@ -22,6 +35,7 @@ public:
 	~TimeMgrClass();
 
 	bool Initialize();
+	void Shutdown();
 	bool Frame(HWND _hWnd);
 
 	double GetDT() { return m_dDT; }

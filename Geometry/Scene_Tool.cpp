@@ -195,7 +195,7 @@ void Scene_Tool::Render()
 	// Render 함수의 큰 변화는 매 프레임마다 뷰 행렬에 근거하여 시야 프러스텀을 구축하는 것이다.
 	// 이 구축 과정은 뷰행렬이 바뀌거나 우리의 프러스텀 확인이 맞지 않을때 발생한다.
 
-	CollisionClass::GetInst()->ConstructFrustum(SCREEN_DEPTH, Core::GetProjectionMatrix(), m_ViewMatrix);
+	CollisionClass::GetInst()->ConstructFrustum(SCREEN_DEPTH, Core::GetProjectionMatrix(), m_Camera->GetViewMatrix());
 
 	GraphicsClass::GetInst()->BeginScene(0.45f, 0.55f, 0.60f, 1.00f);
 
@@ -218,7 +218,7 @@ void Scene_Tool::Render()
 
 	GraphicsClass::GetInst()->RenderGridShaderSetParam(Core::GetDeviceContext(), m_Grid->GetWorldMatrix(), m_Camera->GetViewMatrix());
 
-	m_GridQuadTree->Render(Core::GetDeviceContext());
+	m_GridQuadTree->Render(Core::GetDeviceContext(), m_Grid->GetWorldMatrix());
 
 	// Model Rendering
 
@@ -235,10 +235,8 @@ void Scene_Tool::Render()
 		// 프러스텀 진행할지 검사
 		isRender = CollisionClass::GetInst()->CheckCube(postion.x, postion.y, postion.z, radius);
 
-		if (true)
-		{
-			node->Render(m_ViewMatrix, cameraPos, m_Light->GetDiffuseColor(), m_Light->GetPosition());
-		}
+		if (isRender)
+			node->Render(m_Camera->GetViewMatrix(), cameraPos, m_Light->GetDiffuseColor(), m_Light->GetPosition());
 
 	}
 	GraphicsClass::GetInst()->RenderToTextureEnd();
@@ -383,14 +381,6 @@ void Scene_Tool::CameraMoveKeyMouse(XMFLOAT2 StrafeAndWalk, XMFLOAT3 Displacemen
 
 	// 카메라의 위치를 토대로 뷰행렬
 	m_Camera->UpdateViewMatrix();
-
-	// 뷰행령이 만들어지고 나면 뷰행렬의 복사본을 가져올 수 있다.
-	// 또한 D3DClass 객체로 부터 월드행렬과 투영행렬도 복사해온다.
-	m_ViewMatrix = m_Camera->GetViewMatrix();
-
-	// 투영행렬
-	m_ProjectionMatrix = GraphicsClass::GetInst()->GetProjectionMatrix();
-
 }
 
 void Scene_Tool::PickingCheckInViewPort()
@@ -410,8 +400,8 @@ void Scene_Tool::PickingCheckInViewPort()
 		ImGuIRenderClass::GetInst()->GetMousePosInViewPort(tmX, tmY);
 
 		// 반직선 생성
-		CollisionClass::GetInst()->SetRay(tmX, tmY, m_ViewMatrix, m_ProjectionMatrix, cameraPos);
-		XMMATRIX invViewMatrix = XMMatrixInverse(nullptr, m_ViewMatrix);
+		CollisionClass::GetInst()->SetRay(tmX, tmY, m_Camera->GetViewMatrix(), Core::GetProjectionMatrix(), cameraPos);
+		XMMATRIX invViewMatrix = XMMatrixInverse(nullptr, m_Camera->GetViewMatrix());
 
 		float minDistance = INFINITY;
 

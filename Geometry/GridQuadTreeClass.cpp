@@ -71,7 +71,7 @@ void GridQuadTreeClass::Shutdown()
 	return;
 }
 
-void GridQuadTreeClass::Render(ID3D11DeviceContext* deviceContext)
+void GridQuadTreeClass::Render(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix)
 {
 	// Render함수에서는 RenderNode를 호출한다.
 	// RenderNode함수는 FrustumClas를 사용하여 노드를 렌더링한다. 
@@ -80,7 +80,7 @@ void GridQuadTreeClass::Render(ID3D11DeviceContext* deviceContext)
 	m_drawCount = 0;
 
 	// Render each node that is visible starting at the parent node and moving down the tree.
-	RenderNode(m_parentNode, deviceContext);
+	RenderNode(m_parentNode, deviceContext, worldMatrix);
 }
 
 // 이전 렌더 함수 호출에서 그려진 삼각형의 수를 반환한다.
@@ -428,14 +428,20 @@ void GridQuadTreeClass::ReleaseNode(NodeType* node)
 	return;
 }
 
-void GridQuadTreeClass::RenderNode(NodeType* node, ID3D11DeviceContext* deviceContext)
+void GridQuadTreeClass::RenderNode(NodeType* node, ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix)
 {
 	bool result;
 	int count, i, indexCount;
 	unsigned int stride, offset;
 
+	XMFLOAT3 position;
+	XMVECTOR positionV = XMVectorSet(node->positionX, 0.0f, node->positionZ, 1.0f);
+
+	positionV = XMVector3TransformCoord(positionV, worldMatrix);
+	XMStoreFloat3(&position, positionV);
+
 	// Frustum Check
-	result = CollisionClass::GetInst()->CheckCube(node->positionX, 0.0f, node->positionZ, (node->width / 2.0f));
+	result = CollisionClass::GetInst()->CheckCube(position.x, 0.0f, position.z, (node->width / 2.0f));
 	if (!result)
 		return;
 
@@ -446,7 +452,7 @@ void GridQuadTreeClass::RenderNode(NodeType* node, ID3D11DeviceContext* deviceCo
 		if (node->nodes[i] != 0)
 		{
 			count++;
-			RenderNode(node->nodes[i], deviceContext);
+			RenderNode(node->nodes[i], deviceContext, worldMatrix);
 		}
 	}
 

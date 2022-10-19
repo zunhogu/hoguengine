@@ -30,7 +30,7 @@ public:
 
 	bool Initialize(GridClass* grid, ID3D11Device* device);
 	void Shutdown();
-	void Render(ID3D11DeviceContext* deviceContext);
+	void Render(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix);
 
 	int GetDrawCount();
 
@@ -40,7 +40,7 @@ private:
 	int CountSquares(float positionX, float positionZ, float width);
 	bool IsSquareContained(int index, float positionX, float positionZ, float width);
 	void ReleaseNode(NodeType* node);
-	void RenderNode(NodeType* node, ID3D11DeviceContext* deviceContext);
+	void RenderNode(NodeType* node, ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix);
 
 private:
 	int m_squareCount, m_drawCount;
