@@ -29,6 +29,7 @@ enum class COMPONENT_TYPE
 	MATERIAL,
 	BONE,
 	ANIMATION,
+	TERRAIN,
 
 	END,
 };

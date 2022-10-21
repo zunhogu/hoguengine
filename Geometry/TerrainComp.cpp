@@ -3,10 +3,12 @@
 
 TerrainComp::TerrainComp()
 {
+	m_componentType = COMPONENT_TYPE::TERRAIN;
 }
 
-TerrainComp::TerrainComp(const TerrainComp&)
+TerrainComp::TerrainComp(const TerrainComp& terrain)
 {
+	m_componentType = COMPONENT_TYPE::TERRAIN;
 }
 
 TerrainComp::~TerrainComp()
