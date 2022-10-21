@@ -41,6 +41,7 @@ public:
 
 	ModelInfoComp* GetModelInfoComp();
 	TransformComp* GetModelTransformComp();
+	MeshComp* GetMeshComp();
 	ModelComp* GetModelComp(COMPONENT_TYPE type);
 	MaterialComp* GetMaterialComp(wstring id);
 	AnimationComp* GetAnimationComp();

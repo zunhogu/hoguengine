@@ -19,8 +19,6 @@ public:
 	~InspectorPanel();
 
 	virtual void Render();
-	void ShowTransformComponent(TransformComp* transformComp);
-	bool ShowMeshComponent(MeshComp* meshComp);
 	void ShowPopUp();
 };
 

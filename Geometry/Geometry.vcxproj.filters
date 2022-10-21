@@ -128,6 +128,9 @@
     <Filter Include="Scene\Scene_Tool\Object\SkyDome">
       <UniqueIdentifier>{0e899905-196e-4f2b-8169-b323f9b026e8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ModelInfo\Component\TerrainComp">
+      <UniqueIdentifier>{16922bbe-f92a-42dd-8bcf-e866a9b019b0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="define.h">
@@ -272,6 +275,9 @@
     <ClInclude Include="GridQuadTreeClass.h">
       <Filter>Scene\Scene_Tool\Object\Grid</Filter>
     </ClInclude>
+    <ClInclude Include="TerrainComp.h">
+      <Filter>ModelInfo\Component\TerrainComp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core.cpp">
@@ -406,6 +412,9 @@
     </ClCompile>
     <ClCompile Include="GridQuadTreeClass.cpp">
       <Filter>Scene\Scene_Tool\Object\Grid</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainComp.cpp">
+      <Filter>ModelInfo\Component\TerrainComp</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

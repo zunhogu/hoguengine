@@ -12,6 +12,7 @@
 #include "Core.h"
 #include "ModelNode.h"
 #include "ModelComp.h"
+#include "TerrainComp.h"
 
 // Selected Model
 extern vector<ModelNode*> g_selectedNodes;
@@ -70,9 +71,7 @@ void InspectorPanel::Render()
 
 			// Rendering 
 			for (int i = 0; i < modelComps->size(); i++)
-			{
 				modelComps->at(i)->Render(lastSelectedNode);
-			}
 
 			// Checking Delete Component
 			for (int i = 0; i < modelComps->size(); i++)
@@ -88,53 +87,6 @@ void InspectorPanel::Render()
 	}
 	ImGui::End();
 	ImGui::PopStyleVar();   // padding °ª ¼³Á¤s
-}
-
-void InspectorPanel::ShowTransformComponent(TransformComp* transformComp)
-{
-}
-
-bool InspectorPanel::ShowMeshComponent(MeshComp* meshComp)
-{
-	if (ImGui::CollapsingHeader("Mesh Renderer", meshComp->GetIsDelete(), ImGuiTreeNodeFlags_DefaultOpen))
-	{
-		if (!(*meshComp->GetIsDelete()))
-		{
-			meshComp->Shutdown();
-			return false;
-		}
-
-		bool IsChanged;
-
-		char buffer[256];
-		float textWidth = 180.0f;
-		ImGuiPayload* payload = nullptr;
-		strcpy(buffer, meshComp->GetMeshID().c_str());
-		ImGui::Dummy(ImVec2(0.0f, 4.0f));  // padding
-		ImGui::Dummy(ImVec2(1.0f, 0.0f));  // padding
-		ImGui::SameLine();
-		ImGui::Text("Mesh");
-		ImGui::SameLine();
-		ImGui::SetNextItemWidth(textWidth);
-		ImRect rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(textWidth, ImGui::GetItemRectSize().y));
-		IsChanged = ImGui::InputText("##MeshID", buffer, sizeof(buffer));
-		if (IsChanged)
-		{
-
-		}
-
-		ImGui::SameLine();
-		bool isRender = meshComp->GetIsRender();
-		if (ImGui::Checkbox("Render", &isRender))
-			meshComp->SetIsRender(isRender);
-
-		char buff[255];
-		ImGuiInputTextFlags input_text_flags = ImGuiInputTextFlags_CharsDecimal;
-
-		vector<MeshPartComp*> meshParts = *meshComp->GetMeshParts();
-	}
-
-	return true;
 }
 
 void InspectorPanel::ShowPopUp()
@@ -162,6 +114,16 @@ void InspectorPanel::ShowPopUp()
 		}
 		ImGui::SetCursorPosX(5.0f);
 		if (ImGui::MenuItem("Collider")) {}
+
+		ImGui::SetCursorPosX(5.0f);
+		if (ImGui::MenuItem("TerrainRenderer")) 
+		{
+			if (selectedNode != nullptr && selectedNode->GetMeshComp() == nullptr)
+			{
+				TerrainComp* terrainComp = new TerrainComp();
+				selectedNode->AddModelComp(terrainComp);
+			}
+		}
 		ImGui::EndPopup();
 	}
 }

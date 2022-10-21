@@ -209,6 +209,7 @@
     <ClInclude Include="Scene_Tool.h" />
     <ClInclude Include="SkyDomeClass.h" />
     <ClInclude Include="SoundClass.h" />
+    <ClInclude Include="TerrainComp.h" />
     <ClInclude Include="TextureClass.h" />
     <ClInclude Include="TimeMgrClass.h" />
     <ClInclude Include="TransformComp.h" />
@@ -261,6 +262,7 @@
     <ClCompile Include="Scene_Tool.cpp" />
     <ClCompile Include="SkyDomeClass.cpp" />
     <ClCompile Include="SoundClass.cpp" />
+    <ClCompile Include="TerrainComp.cpp" />
     <ClCompile Include="TextureClass.cpp" />
     <ClCompile Include="TimeMgrClass.cpp" />
     <ClCompile Include="TransformComp.cpp" />

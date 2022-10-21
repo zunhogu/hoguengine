@@ -220,6 +220,21 @@ TransformComp* ModelNode::GetModelTransformComp()
     return nullptr;
 }
 
+MeshComp* ModelNode::GetMeshComp()
+{
+	MeshComp* meshComp = nullptr;
+	for (int i = 0; i < m_modelComps.size(); i++)
+	{
+		if (m_modelComps[i]->GetCompType() == COMPONENT_TYPE::MESH)
+		{
+			meshComp = (MeshComp*)m_modelComps[i];
+			return meshComp;
+		}
+	}
+
+	return nullptr;
+}
+
 ModelComp* ModelNode::GetModelComp(COMPONENT_TYPE type)
 {
     for (int i = 0; i < m_modelComps.size(); i++)
