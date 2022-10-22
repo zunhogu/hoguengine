@@ -29,8 +29,6 @@ void HeightMapTexture::Initialize(const wstring& _strFilePath)
 	desc.Usage = D3D11_USAGE_STAGING;
 	desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 	desc.MiscFlags = D3D11_CPU_ACCESS_WRITE | D3D11_CPU_ACCESS_READ;
- 
-
 
 	// ResourceView
 	m_device->CreateShaderResourceView(m_texture2D, nullptr, &m_resourceView);

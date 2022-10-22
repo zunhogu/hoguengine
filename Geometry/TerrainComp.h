@@ -5,7 +5,7 @@
 class TerrainComp : public ModelComp
 {
 private:
-	TextureClass* m_heightMap;
+	string m_heightMapName;
 public:
 	TerrainComp();
 	TerrainComp(const TerrainComp& terrain);
