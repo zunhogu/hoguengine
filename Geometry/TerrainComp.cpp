@@ -15,6 +15,10 @@ TerrainComp::~TerrainComp()
 {
 }
 
+void TerrainComp::Initialize(TextureClass* m_heightMap, TextureClass* m_colorMap)
+{
+}
+
 void TerrainComp::Shutdown()
 {
 }
