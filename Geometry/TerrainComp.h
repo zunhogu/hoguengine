@@ -15,6 +15,6 @@ public:
 	virtual void Shutdown();
 
 	virtual void Render(ModelNode* node);
-
+	wstring ProcessDragAndDropPayloadTexture(ImGuiPayload* payload);
 };
 

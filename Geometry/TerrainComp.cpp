@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "TerrainComp.h"
 #include "Core.h"
+#include "ContentBrowserPanel.h"
 
 TerrainComp::TerrainComp()
 {
@@ -39,4 +40,26 @@ void TerrainComp::Render(ModelNode* node)
 		ImGui::SameLine();
 		ImGui::InputText("##meshName", (char*)m_heightMapName.c_str(), sizeof(m_heightMapName));
 	}
+}
+
+wstring TerrainComp::ProcessDragAndDropPayloadTexture(ImGuiPayload* payload)
+{
+	wstring result = L"";
+
+	if (!payload)
+		return result;
+
+	wstring fileRelativePath = (wchar_t*)payload->Data;
+	wstring fileExtension = ContentBrowserPanel::GetFileExtension(fileRelativePath);
+
+	for (int i = 0; i < IM_ARRAYSIZE(g_textureExtension); i++)
+	{
+		if (fileExtension == g_textureExtension[i])
+		{
+			result = fileRelativePath;
+			break;
+		}
+	}
+
+	return result;
 }
