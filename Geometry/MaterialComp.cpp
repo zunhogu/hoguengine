@@ -240,7 +240,7 @@ void MaterialComp::Render(ModelNode* node)
 
 				// Emissive Texture ////////////////////////////////////////////////
 				ImGui::BeginChild("EmissiveTextureLeftPane", ImVec2(220, 70));
-				ImGui::Text("DiffuseTexture");
+				ImGui::Text("EmissiveTexture");
 				ImGui::AlignTextToFramePadding();
 				ImGui::Dummy(ImVec2(10.0f, 0.0f));
 				ImGui::SameLine();

@@ -37,6 +37,7 @@ bool Material::LoadMaterial(const wstring& _strFilePath)
 		return false;
 
 	string buffer;
+
 	// Ambient Color
 	fin >> buffer;  // Ambient Color string
 	fin >> buffer;  // :

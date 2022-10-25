@@ -125,11 +125,11 @@
     <Filter Include="Model\Component\ModelInfoComp">
       <UniqueIdentifier>{66238805-4a2f-46d6-b9ff-6d10c07b1364}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Model\Component\TerrainComp">
-      <UniqueIdentifier>{16922bbe-f92a-42dd-8bcf-e866a9b019b0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Model\ModelNode">
       <UniqueIdentifier>{a684983b-9b43-41e2-8716-960acf30ad83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Model\Component\TerrainComp">
+      <UniqueIdentifier>{16922bbe-f92a-42dd-8bcf-e866a9b019b0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

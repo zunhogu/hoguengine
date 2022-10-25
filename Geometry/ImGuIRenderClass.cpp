@@ -359,7 +359,7 @@ ImGuiPayload* ImGuIRenderClass::DragAndDropToWindow(const char* type)
 	return nullptr;
 }
 
-ImGuiPayload* ImGuIRenderClass::DraAndDropToItem(ImRect rect, ImVec2 mouseCoordinate, const char* type)
+ImGuiPayload* ImGuIRenderClass::DraAndDropToItem(ImRect rect, ImVec2 mouseCoordinate, const char* type, ImU32 col)
 {
 	ImVec2 min = rect.Min;  // item cordinate
 	ImVec2 max = rect.Max;  // item size
@@ -377,7 +377,7 @@ ImGuiPayload* ImGuIRenderClass::DraAndDropToItem(ImRect rect, ImVec2 mouseCoordi
 	{
 		ImVec2 vMin = ImGui::GetItemRectMin();
 		ImVec2 vMax = ImGui::GetItemRectMax();
-		ImGui::GetForegroundDrawList()->AddRect(vMin, vMax, IM_COL32(255, 255, 0, 255));
+		ImGui::GetForegroundDrawList()->AddRect(vMin, vMax, col);
 
 		if (ImGui::IsMouseReleased(0))
 		{

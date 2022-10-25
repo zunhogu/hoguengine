@@ -61,7 +61,7 @@ public:
 
 	//ImGui Drag And Drop
 	static ImGuiPayload* DragAndDropToWindow(const char* type);
-	static ImGuiPayload* DraAndDropToItem(ImRect rect, ImVec2 mouseCoordinate, const char* type);
+	static ImGuiPayload* DraAndDropToItem(ImRect rect, ImVec2 mouseCoordinate, const char* type, ImU32 col= IM_COL32(255, 255, 0, 255));
 	static bool BeginDragDropTargetCustom(const ImRect& bb, ImGuiID id);
 	static ImGuiPayload* AcceptDragDropPayload(const char* type, ImGuiDragDropFlags flags);
 };

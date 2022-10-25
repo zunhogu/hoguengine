@@ -8,6 +8,7 @@
 #include "ModelInfoComp.h"
 #include "Prefab.h"
 #include "Animation.h"
+#include "TerrainComp.h"
 
 // 선택된 Node들
 vector<ModelNode*> g_selectedNodes;
@@ -121,6 +122,13 @@ void Scene_Tool::Frame()
 
 
 		ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), L"heightmap", L"contents\\texture\\heightmap.png", TEXTURE_TYPE::HEIGHTMAP);
+
+		ModelNode* empty = new ModelNode;
+		empty->AddModelComp(new ModelInfoComp);
+		empty->AddModelComp(new TransformComp);
+		empty->AddModelComp(new TerrainComp);
+		empty->AddPathToRootNode(empty);
+		SceneMgrClass::GetInst()->GetCurScene()->AddNodeToScene(empty);
 
 		//Prefab* dino = ResMgrClass::GetInst()->LoadPrefab(L"Ankylosaurus.pref", L"contents\\assets\\Ankylosaurus\\Ankylosaurus.pref");
 		//ModelNode* node = new ModelNode(*dino->GetModelNode());

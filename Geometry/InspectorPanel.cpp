@@ -120,8 +120,8 @@ void InspectorPanel::ShowPopUp()
 		{
 			if (selectedNode != nullptr && selectedNode->GetMeshComp() == nullptr)
 			{
-				TerrainComp* terrainComp = new TerrainComp();
-				selectedNode->AddModelComp(terrainComp);
+				TerrainComp* terrain = new TerrainComp();
+				selectedNode->AddModelComp(terrain);
 			}
 		}
 		ImGui::EndPopup();
