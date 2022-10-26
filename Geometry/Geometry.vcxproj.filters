@@ -278,6 +278,9 @@
     <ClInclude Include="TerrainComp.h">
       <Filter>Model\Component\TerrainComp</Filter>
     </ClInclude>
+    <ClInclude Include="TerrainQuadTreeClass.h">
+      <Filter>Model\Component\TerrainComp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core.cpp">
@@ -414,6 +417,9 @@
       <Filter>Scene\Scene_Tool\Object\Grid</Filter>
     </ClCompile>
     <ClCompile Include="TerrainComp.cpp">
+      <Filter>Model\Component\TerrainComp</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainQuadTreeClass.cpp">
       <Filter>Model\Component\TerrainComp</Filter>
     </ClCompile>
   </ItemGroup>

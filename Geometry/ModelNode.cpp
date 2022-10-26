@@ -8,6 +8,7 @@
 #include "Core.h"
 #include "ResMgrClass.h"
 #include "AnimationComp.h"
+#include "TerrainComp.h"
 
 ModelNode* g_currNode = nullptr;
 
@@ -301,6 +302,7 @@ ModelNode* ModelNode::FindChildeNode(wstring nodeName)
 
 void ModelNode::Render(XMMATRIX viewMatirx, XMFLOAT3 cameraPos, XMFLOAT4 lightDiffuseColor, XMFLOAT3 lightPos)
 {
+
 	ModelInfoComp* modelInfoComp = GetModelInfoComp();
 	if (modelInfoComp->IsActive())
 	{
@@ -321,7 +323,17 @@ void ModelNode::Render(XMMATRIX viewMatirx, XMFLOAT3 cameraPos, XMFLOAT4 lightDi
 				break;
 			case COMPONENT_TYPE::MESH:
 			{
-				RenderMesh((MeshComp*)m_modelComps[i], worldMatrix, viewMatirx, cameraPos, lightDiffuseColor, lightPos);
+				bool isRender;
+				float radius = 1.0f;
+
+				// 씬에 있는 모델의 위치 가져오기 
+				XMFLOAT3 postion = GetModelTransformComp()->GetPosition();
+
+				// 프러스텀 진행할지 검사
+				isRender = CollisionClass::GetInst()->CheckCube(postion.x, postion.y, postion.z, radius);
+
+				if (isRender)
+					RenderMesh((MeshComp*)m_modelComps[i], worldMatrix, viewMatirx, cameraPos, lightDiffuseColor, lightPos);
 			}
 				break;
 			case COMPONENT_TYPE::MATERIAL:
@@ -330,6 +342,13 @@ void ModelNode::Render(XMMATRIX viewMatirx, XMFLOAT3 cameraPos, XMFLOAT4 lightDi
 				break;
 			case COMPONENT_TYPE::ANIMATION:
 			{
+			}
+				break;
+			case COMPONENT_TYPE::TERRAIN:
+			{
+				TerrainComp* comp = (TerrainComp*)m_modelComps[i];
+
+				comp->RederMesh(worldMatrix, viewMatirx);
 			}
 				break;
 			case COMPONENT_TYPE::END:

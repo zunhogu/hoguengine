@@ -210,6 +210,7 @@
     <ClInclude Include="SkyDomeClass.h" />
     <ClInclude Include="SoundClass.h" />
     <ClInclude Include="TerrainComp.h" />
+    <ClInclude Include="TerrainQuadTreeClass.h" />
     <ClInclude Include="TextureClass.h" />
     <ClInclude Include="TimeMgrClass.h" />
     <ClInclude Include="TransformComp.h" />
@@ -263,6 +264,7 @@
     <ClCompile Include="SkyDomeClass.cpp" />
     <ClCompile Include="SoundClass.cpp" />
     <ClCompile Include="TerrainComp.cpp" />
+    <ClCompile Include="TerrainQuadTreeClass.cpp" />
     <ClCompile Include="TextureClass.cpp" />
     <ClCompile Include="TimeMgrClass.cpp" />
     <ClCompile Include="TransformComp.cpp" />

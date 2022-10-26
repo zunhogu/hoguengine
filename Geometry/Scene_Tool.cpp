@@ -126,7 +126,9 @@ void Scene_Tool::Frame()
 		ModelNode* empty = new ModelNode;
 		empty->AddModelComp(new ModelInfoComp);
 		empty->AddModelComp(new TransformComp);
-		empty->AddModelComp(new TerrainComp);
+		TerrainComp* terrain = new TerrainComp;
+		terrain->Initialize();
+		empty->AddModelComp(terrain);
 		empty->AddPathToRootNode(empty);
 		SceneMgrClass::GetInst()->GetCurScene()->AddNodeToScene(empty);
 
@@ -222,11 +224,11 @@ void Scene_Tool::Render()
 	GraphicsClass::GetInst()->TurnOnCulling();
 	GraphicsClass::GetInst()->TurnZBufferOn();
 
+	
 	// Grid Rendering
+	//GraphicsClass::GetInst()->RenderGridShaderSetParam(Core::GetDeviceContext(), m_Grid->GetWorldMatrix(), m_Camera->GetViewMatrix());
 
-	GraphicsClass::GetInst()->RenderGridShaderSetParam(Core::GetDeviceContext(), m_Grid->GetWorldMatrix(), m_Camera->GetViewMatrix());
-
-	m_GridQuadTree->Render(Core::GetDeviceContext(), m_Grid->GetWorldMatrix());
+	//m_GridQuadTree->Render(Core::GetDeviceContext(), m_Grid->GetWorldMatrix());
 
 	// Model Rendering
 
@@ -234,17 +236,7 @@ void Scene_Tool::Render()
 	{
 		ModelNode* node = m_allNode->at(i);
 
-		bool isRender;
-		float radius = 1.0f;
-
-		// 씬에 있는 모델의 위치 가져오기 
-		XMFLOAT3 postion = node->GetModelTransformComp()->GetPosition();
-
-		// 프러스텀 진행할지 검사
-		isRender = CollisionClass::GetInst()->CheckCube(postion.x, postion.y, postion.z, radius);
-
-		if (isRender)
-			node->Render(m_Camera->GetViewMatrix(), cameraPos, m_Light->GetDiffuseColor(), m_Light->GetPosition());
+		node->Render(m_Camera->GetViewMatrix(), cameraPos, m_Light->GetDiffuseColor(), m_Light->GetPosition());
 
 	}
 	GraphicsClass::GetInst()->RenderToTextureEnd();
