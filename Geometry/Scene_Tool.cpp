@@ -127,7 +127,7 @@ void Scene_Tool::Frame()
 		empty->AddModelComp(new ModelInfoComp);
 		empty->AddModelComp(new TransformComp);
 		TerrainComp* terrain = new TerrainComp;
-		terrain->Initialize();
+		terrain->Initialize(empty);
 		empty->AddModelComp(terrain);
 		empty->AddPathToRootNode(empty);
 		SceneMgrClass::GetInst()->GetCurScene()->AddNodeToScene(empty);
@@ -226,9 +226,9 @@ void Scene_Tool::Render()
 
 	
 	// Grid Rendering
-	//GraphicsClass::GetInst()->RenderGridShaderSetParam(Core::GetDeviceContext(), m_Grid->GetWorldMatrix(), m_Camera->GetViewMatrix());
+	GraphicsClass::GetInst()->RenderGridShaderSetParam(Core::GetDeviceContext(), m_Grid->GetWorldMatrix(), m_Camera->GetViewMatrix());
 
-	//m_GridQuadTree->Render(Core::GetDeviceContext(), m_Grid->GetWorldMatrix());
+	m_GridQuadTree->Render(Core::GetDeviceContext(), m_Grid->GetWorldMatrix());
 
 	// Model Rendering
 

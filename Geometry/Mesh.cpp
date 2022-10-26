@@ -138,10 +138,12 @@ void Mesh::Shutdown()
 	return;
 }
 
-void Mesh::InitializeBuffers(ID3D11Device* device) {
+bool Mesh::InitializeBuffers(ID3D11Device* device) {
 
 	for (int i = 0; i <m_meshParts.size(); i++)
 		m_meshParts[i]->InitializeBuffers(device);
+
+	return true;
 }
 
 bool Mesh::LoadMesh(const wstring& _strFilePath)

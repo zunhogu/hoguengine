@@ -48,17 +48,15 @@ class Mesh : public ResourceClass
 private:
 	vector<MeshPart*> m_meshParts;
 
-	BoundingBox m_AlignedBox;  // AABB 경계입체
-	BoundingOrientedBox m_OrientedBoundingBox;  // OBB 경계 입체
 public:
 	Mesh();
 	Mesh(const Mesh&);
 	~Mesh();
 
 public:
-	bool Initialize(ID3D11Device* device, const wstring& _strFilePath);
-	void InitializeBuffers(ID3D11Device* device);
-	void Shutdown();
+	virtual bool Initialize(ID3D11Device* device, const wstring& _strFilePath);
+	virtual bool InitializeBuffers(ID3D11Device* device);
+	virtual void Shutdown();
 
 	vector<MeshPart*>* GetMeshParts() { return &m_meshParts; }
 

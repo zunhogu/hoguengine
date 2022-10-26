@@ -32,6 +32,7 @@ public:
 	Prefab* LoadPrefab(const wstring& _strKey, const wstring& strRelationPath = L"");
 	Prefab* FindPrefab(const wstring& _strKey);
 
+	void AddMesh(const wstring& _strKey, Mesh* mesh);
 	Mesh* LoadMesh(ID3D11Device* device, const wstring& _strKey, const wstring& strRelationPath = L"");
 	Mesh* FindMesh(const wstring& _strKey);
 

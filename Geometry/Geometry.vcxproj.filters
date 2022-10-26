@@ -131,6 +131,9 @@
     <Filter Include="Model\Component\TerrainComp">
       <UniqueIdentifier>{16922bbe-f92a-42dd-8bcf-e866a9b019b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource\Mesh\TerrainMesh">
+      <UniqueIdentifier>{13bfdc10-5a58-4ced-a4d7-993d58f0801c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="define.h">
@@ -281,6 +284,9 @@
     <ClInclude Include="TerrainQuadTreeClass.h">
       <Filter>Model\Component\TerrainComp</Filter>
     </ClInclude>
+    <ClInclude Include="TerrainMesh.h">
+      <Filter>Resource\Mesh\TerrainMesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core.cpp">
@@ -421,6 +427,9 @@
     </ClCompile>
     <ClCompile Include="TerrainQuadTreeClass.cpp">
       <Filter>Model\Component\TerrainComp</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainMesh.cpp">
+      <Filter>Resource\Mesh\TerrainMesh</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

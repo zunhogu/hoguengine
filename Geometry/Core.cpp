@@ -10,7 +10,8 @@
 Core* Core::g_plnst = nullptr;
 HWND Core::m_hWnd = 0;
 
-Core::Core() {
+Core::Core() 
+{
 }
 
 Core::Core(const Core& other) {}
@@ -19,6 +20,8 @@ Core::~Core() {}
 
 bool Core::Initialize(int screendWidth, int screeHeight, HWND hwnd, HINSTANCE hInstance) {
 	bool result = false;
+
+	srand((unsigned int)time(NULL));
 
 	m_hWnd = hwnd;
 
@@ -233,4 +236,26 @@ void Core::ConvertData(char* buff, float& dest) {
 			else { break; }
 		}
 	}
+}
+
+wstring Core::GetRandomKey()
+{
+	wstring key = L"";
+
+	for (int i = 0; i < 7; i++)
+	{
+		switch (rand() % 3)
+		{
+			case 0:
+				key += rand() % 10 + 48;
+				break;
+			case 1:
+				key += rand() % 26 + 65;
+				break;
+			case 2:
+				key += rand() % 26 + 97;
+				break;
+		}
+	}
+	return key;
 }

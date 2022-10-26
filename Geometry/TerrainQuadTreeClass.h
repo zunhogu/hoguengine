@@ -8,11 +8,6 @@ class TerrainMesh;
 class TerrainQuadTreeClass
 {
 private:
-	struct VertexType
-	{
-		XMFLOAT3 position;
-		XMFLOAT4 color;
-	};
 
 	// 쿼드 트리의 노드(서브 쿼드)가 가지고 있는 정보를 담는 구조체다.
 	struct NodeType
@@ -28,7 +23,7 @@ public:
 	TerrainQuadTreeClass(const TerrainQuadTreeClass&);
 	~TerrainQuadTreeClass();
 
-	bool Initialize(TerrainMesh* grid, ID3D11Device* device);
+	bool Initialize(TerrainMesh* mesh, ID3D11Device* device);
 	void Shutdown();
 	void Render(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix);
 
@@ -46,6 +41,6 @@ private:
 	int m_triangleCount, m_drawCount;
 
 	// 부모 쿼드로부터 물려받을 정점들을 담기 위한 배열
-	VertexType* m_vertexList;
+	TerrainVertexType* m_vertexList;
 	NodeType* m_parentNode;
 };

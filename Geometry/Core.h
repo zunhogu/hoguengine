@@ -74,4 +74,6 @@ public:
 
 	static void ConvertData(char* buff, float& dest);
 
+	static wstring GetRandomKey();
+
 };

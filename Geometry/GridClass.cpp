@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "GridClass.h"
 
+const float TERRAIN_SCALE = 100.f;
+
 GridClass::GridClass()
 {
 	m_vertices = 0;
@@ -23,7 +25,12 @@ bool GridClass::Initialize(ID3D11Device* device)
 	m_terrainWidth = 100;
 	m_terrainHeight = 100;
 
-	worldMatrix = XMMatrixTranslation(-m_terrainWidth/2, 0.0f , -m_terrainHeight/2);
+	XMMATRIX scaleMatrix, translation;
+	scaleMatrix = XMMatrixScaling(TERRAIN_SCALE, 1.f, TERRAIN_SCALE);
+
+	translation = XMMatrixTranslation(-m_terrainWidth * TERRAIN_SCALE / 2, 0.0f, -m_terrainHeight * TERRAIN_SCALE / 2);
+
+	m_worldMatrix = scaleMatrix * translation;
 
 	// Initialize the vertex and index buffer that hold the geometry for the terrain.
 	result = InitializeBuffers(device);
@@ -48,7 +55,7 @@ int GridClass::GetVertexCount()
 
 XMMATRIX GridClass::GetWorldMatrix()
 {
-	return worldMatrix;
+	return m_worldMatrix;
 }
 
 void GridClass::CopyVertexArray(void* vertexList)

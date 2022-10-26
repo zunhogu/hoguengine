@@ -76,6 +76,12 @@ struct VertexType
 	XMFLOAT4 boneWeight;
 };
 
+struct TerrainVertexType
+{
+	XMFLOAT3 position;
+	XMFLOAT4 color;
+};
+
 #define KEY_CHECK(key, state) KeyMgrClass::GetInst()->GetKeyboardState(key) == state
 #define KEY_HOLD(key) KEY_CHECK(key, KEY_STATE::HOLD)
 #define KEY_TAP(key) KEY_CHECK(key, KEY_STATE::TAP)

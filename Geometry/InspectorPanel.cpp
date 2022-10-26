@@ -105,7 +105,7 @@ void InspectorPanel::ShowPopUp()
 		ImGui::SetCursorPosX(5.0f);
 		if (ImGui::MenuItem("MeshRenderer"))
 		{
-			if (selectedNode != nullptr)
+			if (selectedNode != nullptr && selectedNode->GetMeshComp() == nullptr && selectedNode->GetTerrainComp() == nullptr)
 			{
 				MeshComp* meshComp = new MeshComp();
 				selectedNode->AddModelComp(meshComp);
@@ -118,9 +118,10 @@ void InspectorPanel::ShowPopUp()
 		ImGui::SetCursorPosX(5.0f);
 		if (ImGui::MenuItem("TerrainRenderer")) 
 		{
-			if (selectedNode != nullptr && selectedNode->GetMeshComp() == nullptr)
+			if (selectedNode != nullptr && selectedNode->GetMeshComp() == nullptr && selectedNode->GetTerrainComp() == nullptr)
 			{
-				TerrainComp* terrain = new TerrainComp();
+				TerrainComp* terrain = new TerrainComp;
+				terrain->Initialize(selectedNode);
 				selectedNode->AddModelComp(terrain);
 			}
 		}

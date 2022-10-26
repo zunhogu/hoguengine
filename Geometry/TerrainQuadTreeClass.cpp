@@ -2,6 +2,7 @@
 #include "TerrainQuadTreeClass.h"
 #include "Core.h"
 #include "TerrainComp.h"
+#include "TerrainMesh.h"
 
 TerrainQuadTreeClass::TerrainQuadTreeClass()
 {
@@ -17,7 +18,7 @@ TerrainQuadTreeClass::~TerrainQuadTreeClass()
 {
 }
 
-bool TerrainQuadTreeClass::Initialize(TerrainMesh* grid, ID3D11Device* device)
+bool TerrainQuadTreeClass::Initialize(TerrainMesh* mesh, ID3D11Device* device)
 {
 	int vertexCount;
 	float centerX, centerZ, width;
@@ -25,17 +26,17 @@ bool TerrainQuadTreeClass::Initialize(TerrainMesh* grid, ID3D11Device* device)
 	// QuadTreeClass가 가장 처음해야할 일은 TerrainClass로 부터 정보를 얻는 것이다. 
 
 	// terrain으로부터 vertexCount를 얻는다.
-	vertexCount = grid->GetVertexCount();
+	vertexCount = mesh->GetVertexCount();
 
 	// vertexList를 초기화 하기위해서 squareCount를 계산한다.
 	m_triangleCount = vertexCount / 6;
 
 	// vertexList를 초기화한다.
-	m_vertexList = new VertexType[vertexCount];
+	m_vertexList = new TerrainVertexType[vertexCount];
 	if (!m_vertexList)
 		return false;
 
-	grid->CopyVertexArray((void*)m_vertexList);
+	mesh->CopyVertexArray((void*)m_vertexList);
 
 	// 일단 상위 노드의 정점 정보가 채워지고 나면은 부모노드의 차원을 계산하는 것이 가능하고, 하위 쿼드 트리를 재귀함수를 통해 구성할 수 있따. 
 
@@ -143,7 +144,7 @@ void TerrainQuadTreeClass::CreateTreeNode(NodeType* node, float positionX, float
 {
 	int numTriangles, i, count, vertexCount, index, vertexIndex;
 	float offsetX, offsetZ;
-	VertexType* vertices;
+	TerrainVertexType* vertices;
 	unsigned long* indices;
 	bool result;
 	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
@@ -208,7 +209,7 @@ void TerrainQuadTreeClass::CreateTreeNode(NodeType* node, float positionX, float
 	vertexCount = numTriangles * 6;
 
 	// Create the vertex array.
-	vertices = new VertexType[vertexCount];
+	vertices = new TerrainVertexType[vertexCount];
 
 	// Create the index array.
 	indices = new unsigned long[vertexCount];
@@ -270,7 +271,7 @@ void TerrainQuadTreeClass::CreateTreeNode(NodeType* node, float positionX, float
 
 	// Set up the description of the vertex buffer.
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	vertexBufferDesc.ByteWidth = sizeof(VertexType) * vertexCount;
+	vertexBufferDesc.ByteWidth = sizeof(TerrainVertexType) * vertexCount;
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	vertexBufferDesc.CPUAccessFlags = 0;
 	vertexBufferDesc.MiscFlags = 0;
@@ -429,8 +430,13 @@ void TerrainQuadTreeClass::RenderNode(NodeType* node, ID3D11DeviceContext* devic
 	positionV = XMVector3TransformCoord(positionV, worldMatrix);
 	XMStoreFloat3(&position, positionV);
 
+	XMFLOAT4X4 worldMat4X4;
+	XMStoreFloat4x4(&worldMat4X4, worldMatrix);
+
+	float scale = sqrt(pow(worldMat4X4._11, 2) + pow(worldMat4X4._33, 2));
+
 	// Frustum Check
-	result = CollisionClass::GetInst()->CheckCube(position.x, 0.0f, position.z, (node->width / 2.0f));
+	result = CollisionClass::GetInst()->CheckCube(position.x, 0.0f, position.z, (node->width * scale / 2.0f));
 	if (!result)
 		return;
 
@@ -454,7 +460,7 @@ void TerrainQuadTreeClass::RenderNode(NodeType* node, ID3D11DeviceContext* devic
 	
 	// 입력조립기  /////////////////////////////////////////////////////////
 	// Set vertex buffer stride and offset.
-	stride = sizeof(VertexType);
+	stride = sizeof(TerrainVertexType);
 	offset = 0;
 
 	// Set the vertex buffer to active in the input assembler so it can be rendered.

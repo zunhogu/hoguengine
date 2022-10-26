@@ -9,6 +9,7 @@
 #include "ResMgrClass.h"
 #include "AnimationComp.h"
 #include "TerrainComp.h"
+#include "TerrainMesh.h"
 
 ModelNode* g_currNode = nullptr;
 
@@ -18,6 +19,7 @@ ModelNode::ModelNode()
 	m_treeDepth = 0;
     m_isOpenedInHierachy = false;
     m_isClickedHierachy = false;
+	m_isOnlyMeshPicking = false;
 }
 
 ModelNode::ModelNode(const ModelNode& node, vector<ModelNode*> path)
@@ -268,6 +270,16 @@ AnimationComp* ModelNode::GetAnimationComp()
 	{
 		if (m_modelComps[j]->GetCompType() == COMPONENT_TYPE::ANIMATION)
 			return (AnimationComp*)m_modelComps[j];
+	}
+	return nullptr;
+}
+
+TerrainComp* ModelNode::GetTerrainComp()
+{
+	for (int j = 0; j < m_modelComps.size(); j++)
+	{
+		if (m_modelComps[j]->GetCompType() == COMPONENT_TYPE::TERRAIN)
+			return (TerrainComp*)m_modelComps[j];
 	}
 	return nullptr;
 }
@@ -596,7 +608,7 @@ bool ModelNode::CheckPicking(XMVECTOR rayOrigin, XMVECTOR rayDir, float& _dis)
 	// first picking ( picking to obb)
 	result = tempBox->Intersects(rayOrigin, rayDir, _dis);
 	
-	if (result)
+	if (result || m_isOnlyMeshPicking)
 	{
 		// second picking
 		ModelNode* node = CheckPickingMesh(rayOrigin, rayDir);
@@ -630,6 +642,7 @@ ModelNode* ModelNode::CheckPickingMesh(XMVECTOR rayOrigin, XMVECTOR rayDir) {
 ModelNode* ModelNode::CheckPickingTriangle(XMVECTOR rayOrigin, XMVECTOR rayDir, float& tmin)
 {
 	XMVECTOR  A, B, C;
+
 
 	// 현재 노드의 component를 순회하면 min max 값을 계산
 	for (int i = 0; i < m_modelComps.size(); i++)
@@ -675,6 +688,44 @@ ModelNode* ModelNode::CheckPickingTriangle(XMVECTOR rayOrigin, XMVECTOR rayDir, 
 							g_currNode = this;
 						}
 					}
+				}
+			}
+		}
+		else if (m_modelComps[i]->GetCompType() == COMPONENT_TYPE::TERRAIN)
+		{
+			TerrainComp* terrainComp = (TerrainComp*)m_modelComps[i];
+			TerrainMesh* terrainMesh = (TerrainMesh*)ResMgrClass::GetInst()->FindMesh(terrainComp->GetTerrainMeshID());
+			
+			XMMATRIX worldMatrix = terrainMesh->GetWorldMatrix() * GetWorldMatrix();
+			XMMATRIX invWorldMatrix = XMMatrixInverse(nullptr, worldMatrix);
+
+			rayOrigin = XMVector3TransformCoord(rayOrigin, invWorldMatrix);  // World Space to Local Space
+			rayDir = XMVector3TransformNormal(rayDir, invWorldMatrix);  // World Space to Local Space
+
+			rayDir = XMVector3Normalize(rayDir);
+
+
+			TerrainVertexType* vertexArray = terrainMesh->GetVertexArray();
+			int vertexCount = terrainMesh->GetVertexCount();
+
+			for (int k = 0; k < vertexCount / 6; k++)
+			{
+				XMFLOAT4 plane;
+
+				int i0 = k * 6 + 0;
+				int i1 = k * 6 + 2;
+				int i2 = k * 6 + 4;
+				
+				// 삼각형의 정점들
+				A = XMLoadFloat3(&vertexArray[i0].position);
+				B = XMLoadFloat3(&vertexArray[i1].position);
+				C = XMLoadFloat3(&vertexArray[i2].position);
+
+				float t = 0.0f;
+				if (DirectX::TriangleTests::Intersects(rayOrigin, rayDir, A, B, C, t))
+				{
+					g_currNode = this;
+					return this;
 				}
 			}
 		}

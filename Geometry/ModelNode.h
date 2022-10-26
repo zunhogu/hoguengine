@@ -5,6 +5,7 @@ class TransformComp;
 class MeshComp;
 class MaterialComp;
 class AnimationComp;
+class TerrainComp;
 
 class ModelNode
 {
@@ -17,6 +18,7 @@ private:
 
 	int m_treeDepth;
 
+	bool m_isOnlyMeshPicking;
 	bool m_isOpenedInHierachy;
 	bool m_isClickedHierachy;
 
@@ -45,6 +47,7 @@ public:
 	ModelComp* GetModelComp(COMPONENT_TYPE type);
 	MaterialComp* GetMaterialComp(wstring id);
 	AnimationComp* GetAnimationComp();
+	TerrainComp* GetTerrainComp();
 
 	void AddChildeNode(ModelNode* node) { return m_childNodes.push_back(node); }
 	vector <ModelNode*>* GetChildNodes() { return &m_childNodes; }  // 바로 밑의 자식만 출력
@@ -85,6 +88,8 @@ public:
 	ModelNode* CheckPickingMesh(XMVECTOR rayOrigin, XMVECTOR rayDir);
 	ModelNode* CheckPickingTriangle(XMVECTOR rayOrigin, XMVECTOR rayDir, float& tmin);
 	void Clear();
+	bool GetIsOnlyMeshPicking() { return m_isOnlyMeshPicking; }
+	void SetIsOnlyMeshPicking(bool tf) { m_isOnlyMeshPicking = tf; }
 
 	// Hierachy
 	bool GetIsOpenedHierachy() { return m_isOpenedInHierachy; }

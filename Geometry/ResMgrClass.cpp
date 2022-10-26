@@ -89,6 +89,12 @@ Prefab* ResMgrClass::FindPrefab(const wstring& _strKey)
 	return iter->second;
 }
 
+void ResMgrClass::AddMesh(const wstring& _strKey, Mesh* mesh)
+{
+	if (mesh != nullptr)
+		m_mapMesh.insert(make_pair(_strKey, mesh));
+}
+
 Mesh* ResMgrClass::LoadMesh(ID3D11Device* device, const wstring& _strKey, const wstring& strRelationPath)
 {
 	// 만약 동일한 리소스가 있다면?

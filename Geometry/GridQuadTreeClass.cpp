@@ -2,6 +2,8 @@
 #include "GridQuadTreeClass.h"
 #include "Core.h"
 
+const float TERRAIN_SCALE = 100.f;
+
 GridQuadTreeClass::GridQuadTreeClass()
 {
     m_vertexList = 0;
@@ -439,9 +441,9 @@ void GridQuadTreeClass::RenderNode(NodeType* node, ID3D11DeviceContext* deviceCo
 
 	positionV = XMVector3TransformCoord(positionV, worldMatrix);
 	XMStoreFloat3(&position, positionV);
-
+	
 	// Frustum Check
-	result = CollisionClass::GetInst()->CheckCube(position.x, 0.0f, position.z, (node->width / 2.0f));
+	result = CollisionClass::GetInst()->CheckCube(position.x, 0.0f, position.z, (node->width * TERRAIN_SCALE / 2.0f));
 	if (!result)
 		return;
 

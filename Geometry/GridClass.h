@@ -12,7 +12,7 @@ private:
 		XMFLOAT4 color;
 	};
 
-	XMMATRIX worldMatrix;
+	XMMATRIX m_worldMatrix;
 
 	int m_terrainWidth, m_terrainHeight;
 	int m_vertexCount;
