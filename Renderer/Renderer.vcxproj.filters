@@ -26,6 +26,9 @@
     <Filter Include="ShaderClass\SkyDomeShaderClass">
       <UniqueIdentifier>{88d8ce90-8fe1-4e5f-b3a9-2bdfa03d5f1f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ShaderClass\TerrainShader">
+      <UniqueIdentifier>{91406b8d-8524-404c-84e7-a602fef5b674}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D3DClass.h">
@@ -60,6 +63,9 @@
     <ClInclude Include="SkyDomeShader.h">
       <Filter>ShaderClass\SkyDomeShaderClass</Filter>
     </ClInclude>
+    <ClInclude Include="TerrainShader.h">
+      <Filter>ShaderClass\TerrainShader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3DClass.cpp">
@@ -89,6 +95,9 @@
     </ClCompile>
     <ClCompile Include="SkyDomeShader.cpp">
       <Filter>ShaderClass\SkyDomeShaderClass</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainShader.cpp">
+      <Filter>ShaderClass\TerrainShader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

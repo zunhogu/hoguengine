@@ -30,7 +30,7 @@ bool TerrainComp::Initialize(ModelNode* node)
 	m_terrainMeshKey = Core::GetRandomKey();
 	ResMgrClass::GetInst()->AddMesh(m_terrainMeshKey, m_terrainMesh);
 
-	result = m_terrainMesh->Initialize(Core::GetDevice());
+	result = m_terrainMesh->Initialize(Core::GetDevice(), "contents\\texture\\heightmap01.bmp");
 	if (!result)
 		return result;
 
@@ -72,11 +72,13 @@ void TerrainComp::Render(ModelNode* node)
 	}
 }
 
-void TerrainComp::RederMesh(XMMATRIX worldMatrix, XMMATRIX viewMatrix)
+void TerrainComp::RederMesh(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT4 lightDiffuseColor, XMFLOAT3 lightPos)
 {
 	XMMATRIX newWorldMatrix = XMMatrixMultiply(m_terrainMesh->GetWorldMatrix(), worldMatrix);
 
-	GraphicsClass::GetInst()->RenderGridShaderSetParam(Core::GetDeviceContext(), newWorldMatrix, viewMatrix);
+	ID3D11ShaderResourceView* texture = ResMgrClass::GetInst()->FindTexture(L"defaultTexture")->GetTexture();
+
+	GraphicsClass::GetInst()->RenderTerrainShaderSetParam(Core::GetDeviceContext(), newWorldMatrix, viewMatrix, lightDiffuseColor, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), lightPos, texture);
 
 	m_terrainQuad->Render(Core::GetDeviceContext(), newWorldMatrix);
 }

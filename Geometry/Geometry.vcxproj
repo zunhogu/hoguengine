@@ -173,7 +173,6 @@
     <ClInclude Include="define.h" />
     <ClInclude Include="GridClass.h" />
     <ClInclude Include="GridQuadTreeClass.h" />
-    <ClInclude Include="HeightMapTexture.h" />
     <ClInclude Include="HierachyPanel.h" />
     <ClInclude Include="ImGuIRenderClass.h" />
     <ClInclude Include="InspectorPanel.h" />
@@ -226,7 +225,6 @@
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="GridClass.cpp" />
     <ClCompile Include="GridQuadTreeClass.cpp" />
-    <ClCompile Include="HeightMapTexture.cpp" />
     <ClCompile Include="HierachyPanel.cpp" />
     <ClCompile Include="ImGuIRenderClass.cpp" />
     <ClCompile Include="InspectorPanel.cpp" />

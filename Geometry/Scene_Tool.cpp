@@ -120,9 +120,6 @@ void Scene_Tool::Frame()
 		ResMgrClass::GetInst()->LoadPrefab(L"id_cylinder", L"contents\\assets\\id_cylinder\\id_cylinder.pref");
 		ResMgrClass::GetInst()->LoadPrefab(L"id_plane", L"contents\\assets\\id_plane\\id_plane.pref");
 
-
-		ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), L"heightmap", L"contents\\texture\\heightmap.png", TEXTURE_TYPE::HEIGHTMAP);
-
 		ModelNode* empty = new ModelNode;
 		empty->AddModelComp(new ModelInfoComp);
 		empty->AddModelComp(new TransformComp);

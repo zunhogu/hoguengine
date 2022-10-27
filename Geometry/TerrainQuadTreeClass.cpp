@@ -479,7 +479,7 @@ void TerrainQuadTreeClass::RenderNode(NodeType* node, ID3D11DeviceContext* devic
 	indexCount = node->triangleCount * 6;
 
 	// Call the terrain shader to render the polygons in this node.
-	GraphicsClass::GetInst()->RenderGirdShader(deviceContext, indexCount);
+	GraphicsClass::GetInst()->RenderTerrainShader(deviceContext, indexCount);
 
 	// Increase the count of the number of polygons that have been rendered during this frame.
 	m_drawCount += node->triangleCount;

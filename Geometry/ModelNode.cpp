@@ -360,7 +360,7 @@ void ModelNode::Render(XMMATRIX viewMatirx, XMFLOAT3 cameraPos, XMFLOAT4 lightDi
 			{
 				TerrainComp* comp = (TerrainComp*)m_modelComps[i];
 
-				comp->RederMesh(worldMatrix, viewMatirx);
+				comp->RederMesh(worldMatrix, viewMatirx, lightDiffuseColor, lightPos);
 			}
 				break;
 			case COMPONENT_TYPE::END:

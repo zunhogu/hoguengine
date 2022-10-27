@@ -45,7 +45,7 @@ public:
 	virtual void Shutdown();
 
 	virtual void Render(ModelNode* node);
-	void RederMesh(XMMATRIX worldMatrix, XMMATRIX viewMatrix);
+	void RederMesh(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT4 lightDiffuseColor, XMFLOAT3 lightPos);
 	void Mesh(ModelNode* node);
 	void TextureLayer(ModelNode* node);
 	void Brush(ModelNode* node);

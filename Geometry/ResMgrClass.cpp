@@ -7,7 +7,6 @@
 #include "Mesh.h"
 #include "Material.h"
 #include "TextureClass.h"
-#include "HeightMapTexture.h"
 #include "SoundClass.h"
 #include "Animation.h"
 
@@ -181,7 +180,6 @@ TextureClass* ResMgrClass::LoadTexture(ID3D11Device* device, const wstring& _str
 		pTex = new TextureClass;
 		break;
 	case TEXTURE_TYPE::HEIGHTMAP:
-		pTex = new HeightMapTexture;
 		break;
 	case TEXTURE_TYPE::END:
 		break;

@@ -79,7 +79,16 @@ struct VertexType
 struct TerrainVertexType
 {
 	XMFLOAT3 position;
+	XMFLOAT2 texture;
+	XMFLOAT3 normal;
 	XMFLOAT4 color;
+};
+
+struct HeightMapType
+{
+	float x, y, z;
+	float tu, tv;
+	float nx, ny, nz;
 };
 
 #define KEY_CHECK(key, state) KeyMgrClass::GetInst()->GetKeyboardState(key) == state

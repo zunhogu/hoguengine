@@ -86,9 +86,6 @@
     <Filter Include="Resource\Animation">
       <UniqueIdentifier>{40a57221-7a22-4beb-b315-37a0a1b79513}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource\Texture\HeightMapTexture">
-      <UniqueIdentifier>{4d8b4af5-d53b-4d77-9416-58901088783f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Scene\Scene_Tool\Object">
       <UniqueIdentifier>{db6a3541-22d6-4ca4-b73b-1f1fa48ca0c1}</UniqueIdentifier>
     </Filter>
@@ -266,9 +263,6 @@
     <ClInclude Include="Animation.h">
       <Filter>Resource\Animation</Filter>
     </ClInclude>
-    <ClInclude Include="HeightMapTexture.h">
-      <Filter>Resource\Texture\HeightMapTexture</Filter>
-    </ClInclude>
     <ClInclude Include="GridClass.h">
       <Filter>Scene\Scene_Tool\Object\Grid</Filter>
     </ClInclude>
@@ -409,9 +403,6 @@
     </ClCompile>
     <ClCompile Include="Animation.cpp">
       <Filter>Resource\Animation</Filter>
-    </ClCompile>
-    <ClCompile Include="HeightMapTexture.cpp">
-      <Filter>Resource\Texture\HeightMapTexture</Filter>
     </ClCompile>
     <ClCompile Include="GridClass.cpp">
       <Filter>Scene\Scene_Tool\Object\Grid</Filter>

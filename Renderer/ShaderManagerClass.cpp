@@ -3,6 +3,7 @@
 #include "ModelShader.h"
 #include "GridShader.h"
 #include "SkyDomeShader.h"
+#include "TerrainShader.h"
 
 ShaderManagerClass::ShaderManagerClass()
 {
@@ -11,6 +12,7 @@ ShaderManagerClass::ShaderManagerClass()
 	m_modelShader = 0;
 	m_gridShader = 0;
 	m_skyDomeShader = 0;
+	m_terrainShader = 0;
 }
 
 ShaderManagerClass::ShaderManagerClass(const ShaderManagerClass&)
@@ -45,6 +47,12 @@ bool ShaderManagerClass::Initialize(D3DClass* d3d, HWND hwnd)
 
 	m_skyDomeShader->Initialize(m_D3D->GetDevice(), m_hwnd);
 
+	m_terrainShader = new TerrainShader;
+	if (!m_terrainShader)
+		return false;
+
+	m_terrainShader->Initialize(m_D3D->GetDevice(), m_hwnd);
+
 	return true;
 }
 
@@ -71,6 +79,16 @@ void ShaderManagerClass::RenderGridShaderSetParam(ID3D11DeviceContext* deviceCon
 void ShaderManagerClass::RenderGridShader(ID3D11DeviceContext* deviceContext, int indexCount)
 {
 	m_gridShader->RenderShader(deviceContext, indexCount);
+}
+
+void ShaderManagerClass::RenderTerrainShaderSetParam(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, ID3D11ShaderResourceView* texture)
+{
+	m_terrainShader->SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, ambientColor, diffuseColor, lightDirection, texture);
+}
+
+void ShaderManagerClass::RenderTerrainShader(ID3D11DeviceContext* deviceContext, int indexCount)
+{
+	m_terrainShader->RenderShader(deviceContext, indexCount);
 }
 
 void ShaderManagerClass::RenderSkyDomeShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 apexColor, XMFLOAT4 centerColor)
