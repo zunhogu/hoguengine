@@ -52,8 +52,10 @@ public:
 	void ShutdownHeightMap();
 
 	void CalculateTextureCoordinates();
-
 private:
 	virtual bool InitializeBuffers(ID3D11Device* device);
 	virtual void ShutdownBuffers();
+
+	float LinearInterpoation(float A, float B, float Alpha);
+	float BilinearInterpolation(float A, float B, float C, float D, float Alpha, float Beta);
 };

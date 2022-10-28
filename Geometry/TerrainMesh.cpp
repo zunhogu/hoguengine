@@ -1,12 +1,14 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "TerrainMesh.h"
 #include "Core.h"
+
+#define GRID_SIZE 512
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 // TERRAIN MESH ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////
 TerrainMesh::TerrainMesh()
-	: m_terrainHeight(100), m_terrainWidth(100), m_heightMapWidth(0), m_heightMapHeight(0)
+	: m_terrainHeight(GRID_SIZE), m_terrainWidth(GRID_SIZE), m_heightMapWidth(0), m_heightMapHeight(0)
 {
 }
 
@@ -30,9 +32,9 @@ bool TerrainMesh::Initialize(ID3D11Device* device, char* heightFileName)
 {
 	bool result = true;
 
-	// ÇöÀç Height ¸Ê°ú Gird¿¡ ´ëÇÑ Á¤Á¡ ¹è¿­Àº µû·Î ±¸Çß´Ù.
-	// Gird¿Í Height¸ÊÀÇ »çÀÌÁî°¡ ´Ù¸£±â ¶§¹®¿¡ º¸°£À» ÅëÇØ¼­ »õ·Î¿î Á¤Á¡ ¹è¿­À» ¸¸µçµÚ ÄõµåÆ®¸®·Î ´øÁ®Áà¾ßÇÑ´Ù.
-	// ¶Ç ÇöÀç´Â ±âº»µµÇü À§»ó±¸Á¶°¡ LineÀÎµ¥, ÅØ½ºÃÄ ¸ÊÇÎÀ» À§ÇØ¼­´Â Triangle·Î ¹Ù²ã¾ßÇÑ´Ù. ÀÌ¿¡ ´ëÇØ¼­´Â Á» ´õ °í¹ÎÇØº¸ÀÚ
+	// í˜„ì¬ Height ë§µê³¼ Girdì— ëŒ€í•œ ì •ì  ë°°ì—´ì€ ë”°ë¡œ êµ¬í–ˆë‹¤.
+	// Girdì™€ Heightë§µì˜ ì‚¬ì´ì¦ˆê°€ ë‹¤ë¥´ê¸° ë•Œë¬¸ì— ë³´ê°„ì„ í†µí•´ì„œ ìƒˆë¡œìš´ ì •ì  ë°°ì—´ì„ ë§Œë“ ë’¤ ì¿¼ë“œíŠ¸ë¦¬ë¡œ ë˜ì ¸ì¤˜ì•¼í•œë‹¤.
+	// ë˜ í˜„ì¬ëŠ” ê¸°ë³¸ë„í˜• ìœ„ìƒêµ¬ì¡°ê°€ Lineì¸ë°, í…ìŠ¤ì³ ë§µí•‘ì„ ìœ„í•´ì„œëŠ” Triangleë¡œ ë°”ê¿”ì•¼í•œë‹¤. ì´ì— ëŒ€í•´ì„œëŠ” ì¢€ ë” ê³ ë¯¼í•´ë³´ì
 
 	m_worldMatrix = XMMatrixTranslation(-m_terrainWidth / 2, 0.0f, -m_terrainHeight / 2);
 
@@ -47,7 +49,7 @@ bool TerrainMesh::Initialize(ID3D11Device* device, char* heightFileName)
 	// Normalize the height of the height map.
 	NormalizeHeightMap();
 
-	// ¹ı¼±¿¡ ´ëÇØ¼­ °è»êÇÑ´Ù.
+	// ë²•ì„ ì— ëŒ€í•´ì„œ ê³„ì‚°í•œë‹¤.
 	result = CalculateNormals();
 	if (!result)
 		return false;
@@ -117,22 +119,22 @@ bool TerrainMesh::LoadHeightMap(char* path)
 	if (error != 0)
 		return false;
 
-	// Height Map ArrayÀ» »ı¼º
+	// Height Map Arrayì„ ìƒì„±
 	m_heightMap = new HeightMapType[m_heightMapWidth * m_heightMapHeight];
 	if (!m_heightMap)
 		return false;
 
 	k = 0;
 
-	// heightMapÀÇ bitmap data°¡ bitmapImage 1Â÷¿ø ¹è¿­¿¡ (x, y, z) ´ÜÀ§·Î ¼ø¼­´ë·Î µé¾î°¡ ÀÖ´Ù.
-	// x, z °ª¿¡´Â ÇØ´ç ÅØ¼¿ÀÇ ÀÎµ¦½º°¡, y¿¡´Â ³ôÀÌ °ªÀÌ µé¾î°¡ ÀÖÀ½
+	// heightMapì˜ bitmap dataê°€ bitmapImage 1ì°¨ì› ë°°ì—´ì— (x, y, z) ë‹¨ìœ„ë¡œ ìˆœì„œëŒ€ë¡œ ë“¤ì–´ê°€ ìˆë‹¤.
+	// x, z ê°’ì—ëŠ” í•´ë‹¹ í…ì…€ì˜ ì¸ë±ìŠ¤ê°€, yì—ëŠ” ë†’ì´ ê°’ì´ ë“¤ì–´ê°€ ìˆìŒ
 	for (j = 0; j < m_heightMapHeight; j++)
 	{
 		for (i = 0; i < m_heightMapWidth; i++)
 		{
 			height = bitmapImage[k];
 
-			index = (m_terrainHeight * j) + i;
+			index = (m_heightMapHeight * j) + i;
 
 			m_heightMap[index].x = (float)i;
 			m_heightMap[index].y = (float)height;
@@ -240,7 +242,7 @@ bool TerrainMesh::CalculateNormals()
 			}
 
 			// Bottom right face.
-			if ((i < (m_terrainWidth - 1)) && ((j - 1) >= 0))
+			if ((i < (m_heightMapWidth - 1)) && ((j - 1) >= 0))
 			{
 				index = ((j - 1) * (m_heightMapHeight - 1)) + i;
 
@@ -262,7 +264,7 @@ bool TerrainMesh::CalculateNormals()
 			}
 
 			// Upper right face.
-			if ((i < (m_terrainWidth - 1)) && (j < (m_heightMapHeight - 1)))
+			if ((i < (m_heightMapWidth - 1)) && (j < (m_heightMapHeight - 1)))
 			{
 				index = (j * (m_heightMapHeight - 1)) + i;
 
@@ -364,111 +366,219 @@ void TerrainMesh::CalculateTextureCoordinates()
 	return;
 }
 
+
 bool TerrainMesh::InitializeBuffers(ID3D11Device* device)
 {
-	int index, i, j, index1, index2, index3, index4;
-	float positionX, positionZ;
+	int index;
+	int index1, index2, index3, index4;
+	float tu, tv;
+	int gridSize = m_terrainWidth * m_terrainHeight;
+	int heightMapSize = m_heightMapWidth * m_heightMapHeight;
 
-	// Calculate the number of vertices in the terrain mesh.
 	m_vertexCount = (m_terrainWidth - 1) * (m_terrainHeight - 1) * 12;
-
-	// Create the vertex array.
 	m_vertices = new TerrainVertexType[m_vertexCount];
-	if (!m_vertices)
-		return false;
+	if (!m_vertices) return false;
 
-	// Initialize the index to the vertex array.
 	index = 0;
 
-	// Load the vertex and index arrays with the terrain data.
-	for (j = 0; j < (m_terrainHeight - 1); j++)
+	if (gridSize <= heightMapSize)
 	{
-		for (i = 0; i < (m_terrainWidth - 1); i++)
+		// gridSizeì™€ heightMapSizeê°€ ê°™ë‹¤ë©´ ë‹¨ìˆœíˆ ê°’ì„ ë³µì‚¬í•´ì£¼ë©´ ëœë‹¤.
+		// girdSizeê°€ ë” ì‘ë‹¤ëŠ” ê²ƒì€ HeightMapì—ì„œ ëª‡ê°€ì§€ ê°’ì„ ë²„ë ¤ì¤˜ì•¼í•œë‹¤ëŠ” ê²ƒì´ë‹¤
+		// ë²„ë ¤ì£¼ëŠ” ë™ì‹œì— ë””í…Œì¼ì€ ê°ì†Œë˜ì§€ë§Œ Low polygonì„ ê°€ì§ˆ ìˆ˜ ìˆë‹¤.
+
+		int offset = m_heightMapWidth / m_terrainWidth;
+
+		for (int j = 0; j < (m_heightMapHeight - offset); j += offset)
 		{
+			for (int i = 0; i < (m_heightMapWidth - offset); i += offset)
+			{
+				index1 = (m_heightMapHeight * j) + i;          // Bottom left.
+				index2 = (m_heightMapHeight * j) + (i + offset);      // Bottom right.
+				index3 = (m_heightMapHeight * (j + offset)) + i;      // Upper left.
+				index4 = (m_heightMapHeight * (j + offset)) + (i + offset);  // Upper right.
 
-			// Upper left.
-			positionX = (float)i;
-			positionZ = (float)(j + 1);
-			m_vertices[index].position = XMFLOAT3(positionX, 0.0f, positionZ);
-			m_vertices[index].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-			index++;
+				// 1. Upper Left 
+				tv = m_heightMap[index3].tv;
+				if (tv == 1.0f) { tv = 0.0f; }
+				m_vertices[index].position = XMFLOAT3(m_heightMap[index3].x, m_heightMap[index3].y, m_heightMap[index3].z);
+				m_vertices[index].texture = XMFLOAT2(m_heightMap[index3].tu, tv);
+				m_vertices[index].normal = XMFLOAT3(m_heightMap[index3].nx, m_heightMap[index3].ny, m_heightMap[index3].nz);
+				index++;
 
-			// Upper right.
-			positionX = (float)(i + 1);
-			positionZ = (float)(j + 1);
-			m_vertices[index].position = XMFLOAT3(positionX, 0.0f, positionZ);
-			m_vertices[index].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-			index++;
+				// 2. Upper Right
+				tu = m_heightMap[index4].tu;
+				tv = m_heightMap[index4].tv;
+				if (tu == 0.0f) { tu = 1.0f; }
+				if (tv == 1.0f) { tv = 0.0f; }
+				m_vertices[index].position = XMFLOAT3(m_heightMap[index4].x, m_heightMap[index4].y, m_heightMap[index4].z);
+				m_vertices[index].texture = XMFLOAT2(m_heightMap[index4].tu, tv);
+				m_vertices[index].normal = XMFLOAT3(m_heightMap[index4].nx, m_heightMap[index4].ny, m_heightMap[index4].nz);
+				index++;
 
-			// Upper right.
-			positionX = (float)(i + 1);
-			positionZ = (float)(j + 1);
-			m_vertices[index].position = XMFLOAT3(positionX, 0.0f, positionZ);
-			m_vertices[index].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-			index++;
+				// 3. Upper Right
+				tu = m_heightMap[index4].tu;
+				tv = m_heightMap[index4].tv;
+				if (tu == 0.0f) { tu = 1.0f; }
+				if (tv == 1.0f) { tv = 0.0f; }
+				m_vertices[index].position = XMFLOAT3(m_heightMap[index4].x, m_heightMap[index4].y, m_heightMap[index4].z);
+				m_vertices[index].texture = XMFLOAT2(m_heightMap[index4].tu, tv);
+				m_vertices[index].normal = XMFLOAT3(m_heightMap[index4].nx, m_heightMap[index4].ny, m_heightMap[index4].nz);
+				index++;
 
-			// Bottom left.
-			positionX = (float)i;
-			positionZ = (float)j;
-			m_vertices[index].position = XMFLOAT3(positionX, 0.0f, positionZ);
-			m_vertices[index].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-			index++;
+				// 4. Bottom Left
+				m_vertices[index].position = XMFLOAT3(m_heightMap[index1].x, m_heightMap[index1].y, m_heightMap[index1].z);
+				m_vertices[index].texture = XMFLOAT2(m_heightMap[index1].tu, m_heightMap[index1].tv);
+				m_vertices[index].normal = XMFLOAT3(m_heightMap[index1].nx, m_heightMap[index1].ny, m_heightMap[index1].nz);
+				index++;
 
-			// Bottom left.
-			positionX = (float)i;
-			positionZ = (float)j;
-			m_vertices[index].position = XMFLOAT3(positionX, 0.0f, positionZ);
-			m_vertices[index].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-			index++;
+				// 5. Bottom Left
+				m_vertices[index].position = XMFLOAT3(m_heightMap[index1].x, m_heightMap[index1].y, m_heightMap[index1].z);
+				m_vertices[index].texture = XMFLOAT2(m_heightMap[index1].tu, m_heightMap[index1].tv);
+				m_vertices[index].normal = XMFLOAT3(m_heightMap[index1].nx, m_heightMap[index1].ny, m_heightMap[index1].nz);
+				index++;
 
-			// Upper left.
-			positionX = (float)(i + 1);
-			positionZ = (float)(j + 1);
-			m_vertices[index].position = XMFLOAT3(positionX, 0.0f, positionZ);
-			m_vertices[index].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-			index++;
+				// 6. Upper Left 
+				tv = m_heightMap[index3].tv;
+				if (tv == 1.0f) { tv = 0.0f; }
+				m_vertices[index].position = XMFLOAT3(m_heightMap[index3].x, m_heightMap[index3].y, m_heightMap[index3].z);
+				m_vertices[index].texture = XMFLOAT2(m_heightMap[index3].tu, tv);
+				m_vertices[index].normal = XMFLOAT3(m_heightMap[index3].nx, m_heightMap[index3].ny, m_heightMap[index3].nz);
+				index++;
 
-			// Bottom left.
-			positionX = (float)i;
-			positionZ = (float)j;
-			m_vertices[index].position = XMFLOAT3(positionX, 0.0f, positionZ);
-			m_vertices[index].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-			index++;
+				// 7. Bottom Left
+				m_vertices[index].position = XMFLOAT3(m_heightMap[index1].x, m_heightMap[index1].y, m_heightMap[index1].z);
+				m_vertices[index].texture = XMFLOAT2(m_heightMap[index1].tu, m_heightMap[index1].tv);
+				m_vertices[index].normal = XMFLOAT3(m_heightMap[index1].nx, m_heightMap[index1].ny, m_heightMap[index1].nz);
+				index++;
 
-			// Upper right.
-			positionX = (float)(i + 1);
-			positionZ = (float)(j + 1);
-			m_vertices[index].position = XMFLOAT3(positionX, 0.0f, positionZ);
-			m_vertices[index].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-			index++;
+				// 8. Upper Right
+				tu = m_heightMap[index4].tu;
+				tv = m_heightMap[index4].tv;
+				if (tu == 0.0f) { tu = 1.0f; }
+				if (tv == 1.0f) { tv = 0.0f; }
+				m_vertices[index].position = XMFLOAT3(m_heightMap[index4].x, m_heightMap[index4].y, m_heightMap[index4].z);
+				m_vertices[index].texture = XMFLOAT2(m_heightMap[index4].tu, tv);
+				m_vertices[index].normal = XMFLOAT3(m_heightMap[index4].nx, m_heightMap[index4].ny, m_heightMap[index4].nz);
+				index++;
 
-			// Upper right.
-			positionX = (float)(i + 1);
-			positionZ = (float)(j + 1);
-			m_vertices[index].position = XMFLOAT3(positionX, 0.0f, positionZ);
-			m_vertices[index].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-			index++;
+				// 9. Upper Right
+				tu = m_heightMap[index4].tu;
+				tv = m_heightMap[index4].tv;
+				if (tu == 0.0f) { tu = 1.0f; }
+				if (tv == 1.0f) { tv = 0.0f; }
+				m_vertices[index].position = XMFLOAT3(m_heightMap[index4].x, m_heightMap[index4].y, m_heightMap[index4].z);
+				m_vertices[index].texture = XMFLOAT2(m_heightMap[index4].tu, tv);
+				m_vertices[index].normal = XMFLOAT3(m_heightMap[index4].nx, m_heightMap[index4].ny, m_heightMap[index4].nz);
+				index++;
 
-			// Bottom right.
-			positionX = (float)(i + 1);
-			positionZ = (float)j;
-			m_vertices[index].position = XMFLOAT3(positionX, 0.0f, positionZ);
-			m_vertices[index].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-			index++;
+				// 10. Bottom Right
+				tu = m_heightMap[index2].tu;
+				if (tu == 0.0f) { tu = 1.0f; }
+				m_vertices[index].position = XMFLOAT3(m_heightMap[index2].x, m_heightMap[index2].y, m_heightMap[index2].z);
+				m_vertices[index].texture = XMFLOAT2(tu, m_heightMap[index2].tv);
+				m_vertices[index].normal = XMFLOAT3(m_heightMap[index2].nx, m_heightMap[index2].ny, m_heightMap[index2].nz);
+				index++;
 
-			// Bottom right.
-			positionX = (float)(i + 1);
-			positionZ = (float)j;
-			m_vertices[index].position = XMFLOAT3(positionX, 0.0f, positionZ);
-			m_vertices[index].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-			index++;
+				// 11. Bottom Right
+				tu = m_heightMap[index2].tu;
+				if (tu == 0.0f) { tu = 1.0f; }
+				m_vertices[index].position = XMFLOAT3(m_heightMap[index2].x, m_heightMap[index2].y, m_heightMap[index2].z);
+				m_vertices[index].texture = XMFLOAT2(tu, m_heightMap[index2].tv);
+				m_vertices[index].normal = XMFLOAT3(m_heightMap[index2].nx, m_heightMap[index2].ny, m_heightMap[index2].nz);
+				index++;
 
-			// Bottom left.
-			positionX = (float)i;
-			positionZ = (float)j;
-			m_vertices[index].position = XMFLOAT3(positionX, 0.0f, positionZ);
-			m_vertices[index].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-			index++;
+				// 12. Bottom Left
+				m_vertices[index].position = XMFLOAT3(m_heightMap[index1].x, m_heightMap[index1].y, m_heightMap[index1].z);
+				m_vertices[index].texture = XMFLOAT2(m_heightMap[index1].tu, m_heightMap[index1].tv);
+				m_vertices[index].normal = XMFLOAT3(m_heightMap[index1].nx, m_heightMap[index1].ny, m_heightMap[index1].nz);
+				index++;
+			}
+
+		}
+	}
+	else if (gridSize > heightMapSize)
+	{
+		// gridSizeê°€ heightMapSize ë³´ë‹¤ í¬ë‹¤ë©´ heightMapì—ëŠ” ì—†ëŠ” ìƒˆë¡œìš´ ê°’ì„ ë³´ê°„í•˜ì—¬ ë„£ì–´ì¤˜ì•¼í•œë‹¤.
+
+		int count = m_terrainWidth / m_heightMapWidth + 1;  // ë³´ê°„ìœ¼ë¡œ ì–»ì„ ê°’ë“¤ì˜ ê°œìˆ˜
+
+		for (int j = 0; j < (m_heightMapHeight - 1); j++)
+		{
+			for (int i = 0; i < (m_heightMapWidth - 1); i++)
+			{
+				index1 = (m_heightMapHeight * j) + i;          // Bottom left.
+				index2 = (m_heightMapHeight * j) + (i + 1);      // Bottom right.
+				index3 = (m_heightMapHeight * (j + 1)) + i;      // Upper left.
+				index4 = (m_heightMapHeight * (j + 1)) + (i + 1);  // Upper right.
+
+				HeightMapType upper_left = m_heightMap[index3];
+				HeightMapType upper_right = m_heightMap[index4];
+				HeightMapType bottom_left = m_heightMap[index1];
+				HeightMapType bottom_right = m_heightMap[index2];
+
+				vector<HeightMapType> crd1, crd2, crd;
+
+				// upper_left <-> bottom_left
+				for (int i = 0; i < count; i++)
+				{
+					HeightMapType temp;
+					temp.x = LinearInterpoation(upper_left.x, bottom_left.x, (float)i / (count-1));
+					temp.y = LinearInterpoation(upper_left.y, bottom_left.y, (float)i / (count - 1));
+					temp.z = LinearInterpoation(upper_left.z, bottom_left.z, (float)i / (count - 1));
+
+					temp.tu = LinearInterpoation(upper_left.tu, bottom_left.tu, (float)i / (count - 1));
+					temp.tv = LinearInterpoation(upper_left.tv, bottom_left.tv, (float)i / (count - 1));
+
+					temp.nx = LinearInterpoation(upper_left.nx, bottom_left.nx, (float)i / (count - 1));
+					temp.ny = LinearInterpoation(upper_left.ny, bottom_left.ny, (float)i / (count - 1));
+					temp.nz = LinearInterpoation(upper_left.nz, bottom_left.nz, (float)i / (count - 1));
+
+					crd1.push_back(temp);
+				}
+
+				// upper_right <-> bottom right;
+				for (int i = 0; i < count; i++)
+				{
+					HeightMapType temp;
+					temp.x = LinearInterpoation(upper_right.x, bottom_right.x, (float)i / (count - 1));
+					temp.y = LinearInterpoation(upper_right.y, bottom_right.y, (float)i / (count - 1));
+					temp.z = LinearInterpoation(upper_right.z, bottom_right.z, (float)i / (count - 1));
+
+					temp.tu = LinearInterpoation(upper_right.tu, bottom_right.tu, (float)i / (count - 1));
+					temp.tv = LinearInterpoation(upper_right.tv, bottom_right.tv, (float)i / (count - 1));
+
+					temp.nx = LinearInterpoation(upper_right.nx, bottom_right.nx, (float)i / (count - 1));
+					temp.ny = LinearInterpoation(upper_right.ny, bottom_right.ny, (float)i / (count - 1));
+					temp.nz = LinearInterpoation(upper_right.nz, bottom_right.nz, (float)i / (count - 1));
+
+					crd2.push_back(temp);
+				}
+
+				// crd1 <-> crd2 interpolation
+				for (int i = 0; i < crd1.size(); i++)
+				{
+					for (int j = 0; j < count; j++)
+					{
+						HeightMapType temp;
+						temp.x = LinearInterpoation(crd1[i].x, crd2[i].x, (float)j / (count - 1));
+						temp.y = LinearInterpoation(crd1[i].y, crd2[i].y, (float)j / (count - 1));
+						temp.z = LinearInterpoation(crd1[i].z, crd2[i].z, (float)j / (count - 1));
+
+						temp.tu = LinearInterpoation(crd1[i].tu, crd2[i].tu, (float)j / (count - 1));
+						temp.tv = LinearInterpoation(crd1[i].tv, crd2[i].tv, (float)j / (count - 1));
+
+						temp.nx = LinearInterpoation(crd1[i].nx, crd2[i].nx, (float)j / (count - 1));
+						temp.ny = LinearInterpoation(crd1[i].ny, crd2[i].ny, (float)j / (count - 1));
+						temp.nz = LinearInterpoation(crd1[i].nz, crd2[i].nz, (float)j / (count - 1));
+
+						crd.push_back(temp);
+					}
+				}
+
+				// ë³´ê°„ì´ ì™„ë£Œëœ crdì— ìˆëŠ” vertex ì •ë³´ë¡œ ì •ì ë°°ì—´ ë§Œë“¤ì–´ì£¼ë©´ ëœë‹¤.
+
+			}
 		}
 	}
 
@@ -483,4 +593,14 @@ void TerrainMesh::ShutdownBuffers()
 		delete[] m_vertices;
 		m_vertices = 0;
 	}
+}
+
+float TerrainMesh::LinearInterpoation(float A, float B, float Alpha)
+{
+	return A * (1 - Alpha) + B * Alpha;
+}
+
+float TerrainMesh::BilinearInterpolation(float A, float B, float C, float D, float Alpha, float Beta)
+{
+	return (1 - Beta) * (1 - Alpha) * A + Beta * Alpha * B + Beta * (1 - Alpha) * D + (1 - Beta) * Alpha * C;
 }
