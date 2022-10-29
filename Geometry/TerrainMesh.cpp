@@ -2,7 +2,7 @@
 #include "TerrainMesh.h"
 #include "Core.h"
 
-#define GRID_SIZE 512
+#define GRID_SIZE 128
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 // TERRAIN MESH ////////////////////////////////////////////////////////////////////////////
@@ -36,7 +36,6 @@ bool TerrainMesh::Initialize(ID3D11Device* device, char* heightFileName)
 	// Gird와 Height맵의 사이즈가 다르기 때문에 보간을 통해서 새로운 정점 배열을 만든뒤 쿼드트리로 던져줘야한다.
 	// 또 현재는 기본도형 위상구조가 Line인데, 텍스쳐 맵핑을 위해서는 Triangle로 바꿔야한다. 이에 대해서는 좀 더 고민해보자
 
-	m_worldMatrix = XMMatrixTranslation(-m_terrainWidth / 2, 0.0f, -m_terrainHeight / 2);
 
 	string path = Core::ConvWcharTochar(PathMgr::GetInst()->GetContentPath());
 	path += heightFileName;
@@ -576,8 +575,113 @@ bool TerrainMesh::InitializeBuffers(ID3D11Device* device)
 					}
 				}
 
-				// 보간이 완료된 crd에 있는 vertex 정보로 정점배열 만들어주면 된다.
+				// 보간을 한 값으로 정점배열을 생성
+				for (int j = 0; j < count-1; j++)
+				{
+					for (int i = 0; i < count-1; i++)
+					{
+						index1 = (count * j) + i;          // Bottom left.
+						index2 = (count * j) + (i + 1);      // Bottom right.
+						index3 = (count * (j + 1)) + i;      // Upper left.
+						index4 = (count * (j + 1)) + (i + 1);  // Upper right.
 
+						// 1. Upper Left 
+						tv = crd[index3].tv;
+						if (tv == 1.0f) { tv = 0.0f; }
+						m_vertices[index].position = XMFLOAT3(crd[index3].x, crd[index3].y, crd[index3].z);
+						m_vertices[index].texture = XMFLOAT2(crd[index3].tu, tv);
+						m_vertices[index].normal = XMFLOAT3(crd[index3].nx, crd[index3].ny, crd[index3].nz);
+						index++;
+
+						// 2. Upper Right
+						tu = crd[index4].tu;
+						tv = crd[index4].tv;
+						if (tu == 0.0f) { tu = 1.0f; }
+						if (tv == 1.0f) { tv = 0.0f; }
+						m_vertices[index].position = XMFLOAT3(crd[index4].x, crd[index4].y, crd[index4].z);
+						m_vertices[index].texture = XMFLOAT2(crd[index4].tu, tv);
+						m_vertices[index].normal = XMFLOAT3(crd[index4].nx, crd[index4].ny, crd[index4].nz);
+						index++;
+
+						// 3. Upper Right
+						tu = crd[index4].tu;
+						tv = crd[index4].tv;
+						if (tu == 0.0f) { tu = 1.0f; }
+						if (tv == 1.0f) { tv = 0.0f; }
+						m_vertices[index].position = XMFLOAT3(crd[index4].x, crd[index4].y, crd[index4].z);
+						m_vertices[index].texture = XMFLOAT2(crd[index4].tu, tv);
+						m_vertices[index].normal = XMFLOAT3(crd[index4].nx, crd[index4].ny, crd[index4].nz);
+						index++;
+
+						// 4. Bottom Left
+						m_vertices[index].position = XMFLOAT3(crd[index1].x, crd[index1].y, crd[index1].z);
+						m_vertices[index].texture = XMFLOAT2(crd[index1].tu, crd[index1].tv);
+						m_vertices[index].normal = XMFLOAT3(crd[index1].nx, crd[index1].ny, crd[index1].nz);
+						index++;
+
+						// 5. Bottom Left
+						m_vertices[index].position = XMFLOAT3(crd[index1].x, crd[index1].y, crd[index1].z);
+						m_vertices[index].texture = XMFLOAT2(crd[index1].tu, crd[index1].tv);
+						m_vertices[index].normal = XMFLOAT3(crd[index1].nx, crd[index1].ny, crd[index1].nz);
+						index++;
+
+						// 6. Upper Left 
+						tv = crd[index3].tv;
+						if (tv == 1.0f) { tv = 0.0f; }
+						m_vertices[index].position = XMFLOAT3(crd[index3].x, crd[index3].y, crd[index3].z);
+						m_vertices[index].texture = XMFLOAT2(crd[index3].tu, tv);
+						m_vertices[index].normal = XMFLOAT3(crd[index3].nx, crd[index3].ny, crd[index3].nz);
+						index++;
+
+						// 7. Bottom Left
+						m_vertices[index].position = XMFLOAT3(crd[index1].x, crd[index1].y, crd[index1].z);
+						m_vertices[index].texture = XMFLOAT2(crd[index1].tu, crd[index1].tv);
+						m_vertices[index].normal = XMFLOAT3(crd[index1].nx, crd[index1].ny, crd[index1].nz);
+						index++;
+
+						// 8. Upper Right
+						tu = crd[index4].tu;
+						tv = crd[index4].tv;
+						if (tu == 0.0f) { tu = 1.0f; }
+						if (tv == 1.0f) { tv = 0.0f; }
+						m_vertices[index].position = XMFLOAT3(crd[index4].x, crd[index4].y, crd[index4].z);
+						m_vertices[index].texture = XMFLOAT2(crd[index4].tu, tv);
+						m_vertices[index].normal = XMFLOAT3(crd[index4].nx, crd[index4].ny, crd[index4].nz);
+						index++;
+
+						// 9. Upper Right
+						tu = crd[index4].tu;
+						tv = crd[index4].tv;
+						if (tu == 0.0f) { tu = 1.0f; }
+						if (tv == 1.0f) { tv = 0.0f; }
+						m_vertices[index].position = XMFLOAT3(crd[index4].x, crd[index4].y, crd[index4].z);
+						m_vertices[index].texture = XMFLOAT2(crd[index4].tu, tv);
+						m_vertices[index].normal = XMFLOAT3(crd[index4].nx, crd[index4].ny, crd[index4].nz);
+						index++;
+
+						// 10. Bottom Right
+						tu = crd[index2].tu;
+						if (tu == 0.0f) { tu = 1.0f; }
+						m_vertices[index].position = XMFLOAT3(crd[index2].x, crd[index2].y, crd[index2].z);
+						m_vertices[index].texture = XMFLOAT2(tu, crd[index2].tv);
+						m_vertices[index].normal = XMFLOAT3(crd[index2].nx, crd[index2].ny, crd[index2].nz);
+						index++;
+
+						// 11. Bottom Right
+						tu = crd[index2].tu;
+						if (tu == 0.0f) { tu = 1.0f; }
+						m_vertices[index].position = XMFLOAT3(crd[index2].x, crd[index2].y, crd[index2].z);
+						m_vertices[index].texture = XMFLOAT2(tu, crd[index2].tv);
+						m_vertices[index].normal = XMFLOAT3(crd[index2].nx, crd[index2].ny, crd[index2].nz);
+						index++;
+
+						// 12. Bottom Left
+						m_vertices[index].position = XMFLOAT3(crd[index1].x, crd[index1].y, crd[index1].z);
+						m_vertices[index].texture = XMFLOAT2(crd[index1].tu, crd[index1].tv);
+						m_vertices[index].normal = XMFLOAT3(crd[index1].nx, crd[index1].ny, crd[index1].nz);
+						index++;
+					}
+				}
 			}
 		}
 	}

@@ -74,13 +74,13 @@ void TerrainComp::Render(ModelNode* node)
 
 void TerrainComp::RederMesh(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT4 lightDiffuseColor, XMFLOAT3 lightPos)
 {
-	XMMATRIX newWorldMatrix = XMMatrixMultiply(m_terrainMesh->GetWorldMatrix(), worldMatrix);
+	//XMMATRIX newWorldMatrix = XMMatrixMultiply(m_terrainMesh->GetWorldMatrix(), worldMatrix);
 
 	ID3D11ShaderResourceView* texture = ResMgrClass::GetInst()->FindTexture(L"defaultTexture")->GetTexture();
 
-	GraphicsClass::GetInst()->RenderTerrainShaderSetParam(Core::GetDeviceContext(), newWorldMatrix, viewMatrix, lightDiffuseColor, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), lightPos, texture);
+	GraphicsClass::GetInst()->RenderTerrainShaderSetParam(Core::GetDeviceContext(), worldMatrix, viewMatrix, lightDiffuseColor, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), lightPos, texture);
 
-	m_terrainQuad->Render(Core::GetDeviceContext(), newWorldMatrix);
+	m_terrainQuad->Render(Core::GetDeviceContext(), worldMatrix);
 }
 
 void TerrainComp::Mesh(ModelNode* node)

@@ -696,7 +696,7 @@ ModelNode* ModelNode::CheckPickingTriangle(XMVECTOR rayOrigin, XMVECTOR rayDir, 
 			TerrainComp* terrainComp = (TerrainComp*)m_modelComps[i];
 			TerrainMesh* terrainMesh = (TerrainMesh*)ResMgrClass::GetInst()->FindMesh(terrainComp->GetTerrainMeshID());
 			
-			XMMATRIX worldMatrix = terrainMesh->GetWorldMatrix() * GetWorldMatrix();
+			XMMATRIX worldMatrix = GetWorldMatrix();
 			XMMATRIX invWorldMatrix = XMMatrixInverse(nullptr, worldMatrix);
 
 			rayOrigin = XMVector3TransformCoord(rayOrigin, invWorldMatrix);  // World Space to Local Space

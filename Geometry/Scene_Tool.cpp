@@ -223,9 +223,9 @@ void Scene_Tool::Render()
 
 	
 	// Grid Rendering
-	//GraphicsClass::GetInst()->RenderGridShaderSetParam(Core::GetDeviceContext(), m_Grid->GetWorldMatrix(), m_Camera->GetViewMatrix());
+	GraphicsClass::GetInst()->RenderGridShaderSetParam(Core::GetDeviceContext(), m_Grid->GetWorldMatrix(), m_Camera->GetViewMatrix());
 
-	//m_GridQuadTree->Render(Core::GetDeviceContext(), m_Grid->GetWorldMatrix());
+	m_GridQuadTree->Render(Core::GetDeviceContext(), m_Grid->GetWorldMatrix());
 
 	// Model Rendering
 

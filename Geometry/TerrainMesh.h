@@ -12,8 +12,6 @@ private:
 		float x, y, z;
 	};
 
-	XMMATRIX m_worldMatrix;
-
 	int m_terrainWidth;
 	int m_terrainHeight;
 
@@ -33,8 +31,6 @@ public:
 
 	bool Initialize(ID3D11Device* device, char* heightFileName);
 	void Shutdown();
-
-	XMMATRIX GetWorldMatrix() { return m_worldMatrix; }
 
 	int GetTerrainWidth() { return m_terrainWidth; }
 	void SetTerrainWidth(int width) { m_terrainWidth = width; }
