@@ -29,7 +29,7 @@ bool TerrainQuadTreeClass::Initialize(TerrainMesh* mesh, ID3D11Device* device)
 	vertexCount = mesh->GetVertexCount();
 
 	// vertexList를 초기화 하기위해서 squareCount를 계산한다.
-	m_triangleCount = vertexCount / 6;
+	m_triangleCount = vertexCount / 3;
 
 	// vertexList를 초기화한다.
 	m_vertexList = new TerrainVertexType[vertexCount];
@@ -206,7 +206,7 @@ void TerrainQuadTreeClass::CreateTreeNode(NodeType* node, float positionX, float
 	node->triangleCount = numTriangles;
 
 	// Calculate the number of vertices.
-	vertexCount = numTriangles * 6;
+	vertexCount = numTriangles * 3;
 
 	// Create the vertex array.
 	vertices = new TerrainVertexType[vertexCount];
@@ -225,45 +225,27 @@ void TerrainQuadTreeClass::CreateTreeNode(NodeType* node, float positionX, float
 		if (result == true)
 		{
 			// Calculate the index into the terrain vertex list.
-			vertexIndex = i * 6;
+			vertexIndex = i * 3;
 
 			// Get the three vertices of this triangle from the vertex list.
 			vertices[index].position = m_vertexList[vertexIndex].position;
-			vertices[index].color = m_vertexList[vertexIndex].color;
+			vertices[index].texture = m_vertexList[vertexIndex].texture;
+			vertices[index].normal = m_vertexList[vertexIndex].normal;
 			indices[index] = index;
 			index++;
 
 			vertexIndex++;
 			vertices[index].position = m_vertexList[vertexIndex].position;
-			vertices[index].color = m_vertexList[vertexIndex].color;
-			indices[index] = index;
-			index++;
-			
-
-			vertexIndex++;
-			vertices[index].position = m_vertexList[vertexIndex].position;
-			vertices[index].color = m_vertexList[vertexIndex].color;
+			vertices[index].texture = m_vertexList[vertexIndex].texture;
+			vertices[index].normal = m_vertexList[vertexIndex].normal;
 			indices[index] = index;
 			index++;
 			
 
 			vertexIndex++;
 			vertices[index].position = m_vertexList[vertexIndex].position;
-			vertices[index].color = m_vertexList[vertexIndex].color;
-			indices[index] = index;
-			index++;
-			
-
-			vertexIndex++;
-			vertices[index].position = m_vertexList[vertexIndex].position;
-			vertices[index].color = m_vertexList[vertexIndex].color;
-			indices[index] = index;
-			index++;
-			
-
-			vertexIndex++;
-			vertices[index].position = m_vertexList[vertexIndex].position;
-			vertices[index].color = m_vertexList[vertexIndex].color;
+			vertices[index].texture = m_vertexList[vertexIndex].texture;
+			vertices[index].normal = m_vertexList[vertexIndex].normal;
 			indices[index] = index;
 			index++;
 		}
@@ -343,16 +325,16 @@ bool TerrainQuadTreeClass::IsTriangleContained(int index, float positionX, float
 	radius = width / 2.0f;
 
 	// Get the index into the vertex list.
-	vertexIndex = index * 6;
+	vertexIndex = index * 3;
 
 	// Get the three vertices of this triangle from the vertex list.
 	x1 = m_vertexList[vertexIndex].position.x;
 	z1 = m_vertexList[vertexIndex].position.z;
-	vertexIndex += 2;
+	vertexIndex++;
 
 	x2 = m_vertexList[vertexIndex].position.x;
 	z2 = m_vertexList[vertexIndex].position.z;
-	vertexIndex += 2;
+	vertexIndex++;
 
 	x3 = m_vertexList[vertexIndex].position.x;
 	z3 = m_vertexList[vertexIndex].position.z;
@@ -459,29 +441,24 @@ void TerrainQuadTreeClass::RenderNode(NodeType* node, ID3D11DeviceContext* devic
 	// 해당 노드의 버퍼를 렌더링 해준다.
 	
 	// 입력조립기  /////////////////////////////////////////////////////////
-	// Set vertex buffer stride and offset.
-	stride = sizeof(TerrainVertexType);
-	offset = 0;
+	stride = sizeof(TerrainVertexType);  // 정점의 사이즈 
+	offset = 0;  // 정점들 사이의 간격
 
-	// Set the vertex buffer to active in the input assembler so it can be rendered.
 	deviceContext->IASetVertexBuffers(0, 1, &node->vertexBuffer, &stride, &offset);
 
-	// Set the index buffer to active in the input assembler so it can be rendered.
 	deviceContext->IASetIndexBuffer(node->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-	// Set the type of primitive that should be rendered from this vertex buffer, in this case triangles.
-	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+	// D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST
+
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 
 	// 셰이더 호출 /////////////////////////////////////////////////////////
 
-	// Determine the number of indices in this node.
-	indexCount = node->triangleCount * 6;
+	indexCount = node->triangleCount * 3;
 
-	// Call the terrain shader to render the polygons in this node.
 	GraphicsClass::GetInst()->RenderTerrainShader(deviceContext, indexCount);
 
-	// Increase the count of the number of polygons that have been rendered during this frame.
 	m_drawCount += node->triangleCount;
 
 	return;

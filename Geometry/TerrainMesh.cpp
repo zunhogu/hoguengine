@@ -2,7 +2,7 @@
 #include "TerrainMesh.h"
 #include "Core.h"
 
-#define GRID_SIZE 128
+#define GRID_SIZE 256
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 // TERRAIN MESH ////////////////////////////////////////////////////////////////////////////
@@ -35,7 +35,6 @@ bool TerrainMesh::Initialize(ID3D11Device* device, char* heightFileName)
 	// 현재 Height 맵과 Gird에 대한 정점 배열은 따로 구했다.
 	// Gird와 Height맵의 사이즈가 다르기 때문에 보간을 통해서 새로운 정점 배열을 만든뒤 쿼드트리로 던져줘야한다.
 	// 또 현재는 기본도형 위상구조가 Line인데, 텍스쳐 맵핑을 위해서는 Triangle로 바꿔야한다. 이에 대해서는 좀 더 고민해보자
-
 
 	string path = Core::ConvWcharTochar(PathMgr::GetInst()->GetContentPath());
 	path += heightFileName;
@@ -172,9 +171,7 @@ bool TerrainMesh::CalculateNormals()
 
 	normals = new VectorType[(m_heightMapWidth - 1) * (m_heightMapHeight - 1)];
 	if (!normals)
-	{
 		return false;
-	}
 
 	// Go through all the faces in the mesh and calculate their normals.
 	for (j = 0; j < (m_heightMapHeight - 1); j++)
@@ -365,7 +362,6 @@ void TerrainMesh::CalculateTextureCoordinates()
 	return;
 }
 
-
 bool TerrainMesh::InitializeBuffers(ID3D11Device* device)
 {
 	int index;
@@ -374,7 +370,7 @@ bool TerrainMesh::InitializeBuffers(ID3D11Device* device)
 	int gridSize = m_terrainWidth * m_terrainHeight;
 	int heightMapSize = m_heightMapWidth * m_heightMapHeight;
 
-	m_vertexCount = (m_terrainWidth - 1) * (m_terrainHeight - 1) * 12;
+	m_vertexCount = (m_terrainWidth - 1) * (m_terrainHeight - 1) * 6;
 	m_vertices = new TerrainVertexType[m_vertexCount];
 	if (!m_vertices) return false;
 
@@ -411,18 +407,14 @@ bool TerrainMesh::InitializeBuffers(ID3D11Device* device)
 				if (tu == 0.0f) { tu = 1.0f; }
 				if (tv == 1.0f) { tv = 0.0f; }
 				m_vertices[index].position = XMFLOAT3(m_heightMap[index4].x, m_heightMap[index4].y, m_heightMap[index4].z);
-				m_vertices[index].texture = XMFLOAT2(m_heightMap[index4].tu, tv);
+				m_vertices[index].texture = XMFLOAT2(tu, tv);
 				m_vertices[index].normal = XMFLOAT3(m_heightMap[index4].nx, m_heightMap[index4].ny, m_heightMap[index4].nz);
 				index++;
 
-				// 3. Upper Right
-				tu = m_heightMap[index4].tu;
-				tv = m_heightMap[index4].tv;
-				if (tu == 0.0f) { tu = 1.0f; }
-				if (tv == 1.0f) { tv = 0.0f; }
-				m_vertices[index].position = XMFLOAT3(m_heightMap[index4].x, m_heightMap[index4].y, m_heightMap[index4].z);
-				m_vertices[index].texture = XMFLOAT2(m_heightMap[index4].tu, tv);
-				m_vertices[index].normal = XMFLOAT3(m_heightMap[index4].nx, m_heightMap[index4].ny, m_heightMap[index4].nz);
+				// 3. Bottom Left
+				m_vertices[index].position = XMFLOAT3(m_heightMap[index1].x, m_heightMap[index1].y, m_heightMap[index1].z);
+				m_vertices[index].texture = XMFLOAT2(m_heightMap[index1].tu, m_heightMap[index1].tv);
+				m_vertices[index].normal = XMFLOAT3(m_heightMap[index1].nx, m_heightMap[index1].ny, m_heightMap[index1].nz);
 				index++;
 
 				// 4. Bottom Left
@@ -431,69 +423,24 @@ bool TerrainMesh::InitializeBuffers(ID3D11Device* device)
 				m_vertices[index].normal = XMFLOAT3(m_heightMap[index1].nx, m_heightMap[index1].ny, m_heightMap[index1].nz);
 				index++;
 
-				// 5. Bottom Left
-				m_vertices[index].position = XMFLOAT3(m_heightMap[index1].x, m_heightMap[index1].y, m_heightMap[index1].z);
-				m_vertices[index].texture = XMFLOAT2(m_heightMap[index1].tu, m_heightMap[index1].tv);
-				m_vertices[index].normal = XMFLOAT3(m_heightMap[index1].nx, m_heightMap[index1].ny, m_heightMap[index1].nz);
-				index++;
-
-				// 6. Upper Left 
-				tv = m_heightMap[index3].tv;
-				if (tv == 1.0f) { tv = 0.0f; }
-				m_vertices[index].position = XMFLOAT3(m_heightMap[index3].x, m_heightMap[index3].y, m_heightMap[index3].z);
-				m_vertices[index].texture = XMFLOAT2(m_heightMap[index3].tu, tv);
-				m_vertices[index].normal = XMFLOAT3(m_heightMap[index3].nx, m_heightMap[index3].ny, m_heightMap[index3].nz);
-				index++;
-
-				// 7. Bottom Left
-				m_vertices[index].position = XMFLOAT3(m_heightMap[index1].x, m_heightMap[index1].y, m_heightMap[index1].z);
-				m_vertices[index].texture = XMFLOAT2(m_heightMap[index1].tu, m_heightMap[index1].tv);
-				m_vertices[index].normal = XMFLOAT3(m_heightMap[index1].nx, m_heightMap[index1].ny, m_heightMap[index1].nz);
-				index++;
-
-				// 8. Upper Right
+				// 5. Upper Right
 				tu = m_heightMap[index4].tu;
 				tv = m_heightMap[index4].tv;
 				if (tu == 0.0f) { tu = 1.0f; }
 				if (tv == 1.0f) { tv = 0.0f; }
 				m_vertices[index].position = XMFLOAT3(m_heightMap[index4].x, m_heightMap[index4].y, m_heightMap[index4].z);
-				m_vertices[index].texture = XMFLOAT2(m_heightMap[index4].tu, tv);
+				m_vertices[index].texture = XMFLOAT2(tu, tv);
 				m_vertices[index].normal = XMFLOAT3(m_heightMap[index4].nx, m_heightMap[index4].ny, m_heightMap[index4].nz);
 				index++;
 
-				// 9. Upper Right
-				tu = m_heightMap[index4].tu;
-				tv = m_heightMap[index4].tv;
-				if (tu == 0.0f) { tu = 1.0f; }
-				if (tv == 1.0f) { tv = 0.0f; }
-				m_vertices[index].position = XMFLOAT3(m_heightMap[index4].x, m_heightMap[index4].y, m_heightMap[index4].z);
-				m_vertices[index].texture = XMFLOAT2(m_heightMap[index4].tu, tv);
-				m_vertices[index].normal = XMFLOAT3(m_heightMap[index4].nx, m_heightMap[index4].ny, m_heightMap[index4].nz);
-				index++;
-
-				// 10. Bottom Right
+				// 6. Bottom Right
 				tu = m_heightMap[index2].tu;
 				if (tu == 0.0f) { tu = 1.0f; }
 				m_vertices[index].position = XMFLOAT3(m_heightMap[index2].x, m_heightMap[index2].y, m_heightMap[index2].z);
 				m_vertices[index].texture = XMFLOAT2(tu, m_heightMap[index2].tv);
 				m_vertices[index].normal = XMFLOAT3(m_heightMap[index2].nx, m_heightMap[index2].ny, m_heightMap[index2].nz);
-				index++;
-
-				// 11. Bottom Right
-				tu = m_heightMap[index2].tu;
-				if (tu == 0.0f) { tu = 1.0f; }
-				m_vertices[index].position = XMFLOAT3(m_heightMap[index2].x, m_heightMap[index2].y, m_heightMap[index2].z);
-				m_vertices[index].texture = XMFLOAT2(tu, m_heightMap[index2].tv);
-				m_vertices[index].normal = XMFLOAT3(m_heightMap[index2].nx, m_heightMap[index2].ny, m_heightMap[index2].nz);
-				index++;
-
-				// 12. Bottom Left
-				m_vertices[index].position = XMFLOAT3(m_heightMap[index1].x, m_heightMap[index1].y, m_heightMap[index1].z);
-				m_vertices[index].texture = XMFLOAT2(m_heightMap[index1].tu, m_heightMap[index1].tv);
-				m_vertices[index].normal = XMFLOAT3(m_heightMap[index1].nx, m_heightMap[index1].ny, m_heightMap[index1].nz);
 				index++;
 			}
-
 		}
 	}
 	else if (gridSize > heightMapSize)
@@ -586,99 +533,51 @@ bool TerrainMesh::InitializeBuffers(ID3D11Device* device)
 						index4 = (count * (j + 1)) + (i + 1);  // Upper right.
 
 						// 1. Upper Left 
-						tv = crd[index3].tv;
+						tv = m_heightMap[index3].tv;
 						if (tv == 1.0f) { tv = 0.0f; }
-						m_vertices[index].position = XMFLOAT3(crd[index3].x, crd[index3].y, crd[index3].z);
-						m_vertices[index].texture = XMFLOAT2(crd[index3].tu, tv);
-						m_vertices[index].normal = XMFLOAT3(crd[index3].nx, crd[index3].ny, crd[index3].nz);
+						m_vertices[index].position = XMFLOAT3(m_heightMap[index3].x, m_heightMap[index3].y, m_heightMap[index3].z);
+						m_vertices[index].texture = XMFLOAT2(m_heightMap[index3].tu, tv);
+						m_vertices[index].normal = XMFLOAT3(m_heightMap[index3].nx, m_heightMap[index3].ny, m_heightMap[index3].nz);
 						index++;
 
 						// 2. Upper Right
-						tu = crd[index4].tu;
-						tv = crd[index4].tv;
+						tu = m_heightMap[index4].tu;
+						tv = m_heightMap[index4].tv;
 						if (tu == 0.0f) { tu = 1.0f; }
 						if (tv == 1.0f) { tv = 0.0f; }
-						m_vertices[index].position = XMFLOAT3(crd[index4].x, crd[index4].y, crd[index4].z);
-						m_vertices[index].texture = XMFLOAT2(crd[index4].tu, tv);
-						m_vertices[index].normal = XMFLOAT3(crd[index4].nx, crd[index4].ny, crd[index4].nz);
+						m_vertices[index].position = XMFLOAT3(m_heightMap[index4].x, m_heightMap[index4].y, m_heightMap[index4].z);
+						m_vertices[index].texture = XMFLOAT2(m_heightMap[index4].tu, tv);
+						m_vertices[index].normal = XMFLOAT3(m_heightMap[index4].nx, m_heightMap[index4].ny, m_heightMap[index4].nz);
 						index++;
 
-						// 3. Upper Right
-						tu = crd[index4].tu;
-						tv = crd[index4].tv;
-						if (tu == 0.0f) { tu = 1.0f; }
-						if (tv == 1.0f) { tv = 0.0f; }
-						m_vertices[index].position = XMFLOAT3(crd[index4].x, crd[index4].y, crd[index4].z);
-						m_vertices[index].texture = XMFLOAT2(crd[index4].tu, tv);
-						m_vertices[index].normal = XMFLOAT3(crd[index4].nx, crd[index4].ny, crd[index4].nz);
+						// 3. Bottom Left
+						m_vertices[index].position = XMFLOAT3(m_heightMap[index1].x, m_heightMap[index1].y, m_heightMap[index1].z);
+						m_vertices[index].texture = XMFLOAT2(m_heightMap[index1].tu, m_heightMap[index1].tv);
+						m_vertices[index].normal = XMFLOAT3(m_heightMap[index1].nx, m_heightMap[index1].ny, m_heightMap[index1].nz);
 						index++;
 
 						// 4. Bottom Left
-						m_vertices[index].position = XMFLOAT3(crd[index1].x, crd[index1].y, crd[index1].z);
-						m_vertices[index].texture = XMFLOAT2(crd[index1].tu, crd[index1].tv);
-						m_vertices[index].normal = XMFLOAT3(crd[index1].nx, crd[index1].ny, crd[index1].nz);
+						m_vertices[index].position = XMFLOAT3(m_heightMap[index1].x, m_heightMap[index1].y, m_heightMap[index1].z);
+						m_vertices[index].texture = XMFLOAT2(m_heightMap[index1].tu, m_heightMap[index1].tv);
+						m_vertices[index].normal = XMFLOAT3(m_heightMap[index1].nx, m_heightMap[index1].ny, m_heightMap[index1].nz);
 						index++;
 
-						// 5. Bottom Left
-						m_vertices[index].position = XMFLOAT3(crd[index1].x, crd[index1].y, crd[index1].z);
-						m_vertices[index].texture = XMFLOAT2(crd[index1].tu, crd[index1].tv);
-						m_vertices[index].normal = XMFLOAT3(crd[index1].nx, crd[index1].ny, crd[index1].nz);
-						index++;
-
-						// 6. Upper Left 
-						tv = crd[index3].tv;
-						if (tv == 1.0f) { tv = 0.0f; }
-						m_vertices[index].position = XMFLOAT3(crd[index3].x, crd[index3].y, crd[index3].z);
-						m_vertices[index].texture = XMFLOAT2(crd[index3].tu, tv);
-						m_vertices[index].normal = XMFLOAT3(crd[index3].nx, crd[index3].ny, crd[index3].nz);
-						index++;
-
-						// 7. Bottom Left
-						m_vertices[index].position = XMFLOAT3(crd[index1].x, crd[index1].y, crd[index1].z);
-						m_vertices[index].texture = XMFLOAT2(crd[index1].tu, crd[index1].tv);
-						m_vertices[index].normal = XMFLOAT3(crd[index1].nx, crd[index1].ny, crd[index1].nz);
-						index++;
-
-						// 8. Upper Right
-						tu = crd[index4].tu;
-						tv = crd[index4].tv;
+						// 5. Upper Right
+						tu = m_heightMap[index4].tu;
+						tv = m_heightMap[index4].tv;
 						if (tu == 0.0f) { tu = 1.0f; }
 						if (tv == 1.0f) { tv = 0.0f; }
-						m_vertices[index].position = XMFLOAT3(crd[index4].x, crd[index4].y, crd[index4].z);
-						m_vertices[index].texture = XMFLOAT2(crd[index4].tu, tv);
-						m_vertices[index].normal = XMFLOAT3(crd[index4].nx, crd[index4].ny, crd[index4].nz);
+						m_vertices[index].position = XMFLOAT3(m_heightMap[index4].x, m_heightMap[index4].y, m_heightMap[index4].z);
+						m_vertices[index].texture = XMFLOAT2(m_heightMap[index4].tu, tv);
+						m_vertices[index].normal = XMFLOAT3(m_heightMap[index4].nx, m_heightMap[index4].ny, m_heightMap[index4].nz);
 						index++;
 
-						// 9. Upper Right
-						tu = crd[index4].tu;
-						tv = crd[index4].tv;
+						// 6. Bottom Right
+						tu = m_heightMap[index2].tu;
 						if (tu == 0.0f) { tu = 1.0f; }
-						if (tv == 1.0f) { tv = 0.0f; }
-						m_vertices[index].position = XMFLOAT3(crd[index4].x, crd[index4].y, crd[index4].z);
-						m_vertices[index].texture = XMFLOAT2(crd[index4].tu, tv);
-						m_vertices[index].normal = XMFLOAT3(crd[index4].nx, crd[index4].ny, crd[index4].nz);
-						index++;
-
-						// 10. Bottom Right
-						tu = crd[index2].tu;
-						if (tu == 0.0f) { tu = 1.0f; }
-						m_vertices[index].position = XMFLOAT3(crd[index2].x, crd[index2].y, crd[index2].z);
-						m_vertices[index].texture = XMFLOAT2(tu, crd[index2].tv);
-						m_vertices[index].normal = XMFLOAT3(crd[index2].nx, crd[index2].ny, crd[index2].nz);
-						index++;
-
-						// 11. Bottom Right
-						tu = crd[index2].tu;
-						if (tu == 0.0f) { tu = 1.0f; }
-						m_vertices[index].position = XMFLOAT3(crd[index2].x, crd[index2].y, crd[index2].z);
-						m_vertices[index].texture = XMFLOAT2(tu, crd[index2].tv);
-						m_vertices[index].normal = XMFLOAT3(crd[index2].nx, crd[index2].ny, crd[index2].nz);
-						index++;
-
-						// 12. Bottom Left
-						m_vertices[index].position = XMFLOAT3(crd[index1].x, crd[index1].y, crd[index1].z);
-						m_vertices[index].texture = XMFLOAT2(crd[index1].tu, crd[index1].tv);
-						m_vertices[index].normal = XMFLOAT3(crd[index1].nx, crd[index1].ny, crd[index1].nz);
+						m_vertices[index].position = XMFLOAT3(m_heightMap[index2].x, m_heightMap[index2].y, m_heightMap[index2].z);
+						m_vertices[index].texture = XMFLOAT2(tu, m_heightMap[index2].tv);
+						m_vertices[index].normal = XMFLOAT3(m_heightMap[index2].nx, m_heightMap[index2].ny, m_heightMap[index2].nz);
 						index++;
 					}
 				}

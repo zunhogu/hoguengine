@@ -81,9 +81,9 @@ void ShaderManagerClass::RenderGridShader(ID3D11DeviceContext* deviceContext, in
 	m_gridShader->RenderShader(deviceContext, indexCount);
 }
 
-void ShaderManagerClass::RenderTerrainShaderSetParam(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, ID3D11ShaderResourceView* texture)
+void ShaderManagerClass::RenderTerrainShaderSetParam(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, ID3D11ShaderResourceView* texture)
 {
-	m_terrainShader->SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, ambientColor, diffuseColor, lightDirection, texture);
+	m_terrainShader->SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, ambientColor, diffuseColor, lightDirection, cameraPos, texture);
 }
 
 void ShaderManagerClass::RenderTerrainShader(ID3D11DeviceContext* deviceContext, int indexCount)

@@ -3,11 +3,13 @@
 
 LightClass::LightClass() {}
 
-LightClass::LightClass(XMFLOAT3 position, XMFLOAT3 rotation, XMFLOAT3 scale, XMFLOAT4 diffuseColor, XMFLOAT4 ambientColor)
+LightClass::LightClass(XMFLOAT3 position, XMFLOAT3 rotation, XMFLOAT3 scale, XMFLOAT3 lightDirection, XMFLOAT4 diffuseColor, XMFLOAT4 ambientColor)
 {
 	m_position = position;
 	m_rotation = rotation;
 	m_scale = scale;
+
+	m_lightDirection = lightDirection;
 
 	m_diffuseColor = diffuseColor;
 	m_ambientColor = ambientColor;

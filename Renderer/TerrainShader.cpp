@@ -47,6 +47,7 @@ bool TerrainShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsF
 	D3D11_SAMPLER_DESC samplerDesc;
 	D3D11_BUFFER_DESC matrixBufferDesc;
 	D3D11_BUFFER_DESC lightBufferDesc;
+	D3D11_BUFFER_DESC cameraBufferDesc;
 
 	errorMessage = 0;
 	vertexShaderBuffer = 0;
@@ -161,6 +162,17 @@ bool TerrainShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsF
 	if (FAILED(result))
 		return false;
 
+	cameraBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	cameraBufferDesc.ByteWidth = sizeof(CameraBufferType);
+	cameraBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cameraBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cameraBufferDesc.MiscFlags = 0;
+	cameraBufferDesc.StructureByteStride = 0;
+
+	result = device->CreateBuffer(&cameraBufferDesc, NULL, &m_cameraBuffer);
+	if (FAILED(result))
+		return false;
+
 	return true;
 }
 
@@ -204,17 +216,22 @@ void TerrainShader::ShutdownShader()
 
 }
 
-bool TerrainShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, ID3D11ShaderResourceView* texture)
+bool TerrainShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, ID3D11ShaderResourceView* texture)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	unsigned int bufferNumber;
 	MatrixBufferType* dataPtr;
 	LightBufferType* dataPtr2;
+	CameraBufferType* dataPtr3;
 
 	worldMatrix = XMMatrixTranspose(worldMatrix);
 	viewMatrix = XMMatrixTranspose(viewMatrix);
 	projectionMatrix = XMMatrixTranspose(projectionMatrix);
+
+	///////////////////////////////////////////////////////////////////////////////
+	// Vertex Shader //////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////
 
 	result = deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (FAILED(result))
@@ -232,7 +249,9 @@ bool TerrainShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMA
 
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
 
-	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
+	///////////////////////////////////////////////////////////////////////////////
+	// Pixel Shader ///////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////
 
 	result = deviceContext->Map(m_lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (FAILED(result))
@@ -242,7 +261,7 @@ bool TerrainShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMA
 
 	dataPtr2->ambientColor = ambientColor;
 	dataPtr2->diffuseColor = diffuseColor;
-	dataPtr2->lightDirection = lightDirection;
+	dataPtr2->lightDir = lightDirection;
 	dataPtr2->padding = 0.0f;
 
 	deviceContext->Unmap(m_lightBuffer, 0);
@@ -265,6 +284,8 @@ void TerrainShader::RenderShader(ID3D11DeviceContext* deviceContext, int indexCo
 
 	deviceContext->PSSetSamplers(0, 1, &m_sampleState);
 
+	// 해당 함수의 StartIndexLocation, BaseVertexLocation을 통해서 버퍼를 끊어서 셰이더에 전달가능
+	// IA 단계 설정에도 Stride와 Offset을 이용하면 이와 같은 동작을 수행할 수 있다.
 	deviceContext->DrawIndexed(indexCount, 0, 0);
 
 	return;

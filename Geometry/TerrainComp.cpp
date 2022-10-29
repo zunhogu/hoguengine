@@ -30,6 +30,8 @@ bool TerrainComp::Initialize(ModelNode* node)
 	m_terrainMeshKey = Core::GetRandomKey();
 	ResMgrClass::GetInst()->AddMesh(m_terrainMeshKey, m_terrainMesh);
 
+	ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), L"dirt01.dds", L"contents\\texture\\dirt01.dds");
+	
 	result = m_terrainMesh->Initialize(Core::GetDevice(), "contents\\texture\\heightmap01.bmp");
 	if (!result)
 		return result;
@@ -72,13 +74,13 @@ void TerrainComp::Render(ModelNode* node)
 	}
 }
 
-void TerrainComp::RederMesh(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT4 lightDiffuseColor, XMFLOAT3 lightPos)
+void TerrainComp::RederMesh(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT4 lightDiffuseColor, XMFLOAT3 lihgtDirection, XMFLOAT3 cameraPos)
 {
 	//XMMATRIX newWorldMatrix = XMMatrixMultiply(m_terrainMesh->GetWorldMatrix(), worldMatrix);
 
-	ID3D11ShaderResourceView* texture = ResMgrClass::GetInst()->FindTexture(L"defaultTexture")->GetTexture();
+	ID3D11ShaderResourceView* texture = ResMgrClass::GetInst()->FindTexture(L"dirt01.dds")->GetTexture();
 
-	GraphicsClass::GetInst()->RenderTerrainShaderSetParam(Core::GetDeviceContext(), worldMatrix, viewMatrix, lightDiffuseColor, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), lightPos, texture);
+	GraphicsClass::GetInst()->RenderTerrainShaderSetParam(Core::GetDeviceContext(), worldMatrix, viewMatrix, lightDiffuseColor, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), lihgtDirection, cameraPos, texture);
 
 	m_terrainQuad->Render(Core::GetDeviceContext(), worldMatrix);
 }

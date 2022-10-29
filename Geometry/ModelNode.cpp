@@ -312,7 +312,7 @@ ModelNode* ModelNode::FindChildeNode(wstring nodeName)
 	return node;
 }
 
-void ModelNode::Render(XMMATRIX viewMatirx, XMFLOAT3 cameraPos, XMFLOAT4 lightDiffuseColor, XMFLOAT3 lightPos)
+void ModelNode::Render(XMMATRIX viewMatirx, XMFLOAT3 cameraPos, XMFLOAT4 lightDiffuseColor, XMFLOAT3 lightPos, XMFLOAT3 lightDirection)
 {
 
 	ModelInfoComp* modelInfoComp = GetModelInfoComp();
@@ -360,7 +360,7 @@ void ModelNode::Render(XMMATRIX viewMatirx, XMFLOAT3 cameraPos, XMFLOAT4 lightDi
 			{
 				TerrainComp* comp = (TerrainComp*)m_modelComps[i];
 
-				comp->RederMesh(worldMatrix, viewMatirx, lightDiffuseColor, lightPos);
+				comp->RederMesh(worldMatrix, viewMatirx, lightDiffuseColor, lightDirection, cameraPos);
 			}
 				break;
 			case COMPONENT_TYPE::END:
@@ -373,7 +373,7 @@ void ModelNode::Render(XMMATRIX viewMatirx, XMFLOAT3 cameraPos, XMFLOAT4 lightDi
 
 	for (int j = 0; j < m_childNodes.size(); j++)
 	{
-		m_childNodes[j]->Render(viewMatirx, cameraPos, lightDiffuseColor, lightPos);
+		m_childNodes[j]->Render(viewMatirx, cameraPos, lightDiffuseColor, lightPos, lightDirection);
 	}
 }
 

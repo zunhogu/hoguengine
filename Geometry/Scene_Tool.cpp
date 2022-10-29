@@ -38,7 +38,7 @@ bool Scene_Tool::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	m_Camera->UpdateViewMatrix();
 
-	m_Light = new LightClass(XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(0.05f, 0.05f, 0.05f, 0.05f));
+	m_Light = new LightClass(XMFLOAT3(0.0f, 20.0f, 100.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(-0.5f, -1.0f, 0.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(0.05f, 0.05f, 0.05f, 1.0f));
 	if (!m_Light)
 		return false;
 
@@ -233,7 +233,7 @@ void Scene_Tool::Render()
 	{
 		ModelNode* node = m_allNode->at(i);
 
-		node->Render(m_Camera->GetViewMatrix(), cameraPos, m_Light->GetDiffuseColor(), m_Light->GetPosition());
+		node->Render(m_Camera->GetViewMatrix(), cameraPos, m_Light->GetDiffuseColor(), m_Light->GetPosition(), m_Light->GetDirection());
 
 	}
 	GraphicsClass::GetInst()->RenderToTextureEnd();
