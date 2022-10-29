@@ -73,7 +73,7 @@ void TerrainQuadTreeClass::Shutdown()
 	return;
 }
 
-void TerrainQuadTreeClass::Render(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix)
+void TerrainQuadTreeClass::Render(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, bool isWireFrame)
 {
 	// Render함수에서는 RenderNode를 호출한다.
 	// RenderNode함수는 FrustumClas를 사용하여 노드를 렌더링한다. 
@@ -82,7 +82,7 @@ void TerrainQuadTreeClass::Render(ID3D11DeviceContext* deviceContext, XMMATRIX w
 	m_drawCount = 0;
 
 	// Render each node that is visible starting at the parent node and moving down the tree.
-	RenderNode(m_parentNode, deviceContext, worldMatrix);
+	RenderNode(m_parentNode, deviceContext, worldMatrix, isWireFrame);
 }
 
 // 이전 렌더 함수 호출에서 그려진 삼각형의 수를 반환한다.
@@ -229,6 +229,7 @@ void TerrainQuadTreeClass::CreateTreeNode(NodeType* node, float positionX, float
 
 			// Get the three vertices of this triangle from the vertex list.
 			vertices[index].position = m_vertexList[vertexIndex].position;
+			vertices[index].color = m_vertexList[vertexIndex].color;
 			vertices[index].texture = m_vertexList[vertexIndex].texture;
 			vertices[index].normal = m_vertexList[vertexIndex].normal;
 			indices[index] = index;
@@ -236,6 +237,7 @@ void TerrainQuadTreeClass::CreateTreeNode(NodeType* node, float positionX, float
 
 			vertexIndex++;
 			vertices[index].position = m_vertexList[vertexIndex].position;
+			vertices[index].color = m_vertexList[vertexIndex].color;
 			vertices[index].texture = m_vertexList[vertexIndex].texture;
 			vertices[index].normal = m_vertexList[vertexIndex].normal;
 			indices[index] = index;
@@ -244,6 +246,7 @@ void TerrainQuadTreeClass::CreateTreeNode(NodeType* node, float positionX, float
 
 			vertexIndex++;
 			vertices[index].position = m_vertexList[vertexIndex].position;
+			vertices[index].color = m_vertexList[vertexIndex].color;
 			vertices[index].texture = m_vertexList[vertexIndex].texture;
 			vertices[index].normal = m_vertexList[vertexIndex].normal;
 			indices[index] = index;
@@ -400,7 +403,7 @@ void TerrainQuadTreeClass::ReleaseNode(NodeType* node)
 	return;
 }
 
-void TerrainQuadTreeClass::RenderNode(NodeType* node, ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix)
+void TerrainQuadTreeClass::RenderNode(NodeType* node, ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, bool isWireFrame)
 {
 	bool result;
 	int count, i, indexCount;
@@ -429,7 +432,7 @@ void TerrainQuadTreeClass::RenderNode(NodeType* node, ID3D11DeviceContext* devic
 		if (node->nodes[i] != 0)
 		{
 			count++;
-			RenderNode(node->nodes[i], deviceContext, worldMatrix);
+			RenderNode(node->nodes[i], deviceContext, worldMatrix, isWireFrame);
 		}
 	}
 
@@ -448,16 +451,20 @@ void TerrainQuadTreeClass::RenderNode(NodeType* node, ID3D11DeviceContext* devic
 
 	deviceContext->IASetIndexBuffer(node->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-	// D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST
-
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
 
 	// 셰이더 호출 /////////////////////////////////////////////////////////
 
 	indexCount = node->triangleCount * 3;
 
-	GraphicsClass::GetInst()->RenderTerrainShader(deviceContext, indexCount);
+	if (isWireFrame)
+	{
+		GraphicsClass::GetInst()->TurnOnWireFrame();
+		GraphicsClass::GetInst()->RenderTerrainShader(deviceContext, indexCount);
+		GraphicsClass::GetInst()->TurnOffWireFrame();
+	}
+	else
+		GraphicsClass::GetInst()->RenderTerrainShader(deviceContext, indexCount);
 
 	m_drawCount += node->triangleCount;
 

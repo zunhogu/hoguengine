@@ -24,6 +24,11 @@ private:
 		float padding;
 	};
 
+	struct WireFrameBufferType
+	{
+		XMFLOAT4 wireColor;
+	};
+
 	ID3D11VertexShader* m_vertexShader;
 	ID3D11PixelShader* m_pixelShader;
 	ID3D11InputLayout* m_layout;
@@ -31,6 +36,8 @@ private:
 	ID3D11Buffer* m_matrixBuffer;
 	ID3D11Buffer* m_lightBuffer;
 	ID3D11Buffer* m_cameraBuffer;
+	ID3D11Buffer* m_wireFrameBufferType;
+
 public:
 	TerrainShader();
 	TerrainShader(const TerrainShader&);
@@ -38,7 +45,7 @@ public:
 
 	bool Initialize(ID3D11Device* device, HWND hwnd);
 	void Shutdown();
-	bool SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, ID3D11ShaderResourceView* texture);
+	bool SetShaderParameters(ID3D11DeviceContext* deviceContext, bool isWireFrame, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, ID3D11ShaderResourceView* texture);
 	void RenderShader(ID3D11DeviceContext* deviceContext, int indexCount);
 
 private:

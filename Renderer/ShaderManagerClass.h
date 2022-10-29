@@ -7,6 +7,7 @@ class ModelShader;
 class GridShader;
 class SkyDomeShader;
 class TerrainShader;
+class TerrainWireFrameShader;
 
 class ShaderManagerClass
 {
@@ -17,6 +18,7 @@ class ShaderManagerClass
 	GridShader* m_gridShader;
 	SkyDomeShader* m_skyDomeShader;
 	TerrainShader* m_terrainShader;
+	TerrainWireFrameShader* m_terrainWireFrameShader;
 
 public:
 	ShaderManagerClass();
@@ -38,9 +40,13 @@ public:
 	void RenderGridShaderSetParam(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix);
 	void RenderGridShader(ID3D11DeviceContext* deviceContext, int indexCount);
 
-	void RenderTerrainShaderSetParam(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, ID3D11ShaderResourceView* texture);
+	void RenderTerrainShaderSetParam(ID3D11DeviceContext* deviceContext, bool isWireFrame, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, ID3D11ShaderResourceView* texture);
 	void RenderTerrainShader(ID3D11DeviceContext* deviceContext, int indexCount);
 
+	void RenderTerrainWireFrameSetParam(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, float tessellationAmount);
+	void RenderTerrainWireFrameShader(ID3D11DeviceContext* deviceContext, int indexCount);
+
 	void RenderSkyDomeShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 apexColor, XMFLOAT4 centerColor);
+
 };
 

@@ -4,6 +4,7 @@
 #include "GridShader.h"
 #include "SkyDomeShader.h"
 #include "TerrainShader.h"
+#include "TerrainWireFrameShader.h"
 
 ShaderManagerClass::ShaderManagerClass()
 {
@@ -53,11 +54,45 @@ bool ShaderManagerClass::Initialize(D3DClass* d3d, HWND hwnd)
 
 	m_terrainShader->Initialize(m_D3D->GetDevice(), m_hwnd);
 
+	m_terrainWireFrameShader = new TerrainWireFrameShader;
+	if (!m_terrainWireFrameShader)
+		return false;
+
+	m_terrainWireFrameShader->Initialize(m_D3D->GetDevice(), m_hwnd);
+
 	return true;
 }
 
 void ShaderManagerClass::Shutdown()
 {
+	if (m_terrainWireFrameShader)
+	{
+		m_terrainWireFrameShader->Shutdown();
+		delete m_terrainWireFrameShader;
+		m_terrainWireFrameShader = 0;
+	}
+
+	if (m_terrainShader)
+	{
+		m_terrainShader->Shutdown();
+		delete m_terrainShader;
+		m_terrainShader = 0;
+	}
+
+	if (m_skyDomeShader)
+	{
+		m_skyDomeShader->Shutdown();
+		delete m_skyDomeShader;
+		m_skyDomeShader = 0;
+	}
+
+	if (m_gridShader)
+	{
+		m_gridShader->Shutdown();
+		delete m_gridShader;
+		m_gridShader = 0;
+	}
+
 	if (m_modelShader)
 	{
 		m_modelShader->Shutdown();
@@ -81,14 +116,24 @@ void ShaderManagerClass::RenderGridShader(ID3D11DeviceContext* deviceContext, in
 	m_gridShader->RenderShader(deviceContext, indexCount);
 }
 
-void ShaderManagerClass::RenderTerrainShaderSetParam(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, ID3D11ShaderResourceView* texture)
+void ShaderManagerClass::RenderTerrainShaderSetParam(ID3D11DeviceContext* deviceContext, bool isWireFrame, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, ID3D11ShaderResourceView* texture)
 {
-	m_terrainShader->SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, ambientColor, diffuseColor, lightDirection, cameraPos, texture);
+	m_terrainShader->SetShaderParameters(deviceContext, isWireFrame, worldMatrix, viewMatrix, projectionMatrix, ambientColor, diffuseColor, lightDirection, cameraPos, texture);
 }
 
 void ShaderManagerClass::RenderTerrainShader(ID3D11DeviceContext* deviceContext, int indexCount)
 {
 	m_terrainShader->RenderShader(deviceContext, indexCount);
+}
+
+void ShaderManagerClass::RenderTerrainWireFrameSetParam(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, float tessellationAmount)
+{
+	m_terrainWireFrameShader->SetShaderParameters(deviceContext, worldMatrix, viewMatrix, projectionMatrix, tessellationAmount);
+}
+
+void ShaderManagerClass::RenderTerrainWireFrameShader(ID3D11DeviceContext* deviceContext, int indexCount)
+{
+	m_terrainWireFrameShader->RenderShader(deviceContext, indexCount);
 }
 
 void ShaderManagerClass::RenderSkyDomeShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 apexColor, XMFLOAT4 centerColor)

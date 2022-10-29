@@ -25,7 +25,7 @@ public:
 
 	bool Initialize(TerrainMesh* mesh, ID3D11Device* device);
 	void Shutdown();
-	void Render(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix);
+	void Render(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, bool isWireFrame);
 
 	int GetDrawCount();
 
@@ -35,7 +35,7 @@ private:
 	int CountTriangles(float positionX, float positionZ, float width);
 	bool IsTriangleContained(int index, float positionX, float positionZ, float width);
 	void ReleaseNode(NodeType* node);
-	void RenderNode(NodeType* node, ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix);
+	void RenderNode(NodeType* node, ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, bool isWireFrame);
 
 private:
 	int m_triangleCount, m_drawCount;

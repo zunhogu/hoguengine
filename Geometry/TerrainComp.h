@@ -36,6 +36,10 @@ private:
 	TerrainMesh* m_terrainMesh;
 	TerrainQuadTreeClass* m_terrainQuad;
 	vector<MaterialLayer*> m_layers;
+
+	TextureClass* m_heightMapTexture;
+
+	bool m_isWireFrame;
 public:
 	TerrainComp();
 	TerrainComp(const TerrainComp& terrain);

@@ -478,6 +478,9 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 		return false;
 	}
 
+	// 래스터화기 상태를 설정합니다. (Default)
+	m_deviceContext->RSSetState(m_rasterState);
+
 	// 후면컬링을 끈 상태에대한 레스터화기 상태를 기술한다.
 	rasterDesc.AntialiasedLineEnable = false;
 	rasterDesc.CullMode = D3D11_CULL_NONE;
@@ -497,8 +500,22 @@ bool D3DClass::Initialize(int screenWidth, int screenHeight, bool vsync, HWND hw
 		return false;
 	}
 
-	// 래스터화기 상태를 설정합니다.
-	m_deviceContext->RSSetState(m_rasterState);
+	rasterDesc.AntialiasedLineEnable = false;
+	rasterDesc.CullMode = D3D11_CULL_BACK;
+	rasterDesc.DepthBias = 0; rasterDesc.DepthBiasClamp = 0.0f;
+	rasterDesc.DepthClipEnable = true;
+	rasterDesc.FillMode = D3D11_FILL_WIREFRAME;   // 테셀레이션 하기위해서 이부분도 와이어 프레임으로 바꿔준다.
+	rasterDesc.FrontCounterClockwise = false;
+	rasterDesc.MultisampleEnable = false;
+	rasterDesc.ScissorEnable = false;
+	rasterDesc.SlopeScaledDepthBias = 0.0f;
+	rasterDesc.SlopeScaledDepthBias = 0.0f;
+
+	// 작성한 description으로부터 래스터화기 상태를 생성합니다. 
+	result = m_device->CreateRasterizerState(&rasterDesc, &m_rasterStateWireFrame);
+	if (FAILED(result)) {
+		return false;
+	}
 	/////////////////////////////////////////////////////////////////////////////////////
 	float fieldOfView, screenAspect;
 	// 물론 뷰포트도 있어야 렌더타겟 공간에서 클리핑을 수행할 수 있다.
@@ -743,6 +760,16 @@ void D3DClass::TurnOffCulling()
 {
 	// Set the no back face culling rasterizer state.
 	m_deviceContext->RSSetState(m_rasterStateNoCulling);
+}
+
+void D3DClass::TurnOnWireFrame()
+{
+	m_deviceContext->RSSetState(m_rasterStateWireFrame);
+}
+
+void D3DClass::TurnOffWireFrame()
+{
+	m_deviceContext->RSSetState(m_rasterState);
 }
 
 ID3D11RenderTargetView* const* D3DClass::GetRenderTargetView() {

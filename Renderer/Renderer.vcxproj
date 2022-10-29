@@ -171,6 +171,7 @@
     <ClInclude Include="ShaderManagerClass.h" />
     <ClInclude Include="SkyDomeShader.h" />
     <ClInclude Include="TerrainShader.h" />
+    <ClInclude Include="TerrainWireFrameShader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3DClass.cpp" />
@@ -189,6 +190,7 @@
     <ClCompile Include="ShaderManagerClass.cpp" />
     <ClCompile Include="SkyDomeShader.cpp" />
     <ClCompile Include="TerrainShader.cpp" />
+    <ClCompile Include="TerrainWireFrameShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Renderer.rc" />

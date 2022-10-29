@@ -2,13 +2,11 @@
 #include "TerrainMesh.h"
 #include "Core.h"
 
-#define GRID_SIZE 256
-
 ////////////////////////////////////////////////////////////////////////////////////////////
 // TERRAIN MESH ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////
 TerrainMesh::TerrainMesh()
-	: m_terrainHeight(GRID_SIZE), m_terrainWidth(GRID_SIZE), m_heightMapWidth(0), m_heightMapHeight(0)
+	: m_terrainHeight(0), m_terrainWidth(0), m_heightMapWidth(0), m_heightMapHeight(0)
 {
 }
 
@@ -98,8 +96,12 @@ bool TerrainMesh::LoadHeightMap(char* path)
 	if (count != 1)
 		return false;
 
-	m_heightMapWidth = bitmapInfoHeader.biWidth;
-	m_heightMapHeight = bitmapInfoHeader.biHeight;
+	// 원래는 terrain과 heightMap 의 Size를 다르게 설정해서 보간의 방식을 사용했는데 편의를 위해 같다고 둔다.
+	m_terrainWidth = bitmapInfoHeader.biWidth;
+	m_terrainHeight = bitmapInfoHeader.biHeight;
+
+	m_heightMapWidth = m_terrainWidth;
+	m_heightMapHeight = m_terrainHeight;
 
 	imageSize = m_heightMapWidth * m_heightMapHeight * 3;
 
@@ -397,6 +399,7 @@ bool TerrainMesh::InitializeBuffers(ID3D11Device* device)
 				tv = m_heightMap[index3].tv;
 				if (tv == 1.0f) { tv = 0.0f; }
 				m_vertices[index].position = XMFLOAT3(m_heightMap[index3].x, m_heightMap[index3].y, m_heightMap[index3].z);
+				m_vertices[index].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 				m_vertices[index].texture = XMFLOAT2(m_heightMap[index3].tu, tv);
 				m_vertices[index].normal = XMFLOAT3(m_heightMap[index3].nx, m_heightMap[index3].ny, m_heightMap[index3].nz);
 				index++;
@@ -407,18 +410,21 @@ bool TerrainMesh::InitializeBuffers(ID3D11Device* device)
 				if (tu == 0.0f) { tu = 1.0f; }
 				if (tv == 1.0f) { tv = 0.0f; }
 				m_vertices[index].position = XMFLOAT3(m_heightMap[index4].x, m_heightMap[index4].y, m_heightMap[index4].z);
+				m_vertices[index].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 				m_vertices[index].texture = XMFLOAT2(tu, tv);
 				m_vertices[index].normal = XMFLOAT3(m_heightMap[index4].nx, m_heightMap[index4].ny, m_heightMap[index4].nz);
 				index++;
 
 				// 3. Bottom Left
 				m_vertices[index].position = XMFLOAT3(m_heightMap[index1].x, m_heightMap[index1].y, m_heightMap[index1].z);
+				m_vertices[index].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 				m_vertices[index].texture = XMFLOAT2(m_heightMap[index1].tu, m_heightMap[index1].tv);
 				m_vertices[index].normal = XMFLOAT3(m_heightMap[index1].nx, m_heightMap[index1].ny, m_heightMap[index1].nz);
 				index++;
 
 				// 4. Bottom Left
 				m_vertices[index].position = XMFLOAT3(m_heightMap[index1].x, m_heightMap[index1].y, m_heightMap[index1].z);
+				m_vertices[index].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 				m_vertices[index].texture = XMFLOAT2(m_heightMap[index1].tu, m_heightMap[index1].tv);
 				m_vertices[index].normal = XMFLOAT3(m_heightMap[index1].nx, m_heightMap[index1].ny, m_heightMap[index1].nz);
 				index++;
@@ -429,6 +435,7 @@ bool TerrainMesh::InitializeBuffers(ID3D11Device* device)
 				if (tu == 0.0f) { tu = 1.0f; }
 				if (tv == 1.0f) { tv = 0.0f; }
 				m_vertices[index].position = XMFLOAT3(m_heightMap[index4].x, m_heightMap[index4].y, m_heightMap[index4].z);
+				m_vertices[index].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 				m_vertices[index].texture = XMFLOAT2(tu, tv);
 				m_vertices[index].normal = XMFLOAT3(m_heightMap[index4].nx, m_heightMap[index4].ny, m_heightMap[index4].nz);
 				index++;
@@ -437,6 +444,7 @@ bool TerrainMesh::InitializeBuffers(ID3D11Device* device)
 				tu = m_heightMap[index2].tu;
 				if (tu == 0.0f) { tu = 1.0f; }
 				m_vertices[index].position = XMFLOAT3(m_heightMap[index2].x, m_heightMap[index2].y, m_heightMap[index2].z);
+				m_vertices[index].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 				m_vertices[index].texture = XMFLOAT2(tu, m_heightMap[index2].tv);
 				m_vertices[index].normal = XMFLOAT3(m_heightMap[index2].nx, m_heightMap[index2].ny, m_heightMap[index2].nz);
 				index++;
@@ -536,6 +544,7 @@ bool TerrainMesh::InitializeBuffers(ID3D11Device* device)
 						tv = m_heightMap[index3].tv;
 						if (tv == 1.0f) { tv = 0.0f; }
 						m_vertices[index].position = XMFLOAT3(m_heightMap[index3].x, m_heightMap[index3].y, m_heightMap[index3].z);
+						m_vertices[index].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 						m_vertices[index].texture = XMFLOAT2(m_heightMap[index3].tu, tv);
 						m_vertices[index].normal = XMFLOAT3(m_heightMap[index3].nx, m_heightMap[index3].ny, m_heightMap[index3].nz);
 						index++;
@@ -546,18 +555,21 @@ bool TerrainMesh::InitializeBuffers(ID3D11Device* device)
 						if (tu == 0.0f) { tu = 1.0f; }
 						if (tv == 1.0f) { tv = 0.0f; }
 						m_vertices[index].position = XMFLOAT3(m_heightMap[index4].x, m_heightMap[index4].y, m_heightMap[index4].z);
-						m_vertices[index].texture = XMFLOAT2(m_heightMap[index4].tu, tv);
+						m_vertices[index].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+						m_vertices[index].texture = XMFLOAT2(tu, tv);
 						m_vertices[index].normal = XMFLOAT3(m_heightMap[index4].nx, m_heightMap[index4].ny, m_heightMap[index4].nz);
 						index++;
 
 						// 3. Bottom Left
 						m_vertices[index].position = XMFLOAT3(m_heightMap[index1].x, m_heightMap[index1].y, m_heightMap[index1].z);
+						m_vertices[index].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 						m_vertices[index].texture = XMFLOAT2(m_heightMap[index1].tu, m_heightMap[index1].tv);
 						m_vertices[index].normal = XMFLOAT3(m_heightMap[index1].nx, m_heightMap[index1].ny, m_heightMap[index1].nz);
 						index++;
 
 						// 4. Bottom Left
 						m_vertices[index].position = XMFLOAT3(m_heightMap[index1].x, m_heightMap[index1].y, m_heightMap[index1].z);
+						m_vertices[index].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 						m_vertices[index].texture = XMFLOAT2(m_heightMap[index1].tu, m_heightMap[index1].tv);
 						m_vertices[index].normal = XMFLOAT3(m_heightMap[index1].nx, m_heightMap[index1].ny, m_heightMap[index1].nz);
 						index++;
@@ -568,7 +580,8 @@ bool TerrainMesh::InitializeBuffers(ID3D11Device* device)
 						if (tu == 0.0f) { tu = 1.0f; }
 						if (tv == 1.0f) { tv = 0.0f; }
 						m_vertices[index].position = XMFLOAT3(m_heightMap[index4].x, m_heightMap[index4].y, m_heightMap[index4].z);
-						m_vertices[index].texture = XMFLOAT2(m_heightMap[index4].tu, tv);
+						m_vertices[index].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+						m_vertices[index].texture = XMFLOAT2(tu, tv);
 						m_vertices[index].normal = XMFLOAT3(m_heightMap[index4].nx, m_heightMap[index4].ny, m_heightMap[index4].nz);
 						index++;
 
@@ -576,6 +589,7 @@ bool TerrainMesh::InitializeBuffers(ID3D11Device* device)
 						tu = m_heightMap[index2].tu;
 						if (tu == 0.0f) { tu = 1.0f; }
 						m_vertices[index].position = XMFLOAT3(m_heightMap[index2].x, m_heightMap[index2].y, m_heightMap[index2].z);
+						m_vertices[index].color = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 						m_vertices[index].texture = XMFLOAT2(tu, m_heightMap[index2].tv);
 						m_vertices[index].normal = XMFLOAT3(m_heightMap[index2].nx, m_heightMap[index2].ny, m_heightMap[index2].nz);
 						index++;

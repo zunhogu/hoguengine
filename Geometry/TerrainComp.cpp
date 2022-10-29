@@ -12,6 +12,8 @@ TerrainComp::TerrainComp()
 	m_componentType = COMPONENT_TYPE::TERRAIN;
 	m_terrainMesh = new TerrainMesh;
 	m_terrainQuad = new TerrainQuadTreeClass;
+	m_isWireFrame = false;
+	m_heightMapTexture = nullptr;
 }
 
 TerrainComp::TerrainComp(const TerrainComp& terrain)
@@ -32,6 +34,8 @@ bool TerrainComp::Initialize(ModelNode* node)
 
 	ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), L"dirt01.dds", L"contents\\texture\\dirt01.dds");
 	
+	m_heightMapTexture = ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), L"heightmap01.bmp", L"contents\\texture\\heightmap01.bmp");
+
 	result = m_terrainMesh->Initialize(Core::GetDevice(), "contents\\texture\\heightmap01.bmp");
 	if (!result)
 		return result;
@@ -76,13 +80,11 @@ void TerrainComp::Render(ModelNode* node)
 
 void TerrainComp::RederMesh(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT4 lightDiffuseColor, XMFLOAT3 lihgtDirection, XMFLOAT3 cameraPos)
 {
-	//XMMATRIX newWorldMatrix = XMMatrixMultiply(m_terrainMesh->GetWorldMatrix(), worldMatrix);
-
 	ID3D11ShaderResourceView* texture = ResMgrClass::GetInst()->FindTexture(L"dirt01.dds")->GetTexture();
 
-	GraphicsClass::GetInst()->RenderTerrainShaderSetParam(Core::GetDeviceContext(), worldMatrix, viewMatrix, lightDiffuseColor, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), lihgtDirection, cameraPos, texture);
+	GraphicsClass::GetInst()->RenderTerrainShaderSetParam(Core::GetDeviceContext(), m_isWireFrame, worldMatrix, viewMatrix, lightDiffuseColor, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), lihgtDirection, cameraPos, texture);
 
-	m_terrainQuad->Render(Core::GetDeviceContext(), worldMatrix);
+	m_terrainQuad->Render(Core::GetDeviceContext(), worldMatrix, m_isWireFrame);
 }
 
 void TerrainComp::Mesh(ModelNode* node)
@@ -95,28 +97,33 @@ void TerrainComp::Mesh(ModelNode* node)
 	ImGuiTreeNodeFlags treeFlag = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_DefaultOpen;
 	if (ImGui::TreeNodeEx("Terrain Mesh", treeFlag))
 	{
-		char buffer[255];
+		ImGui::Checkbox("Wire Frame", &m_isWireFrame);
 
-		ImGui::Text("Width ");
-
-		ImGui::SetNextItemWidth(100.f);
-		rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(textWidth, ImGui::GetItemRectSize().y));
+		ImGui::Image((ImTextureID)m_heightMapTexture->GetTexture(), ImVec2(70.0f, 70.0f));
 		ImGui::SameLine();
-		sprintf(buffer, "%d", m_terrainMesh->GetTerrainWidth());
-		isChanged = ImGui::InputText("##terrain_width", buffer, sizeof(buffer));
-		if (isChanged)
-			m_terrainMesh->SetTerrainWidth(atoi(buffer));
+		ImGui::BeginGroup();
+		{
+			char buffer[255];
+			ImGui::Text("Width Size :  ");
 
-		ImGui::SameLine();
-		ImGui::Text("Height");
+			ImGui::SetNextItemWidth(100.f);
+			rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(textWidth, ImGui::GetItemRectSize().y));
+			ImGui::SameLine();
+			sprintf(buffer, "%d", m_terrainMesh->GetTerrainWidth());
+			ImGui::InputText("##terrain_width", buffer, sizeof(buffer));
 
-		ImGui::SetNextItemWidth(100.0f);
-		rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(textWidth, ImGui::GetItemRectSize().y));
-		ImGui::SameLine();
-		sprintf(buffer, "%d", m_terrainMesh->GetTerrainWidth());
-		isChanged = ImGui::InputText("##terrain_height", buffer, sizeof(buffer));
-		if (isChanged)
-			m_terrainMesh->SetTerrainHeight(atoi(buffer));
+			ImGui::Text("Height Size : ");
+
+			ImGui::SetNextItemWidth(100.0f);
+			rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(textWidth, ImGui::GetItemRectSize().y));
+			ImGui::SameLine();
+			sprintf(buffer, "%d", m_terrainMesh->GetTerrainWidth());
+			ImGui::InputText("##terrain_height", buffer, sizeof(buffer));
+
+
+			ImGui::EndGroup();
+		}
+	
 		ImGui::TreePop();
 	}
 

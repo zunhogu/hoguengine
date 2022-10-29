@@ -39,8 +39,9 @@ private:
 	ID3D11DepthStencilState* m_depthDisabledStencilState; // 깊이-스텐실 상태 변수2 이는 Z버퍼를 끌때 사용된다.
 	ID3D11DepthStencilView* m_depthStencilView;  // 깊이-스텐실 뷰 
 
-	ID3D11RasterizerState* m_rasterState; // 레스터화기 변수
-	ID3D11RasterizerState* m_rasterStateNoCulling; // 레스터화기 변수2
+	ID3D11RasterizerState* m_rasterState; // 레스터화기 변수 -> 일반 도형 렌더링
+	ID3D11RasterizerState* m_rasterStateNoCulling; // 레스터화기 변수2  -> 후면선발 끄기
+	ID3D11RasterizerState* m_rasterStateWireFrame; // 레스터화기 변수 3 -> 와이어프레임 렌더링
 
 	XMMATRIX m_worldMatrix;   // 월드 투영공간 행렬
 	XMMATRIX m_viewMatrix;  // 뷰 행렬 
@@ -50,6 +51,8 @@ private:
 
 	ID3D11BlendState* m_alphaEnableBlendingState;   // 알파블랜딩 On 상태변수
 	ID3D11BlendState* m_alphaDisableBlendingState;   // 알파블랜딩 Off 상태변수
+
+
 
 	D3D11_VIEWPORT m_viewport;
 
@@ -90,6 +93,9 @@ public:
 	// 후면 컬링 on/off
 	void TurnOnCulling();
 	void TurnOffCulling();
+
+	void TurnOnWireFrame();
+	void TurnOffWireFrame();
 
 	ID3D11RenderTargetView* const* GetRenderTargetView();
 	ID3D11DepthStencilView* GetDepthStencilView();

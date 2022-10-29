@@ -66,6 +66,9 @@
     <ClInclude Include="TerrainShader.h">
       <Filter>ShaderClass\TerrainShader</Filter>
     </ClInclude>
+    <ClInclude Include="TerrainWireFrameShader.h">
+      <Filter>ShaderClass\TerrainShader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3DClass.cpp">
@@ -97,6 +100,9 @@
       <Filter>ShaderClass\SkyDomeShaderClass</Filter>
     </ClCompile>
     <ClCompile Include="TerrainShader.cpp">
+      <Filter>ShaderClass\TerrainShader</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainWireFrameShader.cpp">
       <Filter>ShaderClass\TerrainShader</Filter>
     </ClCompile>
   </ItemGroup>
