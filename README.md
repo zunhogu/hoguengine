@@ -48,6 +48,7 @@ FileSystem.dll : 로컬 영역에 존재하는 파일을 Store / Load 등의 기
   
 * Terrain Rendering
   * Quad Tree 구현  
+  * Level of Detail 구현
   
 * Manager Class로 엔진 관리
   * Manager는 엔진에서 발생하는 특정 작업을 수행하기 위한 클래스로 Singleton 패턴으로 구현
@@ -71,9 +72,8 @@ FileSystem.dll : 로컬 영역에 존재하는 파일을 Store / Load 등의 기
 ## 업데이트 내역
 - 2022.09.27 : Create Repository
 - 2022.10.16 : Grid 및 SkyDome 구현
-- 2022.10.18 : Terrain Rendering Quad Tree 구현
-- 2022.10.29 : HeightMap으로 지형 렌더링
-
+- 2022.10.18 : 지형렌더링 Quad Tree 구현
+- 2022.10.31 : 지형렌더링 Level of Detail 구현
 
 ## 외부라이브러리
 * ImGui
