@@ -106,7 +106,7 @@ void ViewPortPanel::ProcessDragAndDropPayload(ImGuiPayload* payload)
 
 	wstring fileRelativePath = (wchar_t*)payload->Data;
 	wstring fileFileName = Core::GetFileName(fileRelativePath);
-	wstring fileExtension = ContentBrowserPanel::GetFileExtension(fileRelativePath);
+	wstring fileExtension = Core::GetFileExtension(fileRelativePath);
 
 	for (int i = 0; i < IM_ARRAYSIZE(g_modelExtension); i++)
 	{

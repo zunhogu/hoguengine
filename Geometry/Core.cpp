@@ -6,6 +6,7 @@
 #include "TimeMgrClass.h"
 #include "CameraClass.h"
 #include "LightClass.h"
+#include "ContentBrowserPanel.h"
 
 Core* Core::g_plnst = nullptr;
 HWND Core::m_hWnd = 0;
@@ -197,6 +198,23 @@ wstring Core::GetFileName(wstring filePath)
 	return result;
 }
 
+wstring Core::GetFileExtension(wstring filePath)
+{
+	wstring result = L"";
+
+	for (int i = filePath.length(); i >= 0; i--)
+	{
+		if (filePath[i] == L'.')
+		{
+			result = filePath.substr(i + 1, filePath.length());
+			break;
+		}
+	}
+
+	return result;
+}
+
+
 void Core::ConvertData(char* buff, float& dest) {
 	string changeStr = "";
 	int i;
@@ -258,4 +276,60 @@ wstring Core::GetRandomKey()
 		}
 	}
 	return key;
+}
+
+wstring Core::ProcessDragAndDropPayloadTexture(ImGuiPayload* payload)
+{
+	wstring result = L"";
+
+	if (!payload)
+		return result;
+
+	wstring fileRelativePath = (wchar_t*)payload->Data;
+	wstring fileExtension = GetFileExtension(fileRelativePath);
+
+	for (int i = 0; i < IM_ARRAYSIZE(g_textureExtension); i++)
+	{
+		if (fileExtension == g_textureExtension[i])
+		{
+			result = fileRelativePath;
+			break;
+		}
+	}
+
+	return result;
+}
+
+wstring Core::ProcessDragAndDropPayloadMaterial(ImGuiPayload* payload)
+{
+	wstring result = L"";
+
+	if (!payload)
+		return result;
+
+	wstring fileRelativePath = (wchar_t*)payload->Data;
+
+	wstring fileExtension = GetFileExtension(fileRelativePath);
+
+	if (fileExtension == L"material")
+		result = fileRelativePath;
+
+	return result;
+}
+
+wstring Core::ProcessDragAndDropPayloadMesh(ImGuiPayload* payload)
+{
+	wstring result = L"";
+
+	if (!payload)
+		return result;
+
+	wstring fileRelativePath = (wchar_t*)payload->Data;
+
+	wstring fileExtension = GetFileExtension(fileRelativePath);
+
+	if (fileExtension == L"mesh")
+		result = fileRelativePath;
+
+	return result;
 }

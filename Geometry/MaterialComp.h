@@ -73,7 +73,5 @@ public:
 
 
 	virtual void Render(ModelNode* node);
-
-	wstring ProcessDragAndDropPayloadTexture(ImGuiPayload* payload);
 };
 

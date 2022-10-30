@@ -70,10 +70,15 @@ public:
 
 	static char* ConvWcharTochar(wstring _wstr);
 	static wchar_t* ConvCharToWchar(char* _str);
+
 	static wstring GetFileName(wstring filePath);
+	static wstring GetFileExtension(wstring filePath);
 
 	static void ConvertData(char* buff, float& dest);
 
 	static wstring GetRandomKey();
 
+	static wstring ProcessDragAndDropPayloadTexture(ImGuiPayload* payload);
+	static wstring ProcessDragAndDropPayloadMaterial(ImGuiPayload* payload);
+	static wstring ProcessDragAndDropPayloadMesh(ImGuiPayload* payload);
 };

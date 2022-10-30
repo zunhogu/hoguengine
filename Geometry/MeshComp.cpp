@@ -142,7 +142,7 @@ void MeshComp::Render(ModelNode* node)
 		{
 		}
 		payload = ImGuIRenderClass::DraAndDropToItem(rect, ImGui::GetMousePos(), "CONTENT_BROWSER_ITEM");
-		filePath = ProcessDragAndDropPayloadMesh(payload);
+		filePath = Core::ProcessDragAndDropPayloadMesh(payload);
 		if (filePath != L"")
 		{
 			m_meshID = Core::ConvWcharTochar(Core::GetFileName(filePath));
@@ -218,7 +218,7 @@ void MeshComp::Render(ModelNode* node)
 
 					}
 					payload = ImGuIRenderClass::DraAndDropToItem(rect, ImGui::GetMousePos(), "CONTENT_BROWSER_ITEM");
-					filePath = ProcessDragAndDropPayloadMaterial(payload);
+					filePath = Core::ProcessDragAndDropPayloadMaterial(payload);
 					
 					if (filePath != L"")
 					{
@@ -250,38 +250,4 @@ void MeshComp::Render(ModelNode* node)
 
 		}
 	}
-}
-
-wstring MeshComp::ProcessDragAndDropPayloadMaterial(ImGuiPayload* payload)
-{
-	wstring result = L"";
-
-	if (!payload)
-		return result;
-
-	wstring fileRelativePath = (wchar_t*)payload->Data;
-
-	wstring fileExtension = ContentBrowserPanel::GetFileExtension(fileRelativePath);
-
-	if (fileExtension == L"material")
-		result = fileRelativePath;
-
-	return result;
-}
-
-wstring MeshComp::ProcessDragAndDropPayloadMesh(ImGuiPayload* payload)
-{
-	wstring result = L"";
-
-	if (!payload)
-		return result;
-
-	wstring fileRelativePath = (wchar_t*)payload->Data;
-
-	wstring fileExtension = ContentBrowserPanel::GetFileExtension(fileRelativePath);
-
-	if (fileExtension == L"mesh")
-		result = fileRelativePath;
-
-	return result;
 }

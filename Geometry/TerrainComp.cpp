@@ -10,8 +10,6 @@
 TerrainComp::TerrainComp()
 {
 	m_componentType = COMPONENT_TYPE::TERRAIN;
-	m_terrainMesh = new TerrainMesh;
-	m_terrainQuad = new TerrainQuadTreeClass;
 	m_isWireFrame = false;
 	m_heightMapTexture = nullptr;
 }
@@ -25,24 +23,38 @@ TerrainComp::~TerrainComp()
 {
 }
 
-bool TerrainComp::Initialize(ModelNode* node)
+bool TerrainComp::Initialize(ModelNode* node, wstring relativePath)
 {
 	bool result = true;
 
+	if (relativePath == L"") return false;
+
+	if (m_terrainQuad)
+	{
+		m_terrainQuad->Shutdown();
+		delete m_terrainQuad;
+		m_terrainQuad = 0;
+
+		m_terrainMeshKey = L"";
+	}
+
+	m_terrainMesh = new TerrainMesh;
 	m_terrainMeshKey = Core::GetRandomKey();
-	ResMgrClass::GetInst()->AddMesh(m_terrainMeshKey, m_terrainMesh);
+	m_terrainQuad = new TerrainQuadTreeClass;
 
 	ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), L"dirt01.dds", L"contents\\texture\\dirt01.dds");
 	
-	m_heightMapTexture = ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), L"heightmap01.bmp", L"contents\\texture\\heightmap01.bmp");
+	m_heightMapTexture = ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), m_terrainMeshKey, relativePath);
 
-	result = m_terrainMesh->Initialize(Core::GetDevice(), "contents\\texture\\heightmap01.bmp");
+	result = m_terrainMesh->Initialize(Core::GetDevice(), Core::ConvWcharTochar(relativePath));
 	if (!result)
 		return result;
 
 	result = m_terrainQuad->Initialize(m_terrainMesh, Core::GetDevice());
 	if (!result)
 		return result;
+
+	ResMgrClass::GetInst()->AddMesh(m_terrainMeshKey, m_terrainMesh);
 
 	node->SetIsOnlyMeshPicking(true);
 
@@ -99,7 +111,21 @@ void TerrainComp::Mesh(ModelNode* node)
 	{
 		ImGui::Checkbox("Wire Frame", &m_isWireFrame);
 
+		ImVec2 texturePos = ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY());
+		ImGui::SetItemAllowOverlap();
+		rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(70.0f, 70.0f));
 		ImGui::Image((ImTextureID)m_heightMapTexture->GetTexture(), ImVec2(70.0f, 70.0f));
+		ImGui::SameLine();
+		ImGui::SetCursorPos(texturePos);
+		ImGui::Dummy(ImVec2(70.0f, 70.0f));
+		payload = ImGuIRenderClass::DraAndDropToItem(rect, ImGui::GetMousePos(), "CONTENT_BROWSER_ITEM");
+		filePath = Core::ProcessDragAndDropPayloadTexture(payload);
+		if (filePath != L"")
+		{
+			if(Core::GetFileExtension(filePath) == L"bmp")
+				Initialize(node, filePath);
+		}
+
 		ImGui::SameLine();
 		ImGui::BeginGroup();
 		{
@@ -117,7 +143,7 @@ void TerrainComp::Mesh(ModelNode* node)
 			ImGui::SetNextItemWidth(100.0f);
 			rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(textWidth, ImGui::GetItemRectSize().y));
 			ImGui::SameLine();
-			sprintf(buffer, "%d", m_terrainMesh->GetTerrainWidth());
+			sprintf(buffer, "%d", m_terrainMesh->GetTerrainHeight());
 			ImGui::InputText("##terrain_height", buffer, sizeof(buffer));
 
 
@@ -299,7 +325,7 @@ wstring TerrainComp::ProcessDragAndDropPayloadTexture(ImGuiPayload* payload)
 		return result;
 
 	wstring fileRelativePath = (wchar_t*)payload->Data;
-	wstring fileExtension = ContentBrowserPanel::GetFileExtension(fileRelativePath);
+	wstring fileExtension = Core::GetFileExtension(fileRelativePath);
 
 	for (int i = 0; i < IM_ARRAYSIZE(g_textureExtension); i++)
 	{
@@ -322,7 +348,7 @@ wstring TerrainComp::ProcessDragAndDropPayloadMaterial(ImGuiPayload* payload)
 
 	wstring fileRelativePath = (wchar_t*)payload->Data;
 
-	wstring fileExtension = ContentBrowserPanel::GetFileExtension(fileRelativePath);
+	wstring fileExtension = Core::GetFileExtension(fileRelativePath);
 
 	if (fileExtension == L"material")
 		result = fileRelativePath;

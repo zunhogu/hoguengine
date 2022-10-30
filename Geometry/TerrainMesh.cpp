@@ -100,6 +100,10 @@ bool TerrainMesh::LoadHeightMap(char* path)
 	m_terrainWidth = bitmapInfoHeader.biWidth;
 	m_terrainHeight = bitmapInfoHeader.biHeight;
 
+	// Bitmap 자료구조 상 가로 길이는 2의 지수승이 되야한다. 
+	if (m_terrainWidth & m_terrainWidth - 1)
+		return false;
+
 	m_heightMapWidth = m_terrainWidth;
 	m_heightMapHeight = m_terrainHeight;
 
@@ -134,7 +138,7 @@ bool TerrainMesh::LoadHeightMap(char* path)
 		{
 			height = bitmapImage[k];
 
-			index = (m_heightMapHeight * j) + i;
+			index = ((m_heightMapWidth * j) + i);
 
 			m_heightMap[index].x = (float)i;
 			m_heightMap[index].y = (float)height;
@@ -158,7 +162,7 @@ void TerrainMesh::NormalizeHeightMap()
 	{
 		for (i = 0; i < m_heightMapWidth; i++)
 		{
-			m_heightMap[(m_heightMapHeight * j) + i].y /= 15.0f;
+			m_heightMap[(m_heightMapWidth * j) + i].y /= 15.0f;
 		}
 	}
 
@@ -180,9 +184,9 @@ bool TerrainMesh::CalculateNormals()
 	{
 		for (i = 0; i < (m_heightMapWidth - 1); i++)
 		{
-			index1 = (j * m_heightMapHeight) + i;
-			index2 = (j * m_heightMapHeight) + (i + 1);
-			index3 = ((j + 1) * m_heightMapHeight) + i;
+			index1 = (j * m_heightMapWidth) + i;
+			index2 = (j * m_heightMapWidth) + (i + 1);
+			index3 = ((j + 1) * m_heightMapWidth) + i;
 
 			// Get three vertices from the face.
 			vertex1[0] = m_heightMap[index1].x;
@@ -205,7 +209,7 @@ bool TerrainMesh::CalculateNormals()
 			vector2[1] = vertex3[1] - vertex2[1];
 			vector2[2] = vertex3[2] - vertex2[2];
 
-			index = (j * (m_heightMapHeight - 1)) + i;
+			index = (j * (m_heightMapWidth - 1)) + i;
 
 			// Calculate the cross product of those two vectors to get the un-normalized value for this face normal.
 			normals[index].x = (vector1[1] * vector2[2]) - (vector1[2] * vector2[1]);
@@ -231,7 +235,7 @@ bool TerrainMesh::CalculateNormals()
 			// Bottom left face.
 			if (((i - 1) >= 0) && ((j - 1) >= 0))
 			{
-				index = ((j - 1) * (m_heightMapHeight - 1)) + (i - 1);
+				index = ((j - 1) * (m_heightMapWidth - 1)) + (i - 1);
 
 				sum[0] += normals[index].x;
 				sum[1] += normals[index].y;
@@ -242,7 +246,7 @@ bool TerrainMesh::CalculateNormals()
 			// Bottom right face.
 			if ((i < (m_heightMapWidth - 1)) && ((j - 1) >= 0))
 			{
-				index = ((j - 1) * (m_heightMapHeight - 1)) + i;
+				index = ((j - 1) * (m_heightMapWidth - 1)) + i;
 
 				sum[0] += normals[index].x;
 				sum[1] += normals[index].y;
@@ -253,7 +257,7 @@ bool TerrainMesh::CalculateNormals()
 			// Upper left face.
 			if (((i - 1) >= 0) && (j < (m_heightMapHeight - 1)))
 			{
-				index = (j * (m_heightMapHeight - 1)) + (i - 1);
+				index = (j * (m_heightMapWidth - 1)) + (i - 1);
 
 				sum[0] += normals[index].x;
 				sum[1] += normals[index].y;
@@ -264,7 +268,7 @@ bool TerrainMesh::CalculateNormals()
 			// Upper right face.
 			if ((i < (m_heightMapWidth - 1)) && (j < (m_heightMapHeight - 1)))
 			{
-				index = (j * (m_heightMapHeight - 1)) + i;
+				index = (j * (m_heightMapWidth - 1)) + i;
 
 				sum[0] += normals[index].x;
 				sum[1] += normals[index].y;
@@ -281,7 +285,7 @@ bool TerrainMesh::CalculateNormals()
 			length = sqrt((sum[0] * sum[0]) + (sum[1] * sum[1]) + (sum[2] * sum[2]));
 
 			// Get an index to the vertex location in the height map array.
-			index = (j * m_heightMapHeight) + i;
+			index = (j * m_heightMapWidth) + i;
 
 			// Normalize the final shared normal for this vertex and store it in the height map array.
 			m_heightMap[index].nx = (sum[0] / length);
@@ -334,8 +338,8 @@ void TerrainMesh::CalculateTextureCoordinates()
 		for (i = 0; i < m_heightMapWidth; i++)
 		{
 			// Store the texture coordinate in the height map.
-			m_heightMap[(m_heightMapHeight * j) + i].tu = tuCoordinate;
-			m_heightMap[(m_heightMapHeight * j) + i].tv = tvCoordinate;
+			m_heightMap[(m_heightMapWidth * j) + i].tu = tuCoordinate;
+			m_heightMap[(m_heightMapWidth * j) + i].tv = tvCoordinate;
 
 			// Increment the tu texture coordinate by the increment value and increment the index by one.
 			tuCoordinate += incrementValue;
@@ -390,10 +394,10 @@ bool TerrainMesh::InitializeBuffers(ID3D11Device* device)
 		{
 			for (int i = 0; i < (m_heightMapWidth - offset); i += offset)
 			{
-				index1 = (m_heightMapHeight * j) + i;          // Bottom left.
-				index2 = (m_heightMapHeight * j) + (i + offset);      // Bottom right.
-				index3 = (m_heightMapHeight * (j + offset)) + i;      // Upper left.
-				index4 = (m_heightMapHeight * (j + offset)) + (i + offset);  // Upper right.
+				index1 = (m_heightMapWidth * j) + i;          // Bottom left.
+				index2 = (m_heightMapWidth * j) + (i + offset);      // Bottom right.
+				index3 = (m_heightMapWidth * (j + offset)) + i;      // Upper left.
+				index4 = (m_heightMapWidth * (j + offset)) + (i + offset);  // Upper right.
 
 				// 1. Upper Left 
 				tv = m_heightMap[index3].tv;
@@ -461,10 +465,10 @@ bool TerrainMesh::InitializeBuffers(ID3D11Device* device)
 		{
 			for (int i = 0; i < (m_heightMapWidth - 1); i++)
 			{
-				index1 = (m_heightMapHeight * j) + i;          // Bottom left.
-				index2 = (m_heightMapHeight * j) + (i + 1);      // Bottom right.
-				index3 = (m_heightMapHeight * (j + 1)) + i;      // Upper left.
-				index4 = (m_heightMapHeight * (j + 1)) + (i + 1);  // Upper right.
+				index1 = (m_heightMapWidth * j) + i;          // Bottom left.
+				index2 = (m_heightMapWidth * j) + (i + 1);      // Bottom right.
+				index3 = (m_heightMapWidth * (j + 1)) + i;      // Upper left.
+				index4 = (m_heightMapWidth * (j + 1)) + (i + 1);  // Upper right.
 
 				HeightMapType upper_left = m_heightMap[index3];
 				HeightMapType upper_right = m_heightMap[index4];

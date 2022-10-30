@@ -228,7 +228,7 @@ void MaterialComp::Render(ModelNode* node)
 				ImGui::Dummy(ImVec2(70.0f, 70.0f));
 				payload = ImGuIRenderClass::DraAndDropToItem(rect, ImGui::GetMousePos(), "CONTENT_BROWSER_ITEM");
 
-				filePath = ProcessDragAndDropPayloadTexture(payload);
+				filePath = Core::ProcessDragAndDropPayloadTexture(payload);
 				if (filePath != L"")
 				{
 					ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Core::GetFileName(filePath), filePath);
@@ -310,7 +310,7 @@ void MaterialComp::Render(ModelNode* node)
 				ImGui::Dummy(ImVec2(70.0f, 70.0f));
 				payload = ImGuIRenderClass::DraAndDropToItem(rect, ImGui::GetMousePos(), "CONTENT_BROWSER_ITEM");
 
-				filePath = ProcessDragAndDropPayloadTexture(payload);
+				filePath = Core::ProcessDragAndDropPayloadTexture(payload);
 				if (filePath != L"")
 				{
 					ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Core::GetFileName(filePath), filePath);
@@ -393,7 +393,7 @@ void MaterialComp::Render(ModelNode* node)
 				ImGui::Dummy(ImVec2(70.0f, 70.0f));
 				payload = ImGuIRenderClass::DraAndDropToItem(rect, ImGui::GetMousePos(), "CONTENT_BROWSER_ITEM");
 
-				filePath = ProcessDragAndDropPayloadTexture(payload);
+				filePath = Core::ProcessDragAndDropPayloadTexture(payload);
 				if (filePath != L"")
 				{
 					ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Core::GetFileName(filePath), filePath);
@@ -476,7 +476,7 @@ void MaterialComp::Render(ModelNode* node)
 				ImGui::Dummy(ImVec2(70.0f, 70.0f));
 				payload = ImGuIRenderClass::DraAndDropToItem(rect, ImGui::GetMousePos(), "CONTENT_BROWSER_ITEM");
 
-				filePath = ProcessDragAndDropPayloadTexture(payload);
+				filePath = Core::ProcessDragAndDropPayloadTexture(payload);
 				if (filePath != L"")
 				{
 					ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Core::GetFileName(filePath), filePath);
@@ -557,8 +557,7 @@ void MaterialComp::Render(ModelNode* node)
 				ImGui::SetCursorPos(texturePos);
 				ImGui::Dummy(ImVec2(70.0f, 70.0f));
 				payload = ImGuIRenderClass::DraAndDropToItem(rect, ImGui::GetMousePos(), "CONTENT_BROWSER_ITEM");
-
-				filePath = ProcessDragAndDropPayloadTexture(payload);
+				filePath = Core::ProcessDragAndDropPayloadTexture(payload);
 				if (filePath != L"")
 				{
 					ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Core::GetFileName(filePath), filePath);
@@ -572,26 +571,4 @@ void MaterialComp::Render(ModelNode* node)
 			}
 		}
 	}
-}
-
-wstring MaterialComp::ProcessDragAndDropPayloadTexture(ImGuiPayload* payload)
-{
-	wstring result = L"";
-
-	if (!payload)
-		return result;
-
-	wstring fileRelativePath = (wchar_t*)payload->Data;
-	wstring fileExtension = ContentBrowserPanel::GetFileExtension(fileRelativePath);
-
-	for (int i = 0; i < IM_ARRAYSIZE(g_textureExtension); i++)
-	{
-		if (fileExtension == g_textureExtension[i])
-		{
-			result = fileRelativePath;
-			break;
-		}
-	}
-
-	return result;
 }

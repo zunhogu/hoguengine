@@ -112,7 +112,7 @@ struct HeightMapType
 
 // 리소스 확장자
 static const wchar_t* g_modelExtension[] = { L"pref" };
-static const wchar_t* g_textureExtension[] = { L"dds", L"tga", L"png", L"jpg" };
+static const wchar_t* g_textureExtension[] = { L"dds", L"tga", L"png", L"jpg", L"bmp" };
 #define IMGUI_WINDOW_FOCUS_CHECK ImGui::GetMousePos().x >= ImGui::GetCursorScreenPos().x && ImGui::GetMousePos().x <= ImGui::GetCursorScreenPos().x + ImGui::GetWindowSize().x &&\
 								 ImGui::GetMousePos().y >= ImGui::GetCursorScreenPos().y && ImGui::GetMousePos().y <= ImGui::GetCursorScreenPos().y + ImGui::GetWindowSize().y
 

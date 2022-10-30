@@ -2,6 +2,9 @@
 #include "ContentBrowserPanel.h"
 #include "ViewPortPanel.h"
 #include "ImGuIRenderClass.h"
+#include "Core.h"
+#include "ResMgrClass.h"
+#include "TextureClass.h"
 
 extern IMGUI_WINDOW_TYPE g_focusedWindow;
 extern IMGUI_WINDOW_TYPE g_iCurMousePosWindowID;
@@ -481,67 +484,29 @@ bool ContentBrowserPanel::SearchDiectory(std::filesystem::path path, string sear
 // file imageÀ» °áÁ¤
 void ContentBrowserPanel::SetFileImage(wstring filePath, ID3D11ShaderResourceView** view)
 {
-	wstring fileExtension = GetFileExtension(filePath);
-	if (fileExtension == L"fbx")
-		*view = m_fbxFileImage;
-	else if (fileExtension == L"png" || fileExtension == L"jpg" || fileExtension == L"tga" || fileExtension == L"dds")
-	{
-		AddTexture(filePath);
-		*view = FindTexture(filePath);
-	}
-	else
-		*view = m_fileImage;
-}
+	wstring fileExtension = Core::GetFileExtension(filePath);
 
-wstring ContentBrowserPanel::GetFileExtension(wstring filePath)
-{
-	wstring result = L"";
-
-	for (int i = filePath.length(); i >= 0; i--)
+	for (int i = 0; i < IM_ARRAYSIZE(g_modelExtension); i++)
 	{
-		if (filePath[i] == L'.')
+		if (fileExtension == g_modelExtension[i])
 		{
-			result = filePath.substr(i + 1, filePath.length());
-			break;
+			*view = m_fbxFileImage;
+			return;
 		}
 	}
 
-	return result;
-}
-
-
-wstring ContentBrowserPanel::GetFileName(wstring filePath)
-{
-	wstring result = L"";
-
-	for (int i = filePath.length(); i >= 0; i--)
+	for (int i = 0; i < IM_ARRAYSIZE(g_textureExtension); i++)
 	{
-		if (filePath[i] == L'\\')
+		if (fileExtension == g_textureExtension[i])
 		{
-			result = filePath.substr(i + 1, filePath.length());
-			break;
+			TextureClass* texture = ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Core::GetFileName(filePath), filePath);
+			*view = texture->GetTexture();
+			return;
 		}
 	}
 
-	return result;
-}
-
-void ContentBrowserPanel::AddTexture(wstring filePath)
-{
-	if (FindTexture(filePath))
-		return;
-	m_Textures.push_back(pair(filePath, ImGuIRenderClass::GetTexture(filePath)));
-}
-
-ID3D11ShaderResourceView* ContentBrowserPanel::FindTexture(wstring filePath)
-{
-	for (int i = 0; i < m_Textures.size(); i++)
-	{
-		if (m_Textures[i].first == filePath)
-			return m_Textures[i].second;
-	}
-
-	return nullptr;
+	*view = m_fileImage;
+	return;
 }
 
 void ContentBrowserPanel::CenterTextWrapped(string str, float width)

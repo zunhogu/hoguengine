@@ -67,7 +67,7 @@ public:
 	void RenderModel(int indexcount,
 		XMMATRIX worldMatrix,
 		XMMATRIX veiwMatrix, XMFLOAT3 cameraPos,
-		XMFLOAT4 lightColor, XMFLOAT3 lightPos,
+		XMFLOAT4 lightColor, XMFLOAT3 lightPos, XMFLOAT3 lightDir,
 		XMFLOAT4 ambientColor, XMFLOAT4 emmisvieColor, XMFLOAT4 diffuseColor, XMFLOAT4 specularColor, float shinnes,
 		ID3D11ShaderResourceView* ambientTexture, ID3D11ShaderResourceView* emmisiveTexture, ID3D11ShaderResourceView* diffuseTexture, ID3D11ShaderResourceView* specularTexture, ID3D11ShaderResourceView* normalTexture,
 		XMMATRIX boneScale, XMMATRIX* boneMatrixArray, UINT skinning

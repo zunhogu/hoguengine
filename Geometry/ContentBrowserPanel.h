@@ -21,8 +21,6 @@ private:
     ID3D11ShaderResourceView* m_search_directory_button_img;
     ID3D11ShaderResourceView* m_search_directory_cancel_button_img;
 
-    vector<pair<wstring, ID3D11ShaderResourceView*>> m_Textures;
-
 public:
     ContentBrowserPanel();
     ~ContentBrowserPanel();
@@ -33,12 +31,7 @@ public:
     void ShowDirectoryTree(std::filesystem::path path, string searchStr);
     bool SearchDiectory(std::filesystem::path path, string searchStr, int& idx);
 
-    void AddTexture(wstring filePath);
-    ID3D11ShaderResourceView* FindTexture(wstring filePath);
-
     void SetFileImage(wstring filePath, ID3D11ShaderResourceView** view);
-    static wstring GetFileExtension(wstring filePath);
-    static wstring GetFileName(wstring filePath);
 
     void CenterTextWrapped(string str, float width);
 };

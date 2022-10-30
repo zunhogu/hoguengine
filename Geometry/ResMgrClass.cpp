@@ -250,14 +250,15 @@ bool ResMgrClass::DeleteResource(UINT type, wstring _strKey)
 
 	switch (rType)
 	{
-		case RESOURCE_TYPE::MODEL:
+		case RESOURCE_TYPE::MESH:
 		{
-			map<wstring, Mesh*>::iterator iterFbx = m_mapMesh.find(_strKey);
-			if (iterFbx != m_mapMesh.end())
+			map<wstring, Mesh*>::iterator iterMesh = m_mapMesh.find(_strKey);
+			if (iterMesh != m_mapMesh.end())
 			{
-				if (iterFbx->first == _strKey)
+				if (iterMesh->first == _strKey)
 				{
-					m_mapMesh.erase(iterFbx);
+					iterMesh->second->Shutdown();
+					m_mapMesh.erase(iterMesh);
 					return true;
 				}
 			}

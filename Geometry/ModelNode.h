@@ -66,7 +66,7 @@ public:
 	void SetTreeDepth(int depth) { m_treeDepth = depth; }
 
 	void Render(XMMATRIX viewMatirx, XMFLOAT3 cameraPos, XMFLOAT4 lightDiffuseColor, XMFLOAT3 lightPos, XMFLOAT3 lightDirection);
-	void RenderMesh(MeshComp* meshComp, XMMATRIX worldMatrix, XMMATRIX viewMatirx, XMFLOAT3 cameraPos, XMFLOAT4 lightDiffuseColor, XMFLOAT3 lightPos);
+	void RenderMesh(MeshComp* meshComp, XMMATRIX worldMatrix, XMMATRIX viewMatirx, XMFLOAT3 cameraPos, XMFLOAT4 lightDiffuseColor, XMFLOAT3 lightPos, XMFLOAT3 lihgtDirection);
 
 	XMMATRIX GetWorldMatrix();
 	XMMATRIX GetWorldMatrixExceptThis();

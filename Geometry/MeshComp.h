@@ -63,9 +63,6 @@ public:
 	int GetIsRender() { return m_isRender; }
 	void SetIsRender(bool tf) { m_isRender = tf; }
 
-	wstring ProcessDragAndDropPayloadMaterial(ImGuiPayload* payload);
-	wstring ProcessDragAndDropPayloadMesh(ImGuiPayload* payload);
-
 	virtual void Render(ModelNode* node);
 };
 

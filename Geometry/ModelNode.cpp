@@ -345,7 +345,7 @@ void ModelNode::Render(XMMATRIX viewMatirx, XMFLOAT3 cameraPos, XMFLOAT4 lightDi
 				isRender = CollisionClass::GetInst()->CheckCube(postion.x, postion.y, postion.z, radius);
 
 				if (isRender)
-					RenderMesh((MeshComp*)m_modelComps[i], worldMatrix, viewMatirx, cameraPos, lightDiffuseColor, lightPos);
+					RenderMesh((MeshComp*)m_modelComps[i], worldMatrix, viewMatirx, cameraPos, lightDiffuseColor, lightPos, lightDirection);
 			}
 				break;
 			case COMPONENT_TYPE::MATERIAL:
@@ -377,7 +377,7 @@ void ModelNode::Render(XMMATRIX viewMatirx, XMFLOAT3 cameraPos, XMFLOAT4 lightDi
 	}
 }
 
-void ModelNode::RenderMesh(MeshComp* meshComp, XMMATRIX worldMatrix, XMMATRIX viewMatirx, XMFLOAT3 cameraPos, XMFLOAT4 lightColor, XMFLOAT3 lightPos)
+void ModelNode::RenderMesh(MeshComp* meshComp, XMMATRIX worldMatrix, XMMATRIX viewMatirx, XMFLOAT3 cameraPos, XMFLOAT4 lightColor, XMFLOAT3 lightPos, XMFLOAT3 lightDirection)
 {
 	bool stop = false;
 	XMFLOAT4 ambientColor, emissiveColor, diffuseColor, specularColor;
@@ -443,7 +443,7 @@ void ModelNode::RenderMesh(MeshComp* meshComp, XMMATRIX worldMatrix, XMMATRIX vi
 					normalTexture = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)material->GetNormalTextureID().c_str()));
 
 				GraphicsClass::GetInst()->RenderModel(meshParts[i]->GetIndexCount(), worldMatrix, viewMatirx,
-													cameraPos, lightColor, lightPos,
+													cameraPos, lightColor, lightPos, lightDirection,
 													ambientColor, emissiveColor, diffuseColor, specularColor, shiness,
 													ambientTexture->GetTexture(),
 													emissiveTexture->GetTexture(),

@@ -121,7 +121,7 @@ void InspectorPanel::ShowPopUp()
 			if (selectedNode != nullptr && selectedNode->GetMeshComp() == nullptr && selectedNode->GetTerrainComp() == nullptr)
 			{
 				TerrainComp* terrain = new TerrainComp;
-				terrain->Initialize(selectedNode);
+				terrain->Initialize(selectedNode, L"contents\\texture\\heightmap01.bmp");
 				selectedNode->AddModelComp(terrain);
 			}
 		}

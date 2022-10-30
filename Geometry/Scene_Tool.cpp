@@ -124,11 +124,16 @@ void Scene_Tool::Frame()
 		empty->AddModelComp(new ModelInfoComp);
 		empty->AddModelComp(new TransformComp);
 		TerrainComp* terrain = new TerrainComp;
-		terrain->Initialize(empty);
-		empty->AddModelComp(terrain);
-		empty->AddPathToRootNode(empty);
-		SceneMgrClass::GetInst()->GetCurScene()->AddNodeToScene(empty);
-
+		if (terrain->Initialize(empty, L"contents\\texture\\heightmap01.bmp"))
+		{
+			empty->AddModelComp(terrain);
+			empty->AddPathToRootNode(empty);
+			SceneMgrClass::GetInst()->GetCurScene()->AddNodeToScene(empty);
+		}
+		else {
+			terrain->Shutdown();
+			delete terrain;
+		}
 		//Prefab* dino = ResMgrClass::GetInst()->LoadPrefab(L"Ankylosaurus.pref", L"contents\\assets\\Ankylosaurus\\Ankylosaurus.pref");
 		//ModelNode* node = new ModelNode(*dino->GetModelNode());
 		//AddNodeToScene(node);

@@ -45,7 +45,7 @@ public:
 	TerrainComp(const TerrainComp& terrain);
 	~TerrainComp();
 
-	bool Initialize(ModelNode* node);
+	bool Initialize(ModelNode* node, wstring relativePath = L"");
 	virtual void Shutdown();
 
 	virtual void Render(ModelNode* node);
