@@ -9,7 +9,7 @@
 class MaterialLayer
 {
 private:
-	wstring m_maskID;
+	wstring m_maskID;  // texture layer id
 	MaterialComp* m_material;
 	XMFLOAT4 m_chanel;
 
@@ -39,7 +39,9 @@ private:
 
 	TextureClass* m_heightMapTexture;
 
+	bool m_isRender;
 	bool m_isWireFrame;
+	bool m_isLOD;
 public:
 	TerrainComp();
 	TerrainComp(const TerrainComp& terrain);

@@ -10,7 +10,9 @@
 TerrainComp::TerrainComp()
 {
 	m_componentType = COMPONENT_TYPE::TERRAIN;
-	m_isWireFrame = false;
+	m_isRender = true;
+	m_isWireFrame = true;
+	m_isLOD = false;
 	m_heightMapTexture = nullptr;
 }
 
@@ -92,9 +94,11 @@ void TerrainComp::Render(ModelNode* node)
 
 void TerrainComp::RederMesh(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT4 lightDiffuseColor, XMFLOAT3 lihgtDirection, XMFLOAT3 cameraPos)
 {
+	if (!m_isRender) return;
+	
 	ID3D11ShaderResourceView* texture = ResMgrClass::GetInst()->FindTexture(L"dirt01.dds")->GetTexture();
 
-	GraphicsClass::GetInst()->RenderTerrainShaderSetParam(Core::GetDeviceContext(), m_isWireFrame, worldMatrix, viewMatrix, lightDiffuseColor, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), lihgtDirection, cameraPos, texture);
+	GraphicsClass::GetInst()->RenderTerrainShaderSetParam(Core::GetDeviceContext(), m_isWireFrame, m_isLOD, worldMatrix, viewMatrix, lightDiffuseColor, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), lihgtDirection, cameraPos, texture);
 
 	m_terrainQuad->Render(Core::GetDeviceContext(), worldMatrix, m_isWireFrame);
 }
@@ -109,7 +113,11 @@ void TerrainComp::Mesh(ModelNode* node)
 	ImGuiTreeNodeFlags treeFlag = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_DefaultOpen;
 	if (ImGui::TreeNodeEx("Terrain Mesh", treeFlag))
 	{
+		ImGui::Checkbox("isRender", &m_isRender);
+		ImGui::SameLine();
 		ImGui::Checkbox("Wire Frame", &m_isWireFrame);
+		ImGui::SameLine();
+		ImGui::Checkbox("Level of Detail", &m_isLOD);
 
 		ImVec2 texturePos = ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY());
 		ImGui::SetItemAllowOverlap();
@@ -165,15 +173,6 @@ void TerrainComp::TextureLayer(ModelNode* node)
 
 	if (ImGui::TreeNodeEx("Texture Layer", treeFlag))
 	{
-		//ImGui::Text("Layer"); 
-		//ImGui::SameLine();
-		//ImGui::Dummy(ImVec2(20.f, 0.0f));
-		//ImGui::SameLine();
-		//ImGui::Text("Chanel");
-		//ImGui::SameLine();
-		//ImGui::Dummy(ImVec2(20.f,0.0f));
-		//ImGui::SameLine();
-
 		if (ImGui::Button("Add Layer"))
 		{
 			MaterialLayer* layer = new MaterialLayer;
@@ -289,9 +288,6 @@ void TerrainComp::TextureLayer(ModelNode* node)
 
 				if (ImGui::TableSetColumnIndex(4))
 				{
-					if (ImGui::SmallButton(("@##" + flag + "show_button").c_str()))
-						m_layers.erase(m_layers.begin() + i);
-					ImGui::SameLine();
 					if (ImGui::SmallButton(("-##" + flag + "delete_button").c_str()))
 						m_layers.erase(m_layers.begin() + i);
 				}

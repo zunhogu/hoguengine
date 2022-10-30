@@ -451,7 +451,7 @@ void TerrainQuadTreeClass::RenderNode(NodeType* node, ID3D11DeviceContext* devic
 
 	deviceContext->IASetIndexBuffer(node->indexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
-	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST);
 
 	// ºŒ¿Ã¥ı »£√‚ /////////////////////////////////////////////////////////
 

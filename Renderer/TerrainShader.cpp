@@ -5,6 +5,8 @@ TerrainShader::TerrainShader()
 {
 	m_vertexShader = 0;
 	m_pixelShader = 0;
+	m_hullShader = 0;
+	m_domainShader = 0;
 	m_layout = 0;
 	m_sampleState = 0;
 	m_matrixBuffer = 0;
@@ -23,7 +25,7 @@ bool TerrainShader::Initialize(ID3D11Device* device, HWND hwnd)
 {
 	bool result;
 
-	result = InitializeShader(device, hwnd, L"./contents/shader/terrain.vs", L"./contents/shader/terrain.ps");
+	result = InitializeShader(device, hwnd, L"./contents/shader/terrain.vs", L"./contents/shader/terrain.hs", L"./contents/shader/terrain.ds", L"./contents/shader/terrain.ps");
 
 	if (!result)
 		return false;
@@ -36,11 +38,13 @@ void TerrainShader::Shutdown()
 	ShutdownShader();
 }
 
-bool TerrainShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilename, WCHAR* psFilename)
+bool TerrainShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsFilename, WCHAR* hsFilename, WCHAR* dsFilename, WCHAR* psFilename)
 {
 	HRESULT result;
 	ID3D10Blob* errorMessage;
 	ID3D10Blob* vertexShaderBuffer;
+	ID3D10Blob* hullShaderBuffer;
+	ID3D10Blob* domainShaderBuffer;
 	ID3D10Blob* pixelShaderBuffer;
 	D3D11_INPUT_ELEMENT_DESC polygonLayout[4];
 	unsigned int numElements;
@@ -49,6 +53,7 @@ bool TerrainShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsF
 	D3D11_BUFFER_DESC lightBufferDesc;
 	D3D11_BUFFER_DESC cameraBufferDesc;
 	D3D11_BUFFER_DESC wireFrameBufferDesc;
+	D3D11_BUFFER_DESC tessellationBufferDesc;
 
 	errorMessage = 0;
 	vertexShaderBuffer = 0;
@@ -60,7 +65,27 @@ bool TerrainShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsF
 		if (errorMessage)
 			OutputShaderErrorMessage(errorMessage, hwnd, vsFilename);
 		else
-			MessageBox(hwnd, nullptr, "Missing Shader File", MB_OK);
+			MessageBox(hwnd, "Vertex Shader", "Missing Shader File", MB_OK);
+
+		return false;
+	}
+
+	result = D3DCompileFromFile(hsFilename, NULL, NULL, "TerrainHullShader", "hs_5_0", 0, 0, &hullShaderBuffer, &errorMessage);
+	if (FAILED(result)) {
+		if (errorMessage)
+			OutputShaderErrorMessage(errorMessage, hwnd, hsFilename);
+		else
+			MessageBox(hwnd, "Hull Shader", "Missing Shader File", MB_OK);
+
+		return false;
+	}
+
+	result = D3DCompileFromFile(dsFilename, NULL, NULL, "TerrainDomainShader", "ds_5_0", 0, 0, &domainShaderBuffer, &errorMessage);
+	if (FAILED(result)) {
+		if (errorMessage)
+			OutputShaderErrorMessage(errorMessage, hwnd, dsFilename);
+		else
+			MessageBox(hwnd, "Domain Shader", "Missing Shader File", MB_OK);
 
 		return false;
 	}
@@ -71,12 +96,20 @@ bool TerrainShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsF
 		if (errorMessage)
 			OutputShaderErrorMessage(errorMessage, hwnd, psFilename);
 		else
-			MessageBox(hwnd, nullptr, "Missing Shader File", MB_OK);
+			MessageBox(hwnd, "Pixel Shader", "Missing Shader File", MB_OK);
 
 		return false;
 	}
 
 	result = device->CreateVertexShader(vertexShaderBuffer->GetBufferPointer(), vertexShaderBuffer->GetBufferSize(), NULL, &m_vertexShader);
+	if (FAILED(result))
+		return false;
+
+	result = device->CreateHullShader(hullShaderBuffer->GetBufferPointer(), hullShaderBuffer->GetBufferSize(), NULL, &m_hullShader);
+	if (FAILED(result))
+		return false;
+
+	result = device->CreateDomainShader(domainShaderBuffer->GetBufferPointer(), domainShaderBuffer->GetBufferSize(), NULL, &m_domainShader);
 	if (FAILED(result))
 		return false;
 
@@ -188,7 +221,18 @@ bool TerrainShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsF
 	wireFrameBufferDesc.MiscFlags = 0;
 	wireFrameBufferDesc.StructureByteStride = 0;
 
-	result = device->CreateBuffer(&wireFrameBufferDesc, NULL, &m_wireFrameBufferType);
+	result = device->CreateBuffer(&wireFrameBufferDesc, NULL, &m_wireFrameBuffer);
+	if (FAILED(result))
+		return false;
+
+	tessellationBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	tessellationBufferDesc.ByteWidth = sizeof(TessellationBufferType);
+	tessellationBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	tessellationBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	tessellationBufferDesc.MiscFlags = 0;
+	tessellationBufferDesc.StructureByteStride = 0;
+
+	result = device->CreateBuffer(&tessellationBufferDesc, NULL, &m_tessellationBuffer);
 	if (FAILED(result))
 		return false;
 
@@ -235,39 +279,77 @@ void TerrainShader::ShutdownShader()
 
 }
 
-bool TerrainShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, bool isWireFrame, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, ID3D11ShaderResourceView* texture)
+bool TerrainShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, bool isWireFrame, bool isLOD, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, ID3D11ShaderResourceView* texture)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	unsigned int bufferNumber;
-	MatrixBufferType* dataPtr;
-	LightBufferType* dataPtr2;
-	CameraBufferType* dataPtr3;
-	WireFrameBufferType* dataPtr4;
-
-	worldMatrix = XMMatrixTranspose(worldMatrix);
-	viewMatrix = XMMatrixTranspose(viewMatrix);
-	projectionMatrix = XMMatrixTranspose(projectionMatrix);
+	MatrixBufferType* matrixBuffer;
+	LightBufferType* lightBuffer;
+	CameraBufferType* cameraBuffer;
+	WireFrameBufferType* wireFrameBuffer;
+	TessellationBufferType* tessellationBuffer;
 
 	///////////////////////////////////////////////////////////////////////////////
 	// Vertex Shader //////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////////////////////
 
+	result = deviceContext->Map(m_cameraBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if (FAILED(result))
+		return false;
+
+	cameraBuffer = (CameraBufferType*)mappedResource.pData;
+
+	cameraBuffer->cameraPos = cameraPos;
+	cameraBuffer->padding = 0.0f;
+
+	deviceContext->Unmap(m_cameraBuffer, 0);
+
+	bufferNumber = 0;
+
+	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_cameraBuffer);
+
+	result = deviceContext->Map(m_tessellationBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if (FAILED(result))
+		return false;
+
+	tessellationBuffer = (TessellationBufferType*)mappedResource.pData;
+
+	tessellationBuffer->tessellationAmounts = XMFLOAT4(4.0f, 2.0f, 2.0f, 1.0f);
+	tessellationBuffer->distanceStandard = isLOD ? XMFLOAT4(10.f, 30.f, 50.f, 1.0f) : XMFLOAT4(10.f, 30.f, 50.f, 0.0f);
+
+	deviceContext->Unmap(m_tessellationBuffer, 0);
+
+	bufferNumber++;
+
+	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_tessellationBuffer);
+
+	///////////////////////////////////////////////////////////////////////////////
+	// Hull Shader ////////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////
+
+	///////////////////////////////////////////////////////////////////////////////
+	// Domain Shader //////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////////////////////
+	worldMatrix = XMMatrixTranspose(worldMatrix);
+	viewMatrix = XMMatrixTranspose(viewMatrix);
+	projectionMatrix = XMMatrixTranspose(projectionMatrix);
+	
 	result = deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (FAILED(result))
 		return false;
 
-	dataPtr = (MatrixBufferType*)mappedResource.pData;
+	matrixBuffer = (MatrixBufferType*)mappedResource.pData;
 
-	dataPtr->world = worldMatrix;
-	dataPtr->view = viewMatrix;
-	dataPtr->projection = projectionMatrix;
+	matrixBuffer->world = worldMatrix;
+	matrixBuffer->view = viewMatrix;
+	matrixBuffer->projection = projectionMatrix;
 
 	deviceContext->Unmap(m_matrixBuffer, 0);
 
 	bufferNumber = 0;
 
-	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
+	deviceContext->DSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
 
 	///////////////////////////////////////////////////////////////////////////////
 	// Pixel Shader ///////////////////////////////////////////////////////////////
@@ -277,32 +359,32 @@ bool TerrainShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, bool
 	if (FAILED(result))
 		return false;
 
-	dataPtr2 = (LightBufferType*)mappedResource.pData;
+	lightBuffer = (LightBufferType*)mappedResource.pData;
 
-	dataPtr2->ambientColor = ambientColor;
-	dataPtr2->diffuseColor = diffuseColor;
-	dataPtr2->lightDir = lightDirection;
-	dataPtr2->padding = 0.0f;
+	lightBuffer->ambientColor = ambientColor;
+	lightBuffer->diffuseColor = diffuseColor;
+	lightBuffer->lightDir = lightDirection;
+	lightBuffer->padding = 0.0f;
 
 	deviceContext->Unmap(m_lightBuffer, 0);
 
-	result = deviceContext->Map(m_wireFrameBufferType, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	result = deviceContext->Map(m_wireFrameBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (FAILED(result))
 		return false;
 
-	dataPtr4 = (WireFrameBufferType*)mappedResource.pData;
+	wireFrameBuffer = (WireFrameBufferType*)mappedResource.pData;
 
-	dataPtr4->wireColor = isWireFrame ? XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) : XMFLOAT4(0.0f, 1.0f, 0.0f, 0.0f);
+	wireFrameBuffer->wireColor = isWireFrame ? XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f) : XMFLOAT4(0.0f, 1.0f, 0.0f, 0.0f);
 
-	deviceContext->Unmap(m_wireFrameBufferType, 0);
-
+	deviceContext->Unmap(m_wireFrameBuffer, 0);
 
 	bufferNumber = 0;
 	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_lightBuffer);
 
 	bufferNumber++;
-	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_wireFrameBufferType);
-
+	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_wireFrameBuffer);
+	bufferNumber++;
+	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_tessellationBuffer);
 
 	deviceContext->PSSetShaderResources(0, 1, &texture);
 
@@ -314,6 +396,8 @@ void TerrainShader::RenderShader(ID3D11DeviceContext* deviceContext, int indexCo
 	deviceContext->IASetInputLayout(m_layout);
 
 	deviceContext->VSSetShader(m_vertexShader, NULL, 0);
+	deviceContext->HSSetShader(m_hullShader, NULL, 0);
+	deviceContext->DSSetShader(m_domainShader, NULL, 0);
 	deviceContext->PSSetShader(m_pixelShader, NULL, 0);
 
 	deviceContext->PSSetSamplers(0, 1, &m_sampleState);
