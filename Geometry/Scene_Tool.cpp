@@ -134,6 +134,7 @@ void Scene_Tool::Frame()
 			terrain->Shutdown();
 			delete terrain;
 		}
+
 		//Prefab* dino = ResMgrClass::GetInst()->LoadPrefab(L"Ankylosaurus.pref", L"contents\\assets\\Ankylosaurus\\Ankylosaurus.pref");
 		//ModelNode* node = new ModelNode(*dino->GetModelNode());
 		//AddNodeToScene(node);
@@ -214,7 +215,7 @@ void Scene_Tool::Render()
 	// ImGui Rendering
 	ImGuIRenderClass::GetInst()->RenderMain();
 
-	GraphicsClass::GetInst()->RenderToTextureStart();
+	ImGuIRenderClass::GetInst()->RenderToTextureStart(Core::GetDeviceContext());
 
 	// SkyDome Rendering
 	GraphicsClass::GetInst()->TurnOffCulling();
@@ -233,7 +234,6 @@ void Scene_Tool::Render()
 	m_GridQuadTree->Render(Core::GetDeviceContext(), m_Grid->GetWorldMatrix());
 
 	// Model Rendering
-
 	for (int i = 0; i < m_allNode->size(); ++i)
 	{
 		ModelNode* node = m_allNode->at(i);
@@ -241,7 +241,7 @@ void Scene_Tool::Render()
 		node->Render(m_Camera->GetViewMatrix(), cameraPos, m_Light->GetDiffuseColor(), m_Light->GetPosition(), m_Light->GetDirection());
 
 	}
-	GraphicsClass::GetInst()->RenderToTextureEnd();
+	ImGuIRenderClass::GetInst()->RenderToTextureEnd();
 
 	GraphicsClass::GetInst()->EndScene();
 }

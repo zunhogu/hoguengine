@@ -7,6 +7,7 @@
 #include "ScenePanel.h"
 #include "ContentBrowserPanel.h"
 #include "Core.h"
+#include "RenderTextureClass.h"
 
 
 static bool SelectableInput(const char* str_id, bool selected, ImGuiSelectableFlags flags, char* buf, size_t buf_size);
@@ -73,7 +74,7 @@ ImGuIRenderClass::~ImGuIRenderClass()
 {
 }
 
-bool ImGuIRenderClass::Initialize(HWND hWnd)
+bool ImGuIRenderClass::Initialize(float screendWidth, float screeHeight, HWND hWnd)
 {
 	bool result;
 
@@ -113,7 +114,14 @@ bool ImGuIRenderClass::Initialize(HWND hWnd)
 	}
 
 
-	Panel* viewPortPanel = new ViewPortPanel();
+	ViewPortPanel* viewPortPanel = new ViewPortPanel();
+	result = viewPortPanel->Initialize(Core::GetDevice(), Core::GetDeviceContext(), screendWidth, screeHeight, SCREEN_DEPTH, SCREEN_NEAR);
+	if (!result)
+	{
+		MessageBox(hWnd, "Could not initialize the viewport render to texture object.", "Error", MB_OK);
+		return false;
+	}
+
 	Panel* hierahcyPanel = new HierachyPanel();
 	Panel* inspectorPanel = new InspectorPanel();
 	Panel* scenePanel = new ScenePanel();
@@ -224,7 +232,7 @@ void ImGuIRenderClass::RenderMain()
 	// 매 프레임마다 rendertargetview를 deviceContext와 연결해줘야하나보다. 아니면 imgui 윈도우가 메인 윈도우 밖으로 나가면 메인 윈도우가 지워진다. 왜그러는지는 모르겠다...
 	Core::GetDeviceContext()->OMSetRenderTargets(1, Core::GetRenderTargetView(), NULL);
 	
-// 모은 DrawData로 렌더링을 한다.
+	// 모은 DrawData로 렌더링을 한다.
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
 	// Update and Render additional Platform Windows
@@ -487,4 +495,36 @@ static bool SelectableInput(const char* str_id, bool selected, ImGuiSelectableFl
 
 	ImGui::PopID();
 	return ret;
+}
+
+ViewPortPanel* ImGuIRenderClass::GetViewPortPanel()
+{
+	ViewPortPanel* result = nullptr;
+	for (int i = 0; i < m_vPanels.size(); i++)
+	{
+		if (m_vPanels[i]->GetPanelType() == IMGUI_WINDOW_TYPE::VIEWPORT)
+			result = (ViewPortPanel*)m_vPanels[i];
+	}
+
+	return result;
+}
+
+void ImGuIRenderClass::RenderToTextureStart(ID3D11DeviceContext* deviceContext) 
+{
+	ViewPortPanel* viewport = GetViewPortPanel();
+	
+	// RTT가 렌더링 타겟이 되도록한다.
+	viewport->GetRenderTexture()->SetRenderTarget(deviceContext);
+
+	// RTT를 초기화한다.
+	viewport->GetRenderTexture()->ClearRenderTarget(deviceContext, 0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+void ImGuIRenderClass::RenderToTextureEnd()
+{
+	// 렌더타깃을 다시 백버퍼로 돌린다.
+	Core::GetInst()->SetBackBufferRenderTarget();
+
+	// 뷰포트도 원래대로 돌린다.
+	Core::GetInst()->ResetViewport();
 }

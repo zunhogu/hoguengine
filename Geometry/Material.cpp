@@ -22,6 +22,7 @@ bool Material::Initialize(const wstring& _strFilePath)
 	if (!result)
 		return false;
 
+
 	return result;
 }
 

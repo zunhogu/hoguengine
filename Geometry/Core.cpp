@@ -7,6 +7,9 @@
 #include "CameraClass.h"
 #include "LightClass.h"
 #include "ContentBrowserPanel.h"
+#include "ImGuIRenderClass.h"
+#include "ViewPortPanel.h"
+#include "RenderTextureClass.h"
 
 Core* Core::g_plnst = nullptr;
 HWND Core::m_hWnd = 0;
@@ -32,15 +35,11 @@ bool Core::Initialize(int screendWidth, int screeHeight, HWND hwnd, HINSTANCE hI
 		return false;
 	}
 
-	result = ImGuIRenderClass::GetInst()->Initialize(hwnd);
+	result = ImGuIRenderClass::GetInst()->Initialize(screendWidth, screeHeight, hwnd);
 	if (!result) {
 		MessageBox(hwnd, "Could not initialize ImGui", "Error", MB_OK);
 		return false;
 	}
-	//float viewPortScreenWidth;
-	//float viewPortScreenHeight;
-
-	//GraphicsClass::GetInst()->GetViewPortSize(viewPortScreenWidth, viewPortScreenHeight);
 
 	PathMgr::GetInst()->Initialize();
 
@@ -147,9 +146,9 @@ ID3D11RenderTargetView* const* Core::GetRenderTargetView()
 	return GraphicsClass::GetInst()->GetRenderTargetView();
 }
 
-ID3D11ShaderResourceView* Core::GetShaderResourceView()
+ID3D11DepthStencilView* Core::GetDepthStencilView()
 {
-	return GraphicsClass::GetInst()->GetShaderResourceView();
+	return GraphicsClass::GetInst()->GetDepthStencilView();
 }
 
 XMMATRIX Core::GetViewMatrix()
@@ -160,6 +159,16 @@ XMMATRIX Core::GetViewMatrix()
 XMMATRIX Core::GetProjectionMatrix()
 {
 	return GraphicsClass::GetInst()->GetProjectionMatrix();
+}
+
+void Core::SetBackBufferRenderTarget()
+{
+	GraphicsClass::GetInst()->SetBackBufferRenderTarget();
+}
+
+void Core::ResetViewport()
+{
+	GraphicsClass::GetInst()->ResetViewPort();
 }
 
 char* Core::ConvWcharTochar(wstring _wstr)

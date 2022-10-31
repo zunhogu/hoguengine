@@ -23,11 +23,14 @@
     <Filter Include="ShaderClass\GridShdaer">
       <UniqueIdentifier>{3a0dc8a9-a934-4793-8bf9-ac2a56d9e337}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ShaderClass\SkyDomeShaderClass">
-      <UniqueIdentifier>{88d8ce90-8fe1-4e5f-b3a9-2bdfa03d5f1f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ShaderClass\TerrainShader">
       <UniqueIdentifier>{91406b8d-8524-404c-84e7-a602fef5b674}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShaderClass\SkyDomeShader">
+      <UniqueIdentifier>{88d8ce90-8fe1-4e5f-b3a9-2bdfa03d5f1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ShaderClass\MaterialShader">
+      <UniqueIdentifier>{2fbc8dc4-194a-4bc6-99c6-6c0205a66e0f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -51,9 +54,6 @@
     <ClInclude Include="ModelShader.h">
       <Filter>ShaderClass\ModelShader</Filter>
     </ClInclude>
-    <ClInclude Include="RenderTextureClass.h">
-      <Filter>Render</Filter>
-    </ClInclude>
     <ClInclude Include="ShaderManagerClass.h">
       <Filter>ShaderClass</Filter>
     </ClInclude>
@@ -61,13 +61,16 @@
       <Filter>ShaderClass\GridShdaer</Filter>
     </ClInclude>
     <ClInclude Include="SkyDomeShader.h">
-      <Filter>ShaderClass\SkyDomeShaderClass</Filter>
+      <Filter>ShaderClass\SkyDomeShader</Filter>
     </ClInclude>
     <ClInclude Include="TerrainShader.h">
       <Filter>ShaderClass\TerrainShader</Filter>
     </ClInclude>
     <ClInclude Include="TerrainWireFrameShader.h">
       <Filter>ShaderClass\TerrainShader</Filter>
+    </ClInclude>
+    <ClInclude Include="MaterialShader.h">
+      <Filter>ShaderClass\MaterialShader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -87,9 +90,6 @@
     <ClCompile Include="ShaderClass.cpp">
       <Filter>ShaderClass</Filter>
     </ClCompile>
-    <ClCompile Include="RenderTextureClass.cpp">
-      <Filter>Render</Filter>
-    </ClCompile>
     <ClCompile Include="ShaderManagerClass.cpp">
       <Filter>ShaderClass</Filter>
     </ClCompile>
@@ -97,13 +97,16 @@
       <Filter>ShaderClass\GridShdaer</Filter>
     </ClCompile>
     <ClCompile Include="SkyDomeShader.cpp">
-      <Filter>ShaderClass\SkyDomeShaderClass</Filter>
+      <Filter>ShaderClass\SkyDomeShader</Filter>
     </ClCompile>
     <ClCompile Include="TerrainShader.cpp">
       <Filter>ShaderClass\TerrainShader</Filter>
     </ClCompile>
     <ClCompile Include="TerrainWireFrameShader.cpp">
       <Filter>ShaderClass\TerrainShader</Filter>
+    </ClCompile>
+    <ClCompile Include="MaterialShader.cpp">
+      <Filter>ShaderClass\MaterialShader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

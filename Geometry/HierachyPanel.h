@@ -12,6 +12,7 @@ public:
 	HierachyPanel();
 	~HierachyPanel();
 
+	virtual void Shutdown();
 	virtual void Render();
 	void NodeUpdate(ModelNode* node);
 	void ShowNodeTree(ModelNode* modelNodes, int num);

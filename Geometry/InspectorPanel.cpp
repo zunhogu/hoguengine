@@ -48,6 +48,10 @@ InspectorPanel::~InspectorPanel()
 {
 }
 
+void InspectorPanel::Shutdown()
+{
+}
+
 void InspectorPanel::Render()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));   // padding °ª ¼³Á¤

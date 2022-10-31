@@ -9,6 +9,7 @@
 #include "ResMgrClass.h"
 #include "SceneMgrClass.h"
 #include "Scene.h"
+#include "RenderTextureClass.h"
 
 // extern global value
 
@@ -45,6 +46,30 @@ ViewPortPanel::ViewPortPanel()
 
 ViewPortPanel::~ViewPortPanel()
 {
+}
+
+bool ViewPortPanel::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int textureWidth, int textureHeight, float screenDepth, float screenNear)
+{
+	bool result = true;
+
+	m_renderTexture = new RenderTextureClass;
+	if (!m_renderTexture)
+		return false;
+
+	result = m_renderTexture->Initialize(device, deviceContext, textureWidth, textureHeight, screenDepth, screenNear);
+	if (!result)
+		return false;
+
+	return true;
+}
+
+void ViewPortPanel::Shutdown()
+{
+	if (m_renderTexture) {
+		m_renderTexture->Shutdown();
+		delete m_renderTexture;
+		m_renderTexture = 0;
+	}
 }
 
 void ViewPortPanel::Render()
@@ -86,7 +111,7 @@ void ViewPortPanel::Render()
 			g_prevViewPortSize.y = g_viewPortSize.y;
 
 			ID3D11ShaderResourceView* image;   // RTT를 관리하는 자원 뷰를 가져온다. 
-			image = Core::GetShaderResourceView();
+			image = m_renderTexture->GetShaderResourceView();
 			ImGui::GetWindowDrawList()->AddImage((ImTextureID)image, ImVec2(ImGui::GetCursorScreenPos()), ImVec2(ImGui::GetCursorScreenPos().x + g_viewPortSize.x, ImGui::GetCursorScreenPos().y + g_viewPortSize.y), ImVec2(0, 0), ImVec2(1, 1));
 
 			ProcessDragAndDropPayload(ImGuIRenderClass::DragAndDropToWindow("CONTENT_BROWSER_ITEM"));

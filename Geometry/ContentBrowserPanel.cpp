@@ -17,6 +17,8 @@ string g_contentsPath = "contents";
 
 ContentBrowserPanel::ContentBrowserPanel()
 {
+	m_type == IMGUI_WINDOW_TYPE::CONTENTBROWSER;
+
 	// folder in Output Directory 
 	m_CurrentDirectory = g_contentsPath;
 
@@ -37,6 +39,10 @@ ContentBrowserPanel::ContentBrowserPanel()
 }
 
 ContentBrowserPanel::~ContentBrowserPanel()
+{
+}
+
+void ContentBrowserPanel::Shutdown()
 {
 }
 

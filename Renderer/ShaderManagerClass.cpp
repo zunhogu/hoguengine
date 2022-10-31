@@ -5,6 +5,7 @@
 #include "SkyDomeShader.h"
 #include "TerrainShader.h"
 #include "TerrainWireFrameShader.h"
+#include "MaterialShader.h"
 
 ShaderManagerClass::ShaderManagerClass()
 {
@@ -14,6 +15,7 @@ ShaderManagerClass::ShaderManagerClass()
 	m_gridShader = 0;
 	m_skyDomeShader = 0;
 	m_terrainShader = 0;
+	m_materialShader = 0;
 }
 
 ShaderManagerClass::ShaderManagerClass(const ShaderManagerClass&)
@@ -54,17 +56,26 @@ bool ShaderManagerClass::Initialize(D3DClass* d3d, HWND hwnd)
 
 	m_terrainShader->Initialize(m_D3D->GetDevice(), m_hwnd);
 
-	m_terrainWireFrameShader = new TerrainWireFrameShader;
-	if (!m_terrainWireFrameShader)
+	m_materialShader = new MaterialShader;
+	if (!m_materialShader)
 		return false;
 
-	m_terrainWireFrameShader->Initialize(m_D3D->GetDevice(), m_hwnd);
+	m_materialShader->Initialize(m_D3D->GetDevice(), m_hwnd);
+	if (!m_materialShader)
+		return false;
 
 	return true;
 }
 
 void ShaderManagerClass::Shutdown()
 {
+	if (m_materialShader)
+	{
+		m_materialShader->Shutdown();
+		delete m_materialShader;
+		m_materialShader = 0;
+	}
+
 	if (m_terrainWireFrameShader)
 	{
 		m_terrainWireFrameShader->Shutdown();
@@ -103,7 +114,7 @@ void ShaderManagerClass::Shutdown()
 
 void ShaderManagerClass::RenderModelShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT3 cameraPos, XMFLOAT4 lightColor, XMFLOAT3 lightPos, XMFLOAT3 lightDir, XMFLOAT4 ambientColor, XMFLOAT4 emmisiveColor, XMFLOAT4 diffuseColor, XMFLOAT4 specularColor, FLOAT shinness, ID3D11ShaderResourceView* ambientTexture, ID3D11ShaderResourceView* emmisiveTexture, ID3D11ShaderResourceView* diffuseTexture, ID3D11ShaderResourceView* specularTexture, ID3D11ShaderResourceView* normalTexture, XMMATRIX boneScale, XMMATRIX* boneMatrixArray, UINT skinning)
 {
-	m_modelShader->Render(m_D3D->GetDeviceContext(), indexCount, worldMatrix, viewMatrix, projectionMatrix, cameraPos, lightColor, lightPos, lightDir, ambientColor, emmisiveColor, diffuseColor, specularColor, shinness, ambientTexture, emmisiveTexture, diffuseTexture, specularTexture, normalTexture, boneScale, boneMatrixArray, skinning);
+	m_modelShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, cameraPos, lightColor, lightPos, lightDir, ambientColor, emmisiveColor, diffuseColor, specularColor, shinness, ambientTexture, emmisiveTexture, diffuseTexture, specularTexture, normalTexture, boneScale, boneMatrixArray, skinning);
 }
 
 void ShaderManagerClass::RenderGridShaderSetParam(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix)
@@ -139,5 +150,10 @@ void ShaderManagerClass::RenderTerrainWireFrameShader(ID3D11DeviceContext* devic
 void ShaderManagerClass::RenderSkyDomeShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 apexColor, XMFLOAT4 centerColor)
 {
 	m_skyDomeShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, apexColor, centerColor);
+}
+
+void ShaderManagerClass::RenderMaterialShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, ID3D11ShaderResourceView** textures)
+{
+	m_materialShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, textures);
 }
 

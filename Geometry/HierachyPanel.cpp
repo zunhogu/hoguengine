@@ -31,6 +31,10 @@ HierachyPanel::~HierachyPanel()
 {
 }
 
+void HierachyPanel::Shutdown()
+{
+}
+
 void HierachyPanel::Render()
 {
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));   // padding °ª ¼³Á¤

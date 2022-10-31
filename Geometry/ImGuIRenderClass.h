@@ -5,6 +5,7 @@
 
 class Panel;
 class ResourceItem;
+class ViewPortPanel;
 
 class ImGuIRenderClass
 {
@@ -27,7 +28,7 @@ public:
 	~ImGuIRenderClass();
 
 public:
-	bool Initialize(HWND hWnd);
+	bool Initialize(float screendWidth, float screeHeight, HWND hWnd);
 	void Shutdown();
 
 	// Render ImGuie UI
@@ -48,14 +49,6 @@ public:
 	void SetTransformOper(UINT OPER);
 	bool IsGizmoClicked();
 
-	// 피킹 함수
-
-	// 업데이트 함수
-
-	// 메뉴 함수
-
-	// Component
-
 	// Scene Tool에서 만 쓸 Textures 가져오는 함수 
 	static ID3D11ShaderResourceView* GetTexture(const wstring& _strFilePath);
 
@@ -64,5 +57,10 @@ public:
 	static ImGuiPayload* DraAndDropToItem(ImRect rect, ImVec2 mouseCoordinate, const char* type, ImU32 col= IM_COL32(255, 255, 0, 255));
 	static bool BeginDragDropTargetCustom(const ImRect& bb, ImGuiID id);
 	static ImGuiPayload* AcceptDragDropPayload(const char* type, ImGuiDragDropFlags flags);
+
+	ViewPortPanel* GetViewPortPanel();
+
+	void RenderToTextureStart(ID3D11DeviceContext* deviceContext);
+	void RenderToTextureEnd();
 };
 

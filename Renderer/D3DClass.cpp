@@ -689,14 +689,6 @@ ID3D11DeviceContext* D3DClass::GetDeviceContext() {
 	return m_deviceContext;
 }
 
-// 다음 세 도우미 함수는 투영, 월드, 직교 투영 행렬을 반환한다.
-// 대부분의 셰이더에서는 이 행렬들이 필요하기 때문에 이를 가져올 손쉬운 방법이 필요하다.
-
-void D3DClass::GetOrthoMatrix(XMMATRIX& orthoMatrix) {
-	orthoMatrix = m_orthoMatrix;
-	return;
-}
-
 
 // 마지막 도우미 함수는 그래픽카드의 이름과 사용가능한 메모리의 양을 반환한다.
 // 그래픽 카드의 이름과 메모리의 크기를 아는 것은 다른 설정에서 디버깅하는 데 도움이 된다.

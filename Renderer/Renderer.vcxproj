@@ -165,13 +165,13 @@
     <ClInclude Include="GridShader.h" />
     <ClInclude Include="ModelShader.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="RenderTextureClass.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ShaderClass.h" />
     <ClInclude Include="ShaderManagerClass.h" />
     <ClInclude Include="SkyDomeShader.h" />
     <ClInclude Include="TerrainShader.h" />
     <ClInclude Include="TerrainWireFrameShader.h" />
+    <ClInclude Include="MaterialShader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3DClass.cpp" />
@@ -185,12 +185,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="RenderTextureClass.cpp" />
     <ClCompile Include="ShaderClass.cpp" />
     <ClCompile Include="ShaderManagerClass.cpp" />
     <ClCompile Include="SkyDomeShader.cpp" />
     <ClCompile Include="TerrainShader.cpp" />
     <ClCompile Include="TerrainWireFrameShader.cpp" />
+    <ClCompile Include="MaterialShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Renderer.rc" />

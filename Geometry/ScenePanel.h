@@ -7,6 +7,7 @@ public:
 	ScenePanel();
 	~ScenePanel();
 public:
+	virtual void Shutdown();
 	virtual void Render();
 
 	void ShowGizmo();

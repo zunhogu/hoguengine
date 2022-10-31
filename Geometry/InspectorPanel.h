@@ -18,6 +18,7 @@ public:
 	InspectorPanel(vector<ResourceItem*>* resourceItems);
 	~InspectorPanel();
 
+	virtual void Shutdown();
 	virtual void Render();
 	void ShowPopUp();
 };

@@ -11,7 +11,6 @@
 //기존 windows의 그래픽은 사용하지 않을것이므로 d3dclass.h를 include 해준다.
 #include "define.h"
 #include "D3DClass.h"
-#include "RenderTextureClass.h"
 #include "ModelShader.h"
 #include "ShaderManagerClass.h"
 
@@ -20,7 +19,7 @@
 
 const bool FULL_SCREEN = false;
 const bool VSYNC_ENABLED = true;
-const float SCREEN_DEPTH = 4000;
+const float SCREEN_DEPTH = 1000.0f;
 const float SCREEN_NEAR = 0.1f;
 
 
@@ -30,7 +29,6 @@ private:
 
 	//D3DClass를 참조하는 포인터를 선언한다.
 	D3DClass* m_D3D;
-	RenderTextureClass* m_RenderTexture;
 
 	ShaderManagerClass* m_shaderMgr;
 
@@ -47,7 +45,9 @@ public:
 	ID3D11Device* GetDevice();
 	ID3D11DeviceContext* GetDeviceContext();
 	ID3D11RenderTargetView* const* GetRenderTargetView();
-	ID3D11ShaderResourceView* GetShaderResourceView();
+	ID3D11DepthStencilView* GetDepthStencilView();
+	void SetBackBufferRenderTarget();
+	void ResetViewPort();
 
 	void TurnZBufferOn();
 	void TurnZBufferOff();
@@ -80,12 +80,7 @@ public:
 	void RenderTerrainShader(ID3D11DeviceContext* deviceContext, int indexCount);
 	void RenderTerrainWireFrameShaderSetParam(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, float tessellationAmount);
 	void RenderTerrainWireFrameShader(ID3D11DeviceContext* deviceContext, int indexCount);
-
-
-	void RenderToTextureStart();
-	void RenderToTextureEnd();
-
-	RenderTextureClass* GetRenderTextureClass();
+	void RenderMaterialShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, ID3D11ShaderResourceView** textures);
 
 
 };

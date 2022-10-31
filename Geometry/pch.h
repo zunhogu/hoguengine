@@ -41,7 +41,7 @@ using std::getline;
 #include <windowsx.h>
 
 #include <filesystem>
-
+#include <algorithm>
 #include <stdlib.h>
 #include <time.h>
 
@@ -60,6 +60,7 @@ using namespace ImGui;
 #include <dxgi.h> 
 #include <d3dcommon.h> 
 #include <d3d11.h> 
+
 //#include <d3dx11async.h> 
 #include  <d3dcompiler.h>// pch.h: 미리 컴파일된 헤더 파일입니다.
 // 아래 나열된 파일은 한 번만 컴파일되었으며, 향후 빌드에 대한 빌드 성능을 향상합니다.

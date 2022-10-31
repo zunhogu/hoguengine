@@ -346,10 +346,15 @@ void ModelNode::Render(XMMATRIX viewMatirx, XMFLOAT3 cameraPos, XMFLOAT4 lightDi
 
 				if (isRender)
 					RenderMesh((MeshComp*)m_modelComps[i], worldMatrix, viewMatirx, cameraPos, lightDiffuseColor, lightPos, lightDirection);
+				
+				break;
 			}
-				break;
 			case COMPONENT_TYPE::MATERIAL:
+			{
+				MaterialComp* comp = (MaterialComp*)m_modelComps[i];
+				comp->RenderMaterial(Core::GetDeviceContext(), worldMatrix, viewMatirx);
 				break;
+			}
 			case COMPONENT_TYPE::BONE:
 				break;
 			case COMPONENT_TYPE::ANIMATION:
@@ -360,9 +365,10 @@ void ModelNode::Render(XMMATRIX viewMatirx, XMFLOAT3 cameraPos, XMFLOAT4 lightDi
 			{
 				TerrainComp* comp = (TerrainComp*)m_modelComps[i];
 
-				comp->RederMesh(worldMatrix, viewMatirx, lightDiffuseColor, lightDirection, cameraPos);
-			}
+				comp->RederTerrain(worldMatrix, viewMatirx, lightDiffuseColor, lightDirection, cameraPos);
+
 				break;
+			}
 			case COMPONENT_TYPE::END:
 				break;
 			default:

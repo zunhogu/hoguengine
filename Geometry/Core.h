@@ -62,9 +62,11 @@ public:
 	static ID3D11Device* GetDevice();
 	static ID3D11DeviceContext* GetDeviceContext();
 	static ID3D11RenderTargetView* const* GetRenderTargetView();
-	static ID3D11ShaderResourceView* GetShaderResourceView();
+	static ID3D11DepthStencilView* GetDepthStencilView();
 	static XMMATRIX GetViewMatrix();
 	static XMMATRIX GetProjectionMatrix();
+	static void SetBackBufferRenderTarget();
+	static void ResetViewport();
 
 	static HWND GetMainHwnd() { return m_hWnd; }
 

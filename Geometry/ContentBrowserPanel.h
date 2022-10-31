@@ -25,6 +25,7 @@ public:
     ContentBrowserPanel();
     ~ContentBrowserPanel();
 public:
+    virtual void Shutdown();
     virtual void Render();
 
     void ShowContents();

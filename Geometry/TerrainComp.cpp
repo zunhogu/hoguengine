@@ -11,7 +11,7 @@ TerrainComp::TerrainComp()
 {
 	m_componentType = COMPONENT_TYPE::TERRAIN;
 	m_isRender = true;
-	m_isWireFrame = true;
+	m_isWireFrame = false;
 	m_isLOD = false;
 	m_heightMapTexture = nullptr;
 }
@@ -92,7 +92,7 @@ void TerrainComp::Render(ModelNode* node)
 	}
 }
 
-void TerrainComp::RederMesh(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT4 lightDiffuseColor, XMFLOAT3 lihgtDirection, XMFLOAT3 cameraPos)
+void TerrainComp::RederTerrain(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT4 lightDiffuseColor, XMFLOAT3 lihgtDirection, XMFLOAT3 cameraPos)
 {
 	if (!m_isRender) return;
 	

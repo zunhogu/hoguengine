@@ -1,5 +1,6 @@
 #include "pch.h"
-#include "rendertextureclass.h"
+#include "RenderTextureClass.h"
+#include "Core.h"
 
 RenderTextureClass::RenderTextureClass() {
 	m_renderTargetTexture = 0;
@@ -21,16 +22,9 @@ bool RenderTextureClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* d
 	HRESULT result;
 	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
 	D3D11_SHADER_RESOURCE_VIEW_DESC shaderResourceViewDesc;
-
 	D3D11_TEXTURE2D_DESC depthBufferDesc;
-	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;   // 깊이-스텐실 On description
-	D3D11_DEPTH_STENCIL_DESC depthDisabledStencilDesc;   // 깊이-스텐실 Off 상태 description
-	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;  //깊이-스텐실 뷰 description
-	D3D11_BLEND_DESC blendStateDescription;   // 블렌딩 상태를 생성하기위한 description 변수
+	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 
-	// 초기화 함수에서는 우선 텍스처의 description을 작성하고 텍스처를 생성하는 방법으로 타겟이 되는 텍스처를 만든다.
-	// 그리고 이 테스처를 렌더 타겟뷰로 설정하여 렌더링이 텍스처에 일어나도록 한다.
-	// 마지막으로 자원뷰로 렌더링 데이터에 접근하게 끔한다.
 
 	ZeroMemory(&textureDesc, sizeof(textureDesc));
 
@@ -42,13 +36,13 @@ bool RenderTextureClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* d
 	textureDesc.SampleDesc.Count = 1;
 	textureDesc.Usage = D3D11_USAGE_DEFAULT;
 	textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-	textureDesc.CPUAccessFlags = 0; textureDesc.MiscFlags = 0;
+	textureDesc.CPUAccessFlags = 0;
+	textureDesc.MiscFlags = 0;
 
 	// RTT를 생성한다.
 	result = device->CreateTexture2D(&textureDesc, NULL, &m_renderTargetTexture);
-	if (FAILED(result)) {
+	if (FAILED(result))
 		return false;
-	}
 
 	// 렌더 타겟 뷰에 대한 description을 작성한다.
 	renderTargetViewDesc.Format = textureDesc.Format;
@@ -57,9 +51,8 @@ bool RenderTextureClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* d
 
 	// 렌더 타겟뷰를 생성한다. 
 	result = device->CreateRenderTargetView(m_renderTargetTexture, &renderTargetViewDesc, &m_renderTargetView);
-	if (FAILED(result)) {
+	if (FAILED(result))
 		return false;
-	}
 
 	// 리소스 뷰에 대한 discription을 작성한다.
 	shaderResourceViewDesc.Format = textureDesc.Format;
@@ -69,14 +62,11 @@ bool RenderTextureClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* d
 
 	// 리소스뷰를 생성한다.
 	result = device->CreateShaderResourceView(m_renderTargetTexture, &shaderResourceViewDesc, &m_shaderResourceView);
-	if (FAILED(result)) {
+	if (FAILED(result))
 		return false;
-	}
 
 	// 깊이 버퍼에 대한 desciption 작성
-
 	ZeroMemory(&depthBufferDesc, sizeof(depthBufferDesc));
-
 	depthBufferDesc.Width = textureWidth;
 	depthBufferDesc.Height = textureHeight;
 	depthBufferDesc.MipLevels = 1;
@@ -92,9 +82,7 @@ bool RenderTextureClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* d
 	// 깊이 버퍼 생성
 	result = device->CreateTexture2D(&depthBufferDesc, NULL, &m_depthStencilBuffer);
 	if (FAILED(result))
-	{
 		return false;
-	}
 
 	/////////////////////////////////////////////////////////////////////////////////////
 
@@ -108,9 +96,8 @@ bool RenderTextureClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* d
 
 	// 깊이 스텐실 뷰 생성
 	result = device->CreateDepthStencilView(m_depthStencilBuffer, &depthStencilViewDesc, &m_depthStencilView);
-	if (FAILED(result)) {
+	if (FAILED(result))
 		return false;
-	}
 
 	/////////////////////////////////////////////////////////////////////////////////////
 
@@ -158,7 +145,7 @@ void RenderTextureClass::Shutdown() {
 }
 
 // SetRenderTarget 함수는 이 클래스의 m_renderTargetView를 렌더 타겟으로 설정하여 모든 렌더링이 이 텍스처에 적용되도록 한다.
-bool RenderTextureClass::SetRenderTarget(ID3D11Device* device, ID3D11DeviceContext* deviceContext, ID3D11DepthStencilView* depthStencilView) {
+bool RenderTextureClass::SetRenderTarget(ID3D11DeviceContext* deviceContext) {
 
 	// 렌더 타겟 뷰와 깊이 스텐실 버퍼를 출력 파이프라인에 바인딩한다.
 	deviceContext->OMSetRenderTargets(1, &m_renderTargetView, m_depthStencilView);
@@ -192,4 +179,22 @@ void RenderTextureClass::ClearRenderTarget(ID3D11DeviceContext* deviceContext, f
 // RTT 텍스처를 사용한다면 일반적으로 셰이더에 텍스처를 직접 전달해주던 부분에 이 함수를 호출하면 된다.
 ID3D11ShaderResourceView* RenderTextureClass::GetShaderResourceView() {
 	return m_shaderResourceView;
+}
+
+void RenderTextureClass::RenderToTextureStart(ID3D11DeviceContext* deviceContext)
+{
+	// RTT가 렌더링 타겟이 되도록한다.
+	SetRenderTarget(deviceContext);
+
+	// RTT를 초기화한다.
+	ClearRenderTarget(deviceContext, 0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+void RenderTextureClass::RenderToTextureEnd()
+{
+	// 렌더타깃을 다시 백버퍼로 돌린다.
+	Core::GetInst()->SetBackBufferRenderTarget();
+
+	// 뷰포트도 원래대로 돌린다.
+	Core::GetInst()->ResetViewport();
 }

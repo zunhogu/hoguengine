@@ -77,7 +77,7 @@ public:
 	void SetViewMatrix(XMMATRIX matrix) { m_viewMatrix = matrix; }
 	XMMATRIX GetViewMatrix() { return m_viewMatrix; }
 	XMMATRIX GetProjectionMatrix() { return m_projectionMatrix; }
-	void GetOrthoMatrix(XMMATRIX&);
+	XMMATRIX GetOrthoMatrix() { return m_orthoMatrix; }
 
 	void GetVideoCardInfo(char*, int&);
 

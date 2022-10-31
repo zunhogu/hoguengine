@@ -5,9 +5,14 @@
 #include "TextureClass.h"
 #include "ContentBrowserPanel.h"
 
+extern ImVec2 g_viewPortSize;
+
 MaterialComp::MaterialComp()
 {
 	m_componentType = COMPONENT_TYPE::MATERIAL;
+
+	m_renderTexture = nullptr;
+
 }
 
 MaterialComp::MaterialComp(const MaterialComp& material)
@@ -17,11 +22,74 @@ MaterialComp::MaterialComp(const MaterialComp& material)
 	m_materialName = material.m_materialName;
 
 	m_material = material.m_material;
+
+	Initialize();
 }
 
 
 MaterialComp::~MaterialComp()
 {
+}
+
+bool MaterialComp::Initialize()
+{
+	bool result;
+
+	m_renderTexture = new RenderTextureClass;
+	if (!m_renderTexture)
+		return false;
+
+	result = m_renderTexture->Initialize(Core::GetDevice(), Core::GetDeviceContext(), 100.f, 100.f, SCREEN_DEPTH, SCREEN_NEAR);
+	if (!result)
+		return false;
+
+	m_bitmap = new BitMapClass;
+	if (!m_bitmap)
+		return false;
+
+	float bitMapWidth = 100.f * SCREEN_DEPTH / SCREEN_NEAR;
+	float bitMapHeight = 100.f * SCREEN_DEPTH / SCREEN_NEAR;
+
+	result = m_bitmap->Initialize(Core::GetDevice(), 100.f, 100.f, bitMapWidth, bitMapHeight);
+	if (!result)
+		return false;
+
+	return true;
+}
+
+XMMATRIX MaterialComp::GetBaseViewMatrix()
+{
+	XMVECTOR up, position, lookAt;
+	float yaw, pitch, roll;
+	XMMATRIX rotationMatrix;
+
+	// 상향벡터 설정
+	up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+	// 카메라 위치 설정
+	position = XMVectorSet(0.0f, 0.0f, -1.f, 0.0f);
+
+	// 카메라가 바라보는 방향 설정
+	lookAt = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+
+	// 카메라의 회전 정도 설정
+	pitch = 0.0f * 0.0174532925f;
+	yaw = 0.0f * 0.0174532925f;
+	roll = 0.0f * 0.0174532925f;
+
+	// 카메라 회전
+	rotationMatrix = XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
+
+	// 뷰행렬 구하기
+	// Transform the lookAt and up vector by the rotation matrix so the view is correctly rotated at the origin.
+	lookAt = XMVector3TransformCoord(lookAt, rotationMatrix);
+	up = XMVector3TransformCoord(up, rotationMatrix);
+
+	// Translate the rotated camera position to the location of the viewer.
+	lookAt = position + lookAt;
+
+	// Finally create the view matrix from the three updated vectors.
+	return  XMMatrixLookAtLH(position, lookAt, up);
 }
 
 void MaterialComp::Render(ModelNode* node)
@@ -567,8 +635,35 @@ void MaterialComp::Render(ModelNode* node)
 				ImGui::EndChild();
 				////////////////////////////////////////////////////////////////////
 
+				ImGui::Image((ImTextureID)m_renderTexture->GetShaderResourceView(), ImVec2(100.0f, 100.0f));
+
 				ImGui::TreePop();
 			}
 		}
 	}
+}
+
+bool MaterialComp::RenderMaterial(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix)
+{
+	bool result;
+
+	m_renderTexture->RenderToTextureStart(Core::GetDeviceContext());
+
+	// 2D 렌더링을 시작하기 전에 Z버퍼를 끈다. 
+	
+	GraphicsClass::GetInst()->TurnZBufferOff();
+
+	result = m_bitmap->Render(Core::GetDeviceContext(), -m_bitmap->GetBitMapSize().x /2, -m_bitmap->GetBitMapSize().y /2);
+	if (!result)
+		return false;
+
+	ID3D11ShaderResourceView* rv = ResMgrClass::GetInst()->FindTexture(L"defaultTexture")->GetTexture();
+	GraphicsClass::GetInst()->RenderMaterialShader(deviceContext, m_bitmap->GetIndexCount(), XMMatrixIdentity(), GetBaseViewMatrix(), &rv);
+
+	// 2D 렌더링이 끝나면 3D 객체를 그리기위해서 Z버퍼를 다시 켠다.
+	GraphicsClass::GetInst()->TurnZBufferOn();
+
+	m_renderTexture->RenderToTextureEnd();
+
+	return true;
 }

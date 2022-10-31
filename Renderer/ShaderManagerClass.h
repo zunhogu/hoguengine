@@ -8,6 +8,7 @@ class GridShader;
 class SkyDomeShader;
 class TerrainShader;
 class TerrainWireFrameShader;
+class MaterialShader;
 
 class ShaderManagerClass
 {
@@ -19,6 +20,7 @@ class ShaderManagerClass
 	SkyDomeShader* m_skyDomeShader;
 	TerrainShader* m_terrainShader;
 	TerrainWireFrameShader* m_terrainWireFrameShader;
+	MaterialShader* m_materialShader;
 
 public:
 	ShaderManagerClass();
@@ -46,6 +48,8 @@ public:
 	void RenderTerrainWireFrameShader(ID3D11DeviceContext* deviceContext, int indexCount);
 
 	void RenderSkyDomeShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 apexColor, XMFLOAT4 centerColor);
+
+	void RenderMaterialShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, ID3D11ShaderResourceView** textures);
 
 };
 
