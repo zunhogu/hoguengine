@@ -172,7 +172,6 @@ void ModelNode::SetScaleChild(XMFLOAT3 scale)
 
 	
 	XMFLOAT3 deltaScale = XMFLOAT3(scale.x / prevScale.x, scale.y / prevScale.y, scale.z / prevScale.z);
-	cout << deltaScale.x << ", " << deltaScale.y << ", " << deltaScale.z << endl;
 
 	XMMATRIX scaleMatrix = XMMatrixScaling(deltaScale.x, deltaScale.y, deltaScale.z);
 
@@ -351,8 +350,8 @@ void ModelNode::Render(XMMATRIX viewMatirx, XMFLOAT3 cameraPos, XMFLOAT4 lightDi
 			}
 			case COMPONENT_TYPE::MATERIAL:
 			{
-				MaterialComp* comp = (MaterialComp*)m_modelComps[i];
-				comp->RenderMaterial(Core::GetDeviceContext(), worldMatrix, viewMatirx);
+				//MaterialComp* comp = (MaterialComp*)m_modelComps[i];
+				//comp->RenderMaterial(Core::GetDeviceContext());
 				break;
 			}
 			case COMPONENT_TYPE::BONE:

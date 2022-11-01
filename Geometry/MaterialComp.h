@@ -28,6 +28,8 @@ public:
 	XMMATRIX GetBaseViewMatrix();
 
 	virtual void Render(ModelNode* node);
-	bool RenderMaterial(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix);
+	bool RenderMaterial(ID3D11DeviceContext* deviceContext);
+
+	ID3D11ShaderResourceView* GetShaderResourceView();
 };
 

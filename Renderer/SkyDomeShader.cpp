@@ -264,6 +264,8 @@ void SkyDomeShader::RenderShader(ID3D11DeviceContext* deviceContext, int indexCo
 
 	// Set the vertex and pixel shaders that will be used to render the triangles.
 	deviceContext->VSSetShader(m_vertexShader, NULL, 0);
+	deviceContext->HSSetShader(nullptr, NULL, 0);
+	deviceContext->DSSetShader(nullptr, NULL, 0);
 	deviceContext->PSSetShader(m_pixelShader, NULL, 0);
 
 	// Render the triangle.

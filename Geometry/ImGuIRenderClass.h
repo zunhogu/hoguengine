@@ -61,6 +61,7 @@ public:
 	ViewPortPanel* GetViewPortPanel();
 
 	void RenderToTextureStart(ID3D11DeviceContext* deviceContext);
+	void SetRenderToTexture(ID3D11DeviceContext* deviceContext);
 	void RenderToTextureEnd();
 };
 

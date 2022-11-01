@@ -404,6 +404,8 @@ void ModelShader::RenderShader(ID3D11DeviceContext* deviceContext, int indexCoun
 
 	// 삼각형을 그릴 정점 셰이더와 픽셀 셰이더를 설정한다.
 	deviceContext->VSSetShader(m_vertexShader, NULL, 0);
+	deviceContext->HSSetShader(nullptr, NULL, 0);
+	deviceContext->DSSetShader(nullptr, NULL, 0);
 	deviceContext->PSSetShader(m_pixelShader, NULL, 0);
 
 	// 여기서 픽셀 셰이더의 샘플러 상태를 설정하는 부분을 추가한다.

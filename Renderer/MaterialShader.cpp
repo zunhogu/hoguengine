@@ -36,11 +36,11 @@ void MaterialShader::Shutdown()
 	return;
 }
 
-bool MaterialShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX orthoMatrix, ID3D11ShaderResourceView** textures)
+bool MaterialShader::Render(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX orthoMatrix, XMFLOAT4 ambientColor, XMFLOAT4 emmisiveColor, XMFLOAT4 diffuseColor, XMFLOAT4 specularColor, FLOAT shinness, ID3D11ShaderResourceView** textures)
 {
 	bool result;
 
-	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, orthoMatrix, textures);
+	result = SetShaderParameters(deviceContext, worldMatrix, viewMatrix, orthoMatrix, ambientColor, emmisiveColor, diffuseColor, specularColor, shinness, textures);
 	if (!result)
 		return false;
 
@@ -58,6 +58,7 @@ bool MaterialShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vs
 	D3D11_INPUT_ELEMENT_DESC polygonLayout[2];
 	unsigned int numElements;
 	D3D11_BUFFER_DESC matrixBufferDesc;
+	D3D11_BUFFER_DESC materialBufferDesc;
 	D3D11_SAMPLER_DESC samplerDesc;
 
 
@@ -134,6 +135,19 @@ bool MaterialShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vs
 	if (FAILED(result))
 		return false;
 
+	// Material Buffer
+	materialBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	materialBufferDesc.ByteWidth = sizeof(MaterialBufferType);
+	materialBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	materialBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	materialBufferDesc.MiscFlags = 0;
+	materialBufferDesc.StructureByteStride = 0;
+
+	result = device->CreateBuffer(&materialBufferDesc, NULL, &m_materialBuffer);
+	if (FAILED(result)) {
+		MessageBox(hwnd, nullptr, "Can't Create Buffer", MB_OK);
+	}
+
 	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
 	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -190,11 +204,12 @@ void MaterialShader::ShutdownShader()
 	return;
 }
 
-bool MaterialShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX orthoMatrix, ID3D11ShaderResourceView** images)
+bool MaterialShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX orthoMatrix, XMFLOAT4 ambientColor, XMFLOAT4 emmisiveColor, XMFLOAT4 diffuseColor, XMFLOAT4 specularColor, FLOAT shinness, ID3D11ShaderResourceView** textures)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 	MatrixBufferType* dataPtr;
+	MaterialBufferType* materialBuffer;
 	unsigned int bufferNumber;
 
 	worldMatrix = XMMatrixTranspose(worldMatrix);
@@ -217,8 +232,26 @@ bool MaterialShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMM
 
 	deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
 
-	deviceContext->PSSetShaderResources(0, 1, images);
+	// Material Buffer
+	deviceContext->Map(m_materialBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 
+	materialBuffer = (MaterialBufferType*)mappedResource.pData;
+
+	materialBuffer->ambientColor = ambientColor;
+	materialBuffer->emmisiveColor = emmisiveColor;
+	materialBuffer->diffuseColor = diffuseColor;
+	materialBuffer->specularColor = specularColor;
+	materialBuffer->shinness = shinness;
+	materialBuffer->padding = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
+	deviceContext->Unmap(m_materialBuffer, 0);
+
+	bufferNumber = 0;
+
+	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_materialBuffer);
+
+
+	deviceContext->PSSetShaderResources(0, 5, textures);
 	return true;
 }
 
@@ -229,6 +262,8 @@ void MaterialShader::RenderShader(ID3D11DeviceContext* deviceContext, int indexC
 
 	// 삼각형을 그릴 정점 셰이더와 픽셀 셰이더를 설정한다.
 	deviceContext->VSSetShader(m_vertexShader, NULL, 0);
+	deviceContext->HSSetShader(nullptr, NULL, 0);
+	deviceContext->DSSetShader(nullptr, NULL, 0);
 	deviceContext->PSSetShader(m_pixelShader, NULL, 0);
 
 	// 여기서 픽셀 셰이더의 샘플러 상태를 설정하는 부분을 추가한다.

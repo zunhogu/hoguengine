@@ -11,7 +11,7 @@ class MaterialLayer
 private:
 	wstring m_maskID;  // texture layer id
 	MaterialComp* m_material;
-	XMFLOAT4 m_chanel;
+	float m_weight;
 
 public:
 	MaterialLayer();
@@ -24,8 +24,8 @@ public:
 	void SetMaskID(wstring id) { m_maskID = id; }
 	MaterialComp* GetMaterialComp() { return m_material; }
 	void SetMaterialComp(MaterialComp* material) { m_material = material; }
-	XMFLOAT4 GetChanel() { return m_chanel; }
-	void SetChanel(XMFLOAT4 chanel) { m_chanel = chanel; }
+	float GetWeight() { return m_weight; }
+	void SetWeight(float weight) { m_weight = m_weight; }
 
 };
 

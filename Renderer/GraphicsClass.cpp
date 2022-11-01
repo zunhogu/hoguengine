@@ -172,13 +172,13 @@ void GraphicsClass::RenderSkyDome(ID3D11DeviceContext* deviceContext, int indexC
 	m_shaderMgr->RenderSkyDomeShader(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, apexColor, centerColor);
 }
 
-void GraphicsClass::RenderTerrainShaderSetParam(ID3D11DeviceContext* deviceContext, bool isWireFrame, bool isLOD, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, ID3D11ShaderResourceView* texture)
+void GraphicsClass::RenderTerrainShaderSetParam(ID3D11DeviceContext* deviceContext, bool isWireFrame, bool isLOD, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, vector<pair<ID3D11ShaderResourceView*, ID3D11ShaderResourceView*>>& layers)
 {
 	XMMATRIX projectionMatrix;
 	projectionMatrix = m_D3D->GetProjectionMatrix();
 	m_D3D->SetViewMatrix(viewMatrix);
 
-	m_shaderMgr->RenderTerrainShaderSetParam(deviceContext, isWireFrame, isLOD, worldMatrix, viewMatrix, projectionMatrix, ambientColor, diffuseColor, lightDirection, cameraPos, texture);
+	m_shaderMgr->RenderTerrainShaderSetParam(deviceContext, isWireFrame, isLOD, worldMatrix, viewMatrix, projectionMatrix, ambientColor, diffuseColor, lightDirection, cameraPos, layers);
 }
 
 void GraphicsClass::RenderTerrainShader(ID3D11DeviceContext* deviceContext, int indexCount)
@@ -199,7 +199,7 @@ void GraphicsClass::RenderTerrainWireFrameShader(ID3D11DeviceContext* deviceCont
 	m_shaderMgr->RenderTerrainWireFrameShader(deviceContext, indexCount);
 }
 
-void GraphicsClass::RenderMaterialShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, ID3D11ShaderResourceView** textures)
+void GraphicsClass::RenderMaterialShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX orthoMatrix, XMFLOAT4 ambientColor, XMFLOAT4 emmisiveColor, XMFLOAT4 diffuseColor, XMFLOAT4 specularColor, FLOAT shinness, ID3D11ShaderResourceView** textures)
 {
-	m_shaderMgr->RenderMaterialShader(deviceContext, indexCount, worldMatrix, viewMatrix, m_D3D->GetOrthoMatrix(), textures);
+	m_shaderMgr->RenderMaterialShader(deviceContext, indexCount, worldMatrix, viewMatrix, orthoMatrix, ambientColor, emmisiveColor, diffuseColor, specularColor, shinness, textures);
 }

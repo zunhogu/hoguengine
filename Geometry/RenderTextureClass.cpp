@@ -17,7 +17,7 @@ RenderTextureClass::~RenderTextureClass() { }
 // Initialize 함수는 RTT를 할 텍스처의 너비와 높이를 인자로 받는다. 
 // 만약 화면의 내용을 텍스처에 그린다면 찌그러짐 방지를 위해  반드시 RTT의 가로세로 비율을 화면 비율과 같게 해야하낟.
 
-bool RenderTextureClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int textureWidth, int textureHeight, float screenDepth, float screenNear) {
+bool RenderTextureClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int screeWidth, int screenHeight, float screenDepth, float screenNear) {
 	D3D11_TEXTURE2D_DESC textureDesc;
 	HRESULT result;
 	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
@@ -25,11 +25,12 @@ bool RenderTextureClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* d
 	D3D11_TEXTURE2D_DESC depthBufferDesc;
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 
+	m_orthoMatrix = XMMatrixOrthographicLH((float)screeWidth, (float)screenHeight, screenNear, screenDepth);
 
 	ZeroMemory(&textureDesc, sizeof(textureDesc));
 
-	textureDesc.Width = textureWidth;
-	textureDesc.Height = textureHeight;
+	textureDesc.Width = screeWidth;
+	textureDesc.Height = screenHeight;
 	textureDesc.MipLevels = 1;
 	textureDesc.ArraySize = 1;
 	textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
@@ -67,8 +68,8 @@ bool RenderTextureClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* d
 
 	// 깊이 버퍼에 대한 desciption 작성
 	ZeroMemory(&depthBufferDesc, sizeof(depthBufferDesc));
-	depthBufferDesc.Width = textureWidth;
-	depthBufferDesc.Height = textureHeight;
+	depthBufferDesc.Width = screeWidth;
+	depthBufferDesc.Height = screenHeight;
 	depthBufferDesc.MipLevels = 1;
 	depthBufferDesc.ArraySize = 1;
 	depthBufferDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -102,8 +103,8 @@ bool RenderTextureClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* d
 	/////////////////////////////////////////////////////////////////////////////////////
 
 	// 뷰 포트 설정
-	m_viewport.Width = (float)textureWidth;
-	m_viewport.Height = (float)textureHeight;
+	m_viewport.Width = (float)screeWidth;
+	m_viewport.Height = (float)screenHeight;
 	m_viewport.MinDepth = 0.0f;
 	m_viewport.MaxDepth = 1.0f;
 	m_viewport.TopLeftX = 0.0f;

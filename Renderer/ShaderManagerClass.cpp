@@ -127,9 +127,9 @@ void ShaderManagerClass::RenderGridShader(ID3D11DeviceContext* deviceContext, in
 	m_gridShader->RenderShader(deviceContext, indexCount);
 }
 
-void ShaderManagerClass::RenderTerrainShaderSetParam(ID3D11DeviceContext* deviceContext, bool isWireFrame, bool isLOD, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, ID3D11ShaderResourceView* texture)
+void ShaderManagerClass::RenderTerrainShaderSetParam(ID3D11DeviceContext* deviceContext, bool isWireFrame, bool isLOD, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, vector<pair<ID3D11ShaderResourceView*, ID3D11ShaderResourceView*>>& layers)
 {
-	m_terrainShader->SetShaderParameters(deviceContext, isWireFrame, isLOD, worldMatrix, viewMatrix, projectionMatrix, ambientColor, diffuseColor, lightDirection, cameraPos, texture);
+	m_terrainShader->SetShaderParameters(deviceContext, isWireFrame, isLOD, worldMatrix, viewMatrix, projectionMatrix, ambientColor, diffuseColor, lightDirection, cameraPos, layers);
 }
 
 void ShaderManagerClass::RenderTerrainShader(ID3D11DeviceContext* deviceContext, int indexCount)
@@ -152,8 +152,8 @@ void ShaderManagerClass::RenderSkyDomeShader(ID3D11DeviceContext* deviceContext,
 	m_skyDomeShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, apexColor, centerColor);
 }
 
-void ShaderManagerClass::RenderMaterialShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, ID3D11ShaderResourceView** textures)
+void ShaderManagerClass::RenderMaterialShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX orthoMatrix, XMFLOAT4 ambientColor, XMFLOAT4 emmisiveColor, XMFLOAT4 diffuseColor, XMFLOAT4 specularColor, FLOAT shinness, ID3D11ShaderResourceView** textures)
 {
-	m_materialShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, textures);
+	m_materialShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, orthoMatrix, ambientColor, emmisiveColor, diffuseColor, specularColor, shinness, textures);
 }
 

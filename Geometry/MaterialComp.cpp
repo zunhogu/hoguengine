@@ -39,7 +39,10 @@ bool MaterialComp::Initialize()
 	if (!m_renderTexture)
 		return false;
 
-	result = m_renderTexture->Initialize(Core::GetDevice(), Core::GetDeviceContext(), 100.f, 100.f, SCREEN_DEPTH, SCREEN_NEAR);
+	float screenWidth = 100.f;
+	float screenHeight = 100.f;
+
+	result = m_renderTexture->Initialize(Core::GetDevice(), Core::GetDeviceContext(), screenWidth, screenHeight, SCREEN_NEAR, SCREEN_DEPTH);
 	if (!result)
 		return false;
 
@@ -47,10 +50,8 @@ bool MaterialComp::Initialize()
 	if (!m_bitmap)
 		return false;
 
-	float bitMapWidth = 100.f * SCREEN_DEPTH / SCREEN_NEAR;
-	float bitMapHeight = 100.f * SCREEN_DEPTH / SCREEN_NEAR;
 
-	result = m_bitmap->Initialize(Core::GetDevice(), 100.f, 100.f, bitMapWidth, bitMapHeight);
+	result = m_bitmap->Initialize(Core::GetDevice(),100.f, 100.f);
 	if (!result)
 		return false;
 
@@ -548,7 +549,7 @@ void MaterialComp::Render(ModelNode* node)
 				if (filePath != L"")
 				{
 					ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Core::GetFileName(filePath), filePath);
-					m_material->SetDiffuseTextureID(Core::ConvWcharTochar(Core::GetFileName(filePath)));
+					m_material->SetSpecularTextureID(Core::ConvWcharTochar(Core::GetFileName(filePath)));
 				}
 				ImGui::PopStyleVar();
 				ImGui::EndChild();
@@ -643,27 +644,56 @@ void MaterialComp::Render(ModelNode* node)
 	}
 }
 
-bool MaterialComp::RenderMaterial(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix)
+bool MaterialComp::RenderMaterial(ID3D11DeviceContext* deviceContext)
 {
 	bool result;
 
 	m_renderTexture->RenderToTextureStart(Core::GetDeviceContext());
 
 	// 2D 렌더링을 시작하기 전에 Z버퍼를 끈다. 
-	
 	GraphicsClass::GetInst()->TurnZBufferOff();
 
-	result = m_bitmap->Render(Core::GetDeviceContext(), -m_bitmap->GetBitMapSize().x /2, -m_bitmap->GetBitMapSize().y /2);
+	result = m_bitmap->Render(Core::GetDeviceContext());
 	if (!result)
 		return false;
 
-	ID3D11ShaderResourceView* rv = ResMgrClass::GetInst()->FindTexture(L"defaultTexture")->GetTexture();
-	GraphicsClass::GetInst()->RenderMaterialShader(deviceContext, m_bitmap->GetIndexCount(), XMMatrixIdentity(), GetBaseViewMatrix(), &rv);
+	m_material->GetAmbientTextureID();
+	
+	TextureClass* defaultTexture = ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), L"defaultTexture");
+	ID3D11ShaderResourceView* textures[5] = { defaultTexture->GetTexture(), defaultTexture->GetTexture(), defaultTexture->GetTexture(), defaultTexture->GetTexture(), defaultTexture->GetTexture() };
+	XMFLOAT4 ambientColor, emissiveColor, diffuseColor, specularColor;
+	float shiness;
+
+	ambientColor = m_material->GetAmbientColor();
+	emissiveColor = m_material->GetEmissiveColor();
+	diffuseColor = m_material->GetDiffuseColor();
+	specularColor = m_material->GetSpecularColor();
+	shiness = m_material->GetShinness();
+
+	if (m_material->GetAmbientTextureID() != "NONE")
+		textures[0] = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetAmbientTextureID().c_str()))->GetTexture();
+	if (m_material->GetEmissiveTextureID() != "NONE")
+		textures[1] = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetEmissiveTextureID().c_str()))->GetTexture();
+	if (m_material->GetDiffuseTextureID() != "NONE")
+		textures[2] = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetDiffuseTextureID().c_str()))->GetTexture();
+	if (m_material->GetSpecularTextureID() != "NONE")
+		textures[3] = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetSpecularTextureID().c_str()))->GetTexture();
+	if (m_material->GetNormalTextureID() != "NONE")
+		textures[4] = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetNormalTextureID().c_str()))->GetTexture();
+
+	GraphicsClass::GetInst()->RenderMaterialShader(deviceContext, m_bitmap->GetIndexCount(), XMMatrixIdentity(), GetBaseViewMatrix(), m_renderTexture->GetOrthoMatirx(), ambientColor, emissiveColor, diffuseColor, specularColor, shiness, textures);
 
 	// 2D 렌더링이 끝나면 3D 객체를 그리기위해서 Z버퍼를 다시 켠다.
 	GraphicsClass::GetInst()->TurnZBufferOn();
 
 	m_renderTexture->RenderToTextureEnd();
 
+	ImGuIRenderClass::GetInst()->SetRenderToTexture(Core::GetDeviceContext());
+
 	return true;
+}
+
+ID3D11ShaderResourceView* MaterialComp::GetShaderResourceView()
+{
+	return m_renderTexture->GetShaderResourceView();
 }

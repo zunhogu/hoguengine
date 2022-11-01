@@ -98,7 +98,16 @@ void TerrainComp::RederTerrain(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOA
 	
 	ID3D11ShaderResourceView* texture = ResMgrClass::GetInst()->FindTexture(L"dirt01.dds")->GetTexture();
 
-	GraphicsClass::GetInst()->RenderTerrainShaderSetParam(Core::GetDeviceContext(), m_isWireFrame, m_isLOD, worldMatrix, viewMatrix, lightDiffuseColor, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), lihgtDirection, cameraPos, texture);
+	vector<pair<ID3D11ShaderResourceView*, ID3D11ShaderResourceView*>> layers;
+	for (int i = 0; i < m_layers.size(); i++)
+	{
+		ID3D11ShaderResourceView* first = ResMgrClass::GetInst()->FindTexture(m_layers[i]->GetMaskID())->GetTexture();
+		ID3D11ShaderResourceView* second = m_layers[i]->GetMaterialComp()->GetShaderResourceView();
+
+		layers.push_back(make_pair(first, second));
+	}
+
+	GraphicsClass::GetInst()->RenderTerrainShaderSetParam(Core::GetDeviceContext(), m_isWireFrame, m_isLOD, worldMatrix, viewMatrix, lightDiffuseColor, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), lihgtDirection, cameraPos, layers);
 
 	m_terrainQuad->Render(Core::GetDeviceContext(), worldMatrix, m_isWireFrame);
 }
@@ -202,7 +211,7 @@ void TerrainComp::TextureLayer(ModelNode* node)
 			ImGui::TableSetupColumn("Layer", ImGuiTableColumnFlags_DefaultSort);
 			ImGui::TableSetupColumn("Mask");
 			ImGui::TableSetupColumn("Material");
-			ImGui::TableSetupColumn("Chanel");
+			ImGui::TableSetupColumn("Weight");
 			ImGui::TableSetupColumn("");
 			ImGui::TableHeadersRow();
 
@@ -280,11 +289,11 @@ void TerrainComp::TextureLayer(ModelNode* node)
 				}
 
 				ImGui::TableSetColumnIndex(3);
-				ImVec4 chanel = ImVec4(m_layers[i]->GetChanel().x, m_layers[i]->GetChanel().y, m_layers[i]->GetChanel().z, m_layers[i]->GetChanel().w);
-				ImGui::SetNextItemWidth(120.f);
-				isChanged = ImGui::ColorEdit4(("##" + flag + "color").c_str(), (float*)&chanel, misc_flags);
-				if (isChanged)
-					m_layers[i]->SetChanel(XMFLOAT4(chanel.x, chanel.y, chanel.z, chanel.w));
+				ImGui::SetNextItemWidth(100.f);
+				float weight = m_layers[i]->GetWeight();
+				if (ImGui::SliderFloat("", &weight, 0, 1))
+					m_layers[i]->SetWeight(weight);
+				
 
 				if (ImGui::TableSetColumnIndex(4))
 				{
@@ -357,7 +366,7 @@ wstring TerrainComp::ProcessDragAndDropPayloadMaterial(ImGuiPayload* payload)
 // Material Layer //////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////
 MaterialLayer::MaterialLayer()
-	: m_maskID(L""), m_material(nullptr), m_chanel(0.0f, 0.0f, 0.0f, 0.0f)
+	: m_maskID(L""), m_material(nullptr), m_weight(1.0f)
 {
 }
 

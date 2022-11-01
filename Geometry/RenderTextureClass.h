@@ -13,18 +13,22 @@ public:
 
 	D3D11_VIEWPORT m_viewport;
 
+	XMMATRIX m_orthoMatrix;
+
 public:
 	RenderTextureClass();
 	RenderTextureClass(const RenderTextureClass&);
 	~RenderTextureClass();
 
-	bool Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int textureWidth, int textureHeight, float screenDepth, float screenNear);
+	bool Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int screeWidth, int screenHeight, float screenDepth, float screenNear);
 	void Shutdown();
 
 	bool SetRenderTarget(ID3D11DeviceContext* deviceContext);
 	void ClearRenderTarget(ID3D11DeviceContext* deviceContext, float red, float green, float blue, float alpha);
 
 	ID3D11ShaderResourceView* GetShaderResourceView();
+
+	XMMATRIX GetOrthoMatirx() { return m_orthoMatrix; }
 
 	void RenderToTextureStart(ID3D11DeviceContext* deviceContext);
 	void RenderToTextureEnd();

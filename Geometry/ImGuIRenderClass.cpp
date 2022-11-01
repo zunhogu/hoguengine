@@ -520,6 +520,14 @@ void ImGuIRenderClass::RenderToTextureStart(ID3D11DeviceContext* deviceContext)
 	viewport->GetRenderTexture()->ClearRenderTarget(deviceContext, 0.0f, 0.0f, 0.0f, 1.0f);
 }
 
+void ImGuIRenderClass::SetRenderToTexture(ID3D11DeviceContext* deviceContext)
+{
+	ViewPortPanel* viewport = GetViewPortPanel();
+
+	// RTT가 렌더링 타겟이 되도록한다.
+	viewport->GetRenderTexture()->SetRenderTarget(deviceContext);
+}
+
 void ImGuIRenderClass::RenderToTextureEnd()
 {
 	// 렌더타깃을 다시 백버퍼로 돌린다.

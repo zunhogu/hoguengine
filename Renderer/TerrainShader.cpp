@@ -279,7 +279,7 @@ void TerrainShader::ShutdownShader()
 
 }
 
-bool TerrainShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, bool isWireFrame, bool isLOD, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, ID3D11ShaderResourceView* texture)
+bool TerrainShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, bool isWireFrame, bool isLOD, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, vector<pair<ID3D11ShaderResourceView*, ID3D11ShaderResourceView*>>& layers)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -386,7 +386,7 @@ bool TerrainShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, bool
 	bufferNumber++;
 	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_tessellationBuffer);
 
-	deviceContext->PSSetShaderResources(0, 1, &texture);
+	deviceContext->PSSetShaderResources(0, layers.size()*2, &layers[0].first);
 
 	return true;
 }
