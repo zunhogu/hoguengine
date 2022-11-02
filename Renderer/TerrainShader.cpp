@@ -46,7 +46,7 @@ bool TerrainShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsF
 	ID3D10Blob* hullShaderBuffer;
 	ID3D10Blob* domainShaderBuffer;
 	ID3D10Blob* pixelShaderBuffer;
-	D3D11_INPUT_ELEMENT_DESC polygonLayout[4];
+	D3D11_INPUT_ELEMENT_DESC polygonLayout[6];
 	unsigned int numElements;
 	D3D11_SAMPLER_DESC samplerDesc;
 	D3D11_BUFFER_DESC matrixBufferDesc;
@@ -54,6 +54,7 @@ bool TerrainShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsF
 	D3D11_BUFFER_DESC cameraBufferDesc;
 	D3D11_BUFFER_DESC wireFrameBufferDesc;
 	D3D11_BUFFER_DESC tessellationBufferDesc;
+	D3D11_BUFFER_DESC textureBufferDesc;
 
 	errorMessage = 0;
 	vertexShaderBuffer = 0;
@@ -141,13 +142,29 @@ bool TerrainShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsF
 	polygonLayout[2].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonLayout[2].InstanceDataStepRate = 0;
 
-	polygonLayout[3].SemanticName = "COLOR";
+	polygonLayout[3].SemanticName = "TANGENT";
 	polygonLayout[3].SemanticIndex = 0;
 	polygonLayout[3].Format = DXGI_FORMAT_R32G32B32_FLOAT;
 	polygonLayout[3].InputSlot = 0;
 	polygonLayout[3].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
 	polygonLayout[3].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 	polygonLayout[3].InstanceDataStepRate = 0;
+
+	polygonLayout[4].SemanticName = "BINORMAL";
+	polygonLayout[4].SemanticIndex = 0;
+	polygonLayout[4].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	polygonLayout[4].InputSlot = 0;
+	polygonLayout[4].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+	polygonLayout[4].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	polygonLayout[4].InstanceDataStepRate = 0;
+
+	polygonLayout[5].SemanticName = "TEXCOORD";
+	polygonLayout[5].SemanticIndex = 1;
+	polygonLayout[5].Format = DXGI_FORMAT_R32G32_FLOAT;
+	polygonLayout[5].InputSlot = 0;
+	polygonLayout[5].AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT;
+	polygonLayout[5].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+	polygonLayout[5].InstanceDataStepRate = 0;
 
 	numElements = sizeof(polygonLayout) / sizeof(polygonLayout[0]);
 
@@ -236,6 +253,17 @@ bool TerrainShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsF
 	if (FAILED(result))
 		return false;
 
+	textureBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	textureBufferDesc.ByteWidth = sizeof(TextureBufferType);
+	textureBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	textureBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	textureBufferDesc.MiscFlags = 0;
+	textureBufferDesc.StructureByteStride = 0;
+
+	result = device->CreateBuffer(&textureBufferDesc, NULL, &m_texureBuffer);
+	if (FAILED(result))
+		return false;
+
 	return true;
 }
 
@@ -279,7 +307,7 @@ void TerrainShader::ShutdownShader()
 
 }
 
-bool TerrainShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, bool isWireFrame, bool isLOD, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, vector<pair<ID3D11ShaderResourceView*, ID3D11ShaderResourceView*>>& layers)
+bool TerrainShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, bool isWireFrame, bool isLOD, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, vector<ID3D11ShaderResourceView*>& layers, vector<float>& weights)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -289,6 +317,7 @@ bool TerrainShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, bool
 	CameraBufferType* cameraBuffer;
 	WireFrameBufferType* wireFrameBuffer;
 	TessellationBufferType* tessellationBuffer;
+	TextureBufferType* textureBuffer;
 
 	///////////////////////////////////////////////////////////////////////////////
 	// Vertex Shader //////////////////////////////////////////////////////////////
@@ -378,16 +407,30 @@ bool TerrainShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, bool
 
 	deviceContext->Unmap(m_wireFrameBuffer, 0);
 
+	result = deviceContext->Map(m_texureBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if (FAILED(result))
+		return false;
+
+	textureBuffer = (TextureBufferType*)mappedResource.pData;
+
+	for (int i = 0; i < weights.size(); i++)
+		textureBuffer->textureWeight[i] = weights[i];
+	textureBuffer->texturesize = layers.size();
+	textureBuffer->padding = XMFLOAT3();
+
+	deviceContext->Unmap(m_texureBuffer, 0);
+
 	bufferNumber = 0;
 	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_lightBuffer);
-
 	bufferNumber++;
 	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_wireFrameBuffer);
 	bufferNumber++;
 	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_tessellationBuffer);
+	bufferNumber++;
+	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_texureBuffer);
 
-	deviceContext->PSSetShaderResources(0, layers.size()*2, &layers[0].first);
-
+	for (int i = 0; i < layers.size(); i++)
+		deviceContext->PSSetShaderResources(i, 1, &layers[i]);
 	return true;
 }
 

@@ -350,8 +350,8 @@ void ModelNode::Render(XMMATRIX viewMatirx, XMFLOAT3 cameraPos, XMFLOAT4 lightDi
 			}
 			case COMPONENT_TYPE::MATERIAL:
 			{
-				//MaterialComp* comp = (MaterialComp*)m_modelComps[i];
-				//comp->RenderMaterial(Core::GetDeviceContext());
+				MaterialComp* comp = (MaterialComp*)m_modelComps[i];
+				comp->RenderMaterial(Core::GetDeviceContext());
 				break;
 			}
 			case COMPONENT_TYPE::BONE:

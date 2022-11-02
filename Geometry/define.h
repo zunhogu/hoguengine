@@ -81,7 +81,9 @@ struct TerrainVertexType
 	XMFLOAT3 position;
 	XMFLOAT2 texture;
 	XMFLOAT3 normal;
-	XMFLOAT4 color;
+	XMFLOAT3 tangent;
+	XMFLOAT3 binormal;
+	XMFLOAT2 texture2;
 };
 
 struct HeightMapType

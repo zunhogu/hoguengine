@@ -172,13 +172,13 @@ void GraphicsClass::RenderSkyDome(ID3D11DeviceContext* deviceContext, int indexC
 	m_shaderMgr->RenderSkyDomeShader(deviceContext, indexCount, worldMatrix, viewMatrix, projectionMatrix, apexColor, centerColor);
 }
 
-void GraphicsClass::RenderTerrainShaderSetParam(ID3D11DeviceContext* deviceContext, bool isWireFrame, bool isLOD, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, vector<pair<ID3D11ShaderResourceView*, ID3D11ShaderResourceView*>>& layers)
+void GraphicsClass::RenderTerrainShaderSetParam(ID3D11DeviceContext* deviceContext, bool isWireFrame, bool isLOD, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, vector<ID3D11ShaderResourceView*>& layers, vector<float>& weights)
 {
 	XMMATRIX projectionMatrix;
 	projectionMatrix = m_D3D->GetProjectionMatrix();
 	m_D3D->SetViewMatrix(viewMatrix);
 
-	m_shaderMgr->RenderTerrainShaderSetParam(deviceContext, isWireFrame, isLOD, worldMatrix, viewMatrix, projectionMatrix, ambientColor, diffuseColor, lightDirection, cameraPos, layers);
+	m_shaderMgr->RenderTerrainShaderSetParam(deviceContext, isWireFrame, isLOD, worldMatrix, viewMatrix, projectionMatrix, ambientColor, diffuseColor, lightDirection, cameraPos, layers, weights);
 }
 
 void GraphicsClass::RenderTerrainShader(ID3D11DeviceContext* deviceContext, int indexCount)

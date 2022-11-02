@@ -7,9 +7,32 @@ const int TEXTURE_REPEAT = 8;
 class TerrainMesh : public Mesh
 {
 private:
+	struct HeightMapType
+	{
+		float x, y, z;
+		float nx, ny, nz;
+	};
+
 	struct VectorType
 	{
 		float x, y, z;
+	};
+
+	struct ModelType
+	{
+		float x, y, z;
+		float tu, tv;
+		float nx, ny, nz;
+		float tx, ty, tz;
+		float bx, by, bz;
+		float tu2, tv2;
+	};
+
+	struct TempVertexType
+	{
+		float x, y, z;
+		float tu, tv;
+		float nx, ny, nz;
 	};
 
 	int m_terrainWidth;
@@ -22,6 +45,8 @@ private:
 	TerrainVertexType* m_vertices;
 
 	HeightMapType* m_heightMap;
+	ModelType* m_model;
+
 	TextureClass* m_Texture;
 public:
 	TerrainMesh();
@@ -29,7 +54,7 @@ public:
 	~TerrainMesh();
 	TerrainMesh(const TerrainMesh&);
 
-	bool Initialize(ID3D11Device* device, char* heightFileName);
+	bool Initialize(ID3D11Device* device, char* heightFileName, float maximumHeight);
 	void Shutdown();
 
 	int GetTerrainWidth() { return m_terrainWidth; }
@@ -43,9 +68,13 @@ public:
 	TerrainVertexType* GetVertexArray() { return m_vertices; }
 
 	bool LoadHeightMap(char* path);
-	void NormalizeHeightMap();
+	void NormalizeHeightMap(float maximumHeight);
 	bool CalculateNormals();
 	void ShutdownHeightMap();
+
+	bool BuildModel();
+	void CalculateModelVectors();
+	void CalculateTangentBinormal(TempVertexType vertex1, TempVertexType vertex2, TempVertexType vertex3, VectorType& tangent, VectorType& binormal);
 
 	void CalculateTextureCoordinates();
 private:

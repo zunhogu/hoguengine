@@ -13,6 +13,7 @@ MaterialComp::MaterialComp()
 
 	m_renderTexture = nullptr;
 
+	Initialize();
 }
 
 MaterialComp::MaterialComp(const MaterialComp& material)
@@ -286,7 +287,7 @@ void MaterialComp::Render(ModelNode* node)
 				ImGui::SameLine();
 				ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 2.0f);
 				ImGui::BeginChild("AmbientTextureRightPane", ImVec2(70.0f, 70.0f), true);
-				TextureClass* texture = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetAmbientTextureID().c_str()));
+				TextureClass* texture = m_material->GetAmbientTextureID() != "NONE" ? ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetAmbientTextureID().c_str())) : ResMgrClass::GetInst()->FindTexture(L"defaultTexture");
 
 				texturePos = ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY());
 				ImGui::SetItemAllowOverlap();
@@ -368,7 +369,7 @@ void MaterialComp::Render(ModelNode* node)
 				ImGui::SameLine();
 				ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 2.0f);
 				ImGui::BeginChild("EmissiveTextureRightPane", ImVec2(70.0f, 70.0f), true);
-				texture = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetEmissiveTextureID().c_str()));
+				texture = m_material->GetEmissiveTextureID() != "NONE" ? ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetEmissiveTextureID().c_str())) : ResMgrClass::GetInst()->FindTexture(L"defaultTexture");
 
 				texturePos = ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY());
 				ImGui::SetItemAllowOverlap();
@@ -451,7 +452,7 @@ void MaterialComp::Render(ModelNode* node)
 				ImGui::SameLine();
 				ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 2.0f);
 				ImGui::BeginChild("DiffuseTextureRightPane", ImVec2(70.0f, 70.0f), true);
-				texture = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetDiffuseTextureID().c_str()));
+				texture = m_material->GetDiffuseTextureID() != "NONE" ? ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetDiffuseTextureID().c_str())) : ResMgrClass::GetInst()->FindTexture(L"defaultTexture");
 				
 				texturePos = ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY());
 				ImGui::SetItemAllowOverlap();
@@ -534,8 +535,8 @@ void MaterialComp::Render(ModelNode* node)
 				ImGui::SameLine();
 				ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 2.0f);
 				ImGui::BeginChild("SpecularTextureRightPane", ImVec2(70.0f, 70.0f), true);
-				texture = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetSpecularTextureID().c_str()));
-
+				texture = m_material->GetSpecularTextureID() != "NONE" ? ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetSpecularTextureID().c_str())) : ResMgrClass::GetInst()->FindTexture(L"defaultTexture");
+				
 				texturePos = ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY());
 				ImGui::SetItemAllowOverlap();
 				rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(70.0f, 70.0f));
@@ -616,7 +617,7 @@ void MaterialComp::Render(ModelNode* node)
 				ImGui::SameLine();
 				ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 2.0f);
 				ImGui::BeginChild("NormalMapTextureRightPane", ImVec2(70.0f, 70.0f), true);
-				texture = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetNormalTextureID().c_str()));
+				texture = m_material->GetNormalTextureID() != "NONE" ? ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetNormalTextureID().c_str())) : ResMgrClass::GetInst()->FindTexture(L"defaultTexture");
 
 				texturePos = ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY());
 				ImGui::SetItemAllowOverlap();

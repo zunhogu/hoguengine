@@ -48,7 +48,7 @@ bool TerrainComp::Initialize(ModelNode* node, wstring relativePath)
 	
 	m_heightMapTexture = ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), m_terrainMeshKey, relativePath);
 
-	result = m_terrainMesh->Initialize(Core::GetDevice(), Core::ConvWcharTochar(relativePath));
+	result = m_terrainMesh->Initialize(Core::GetDevice(), Core::ConvWcharTochar(relativePath), 10.0f);
 	if (!result)
 		return result;
 
@@ -98,16 +98,22 @@ void TerrainComp::RederTerrain(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOA
 	
 	ID3D11ShaderResourceView* texture = ResMgrClass::GetInst()->FindTexture(L"dirt01.dds")->GetTexture();
 
-	vector<pair<ID3D11ShaderResourceView*, ID3D11ShaderResourceView*>> layers;
+	vector<ID3D11ShaderResourceView*> layers;
+	vector<float> weights;
+	layers.push_back(texture);
+	weights.push_back(1.0f);
 	for (int i = 0; i < m_layers.size(); i++)
 	{
-		ID3D11ShaderResourceView* first = ResMgrClass::GetInst()->FindTexture(m_layers[i]->GetMaskID())->GetTexture();
-		ID3D11ShaderResourceView* second = m_layers[i]->GetMaterialComp()->GetShaderResourceView();
-
-		layers.push_back(make_pair(first, second));
+		if (m_layers[i]->GetMaskID() != L"" && m_layers[i]->GetMaterialComp() != nullptr)
+		{
+			layers.push_back(ResMgrClass::GetInst()->FindTexture(m_layers[i]->GetMaskID())->GetTexture());
+			layers.push_back(m_layers[i]->GetMaterialComp()->GetShaderResourceView());
+			weights.push_back(m_layers[i]->GetWeight());
+			//layers.push_back(texture);
+		}
 	}
 
-	GraphicsClass::GetInst()->RenderTerrainShaderSetParam(Core::GetDeviceContext(), m_isWireFrame, m_isLOD, worldMatrix, viewMatrix, lightDiffuseColor, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), lihgtDirection, cameraPos, layers);
+	GraphicsClass::GetInst()->RenderTerrainShaderSetParam(Core::GetDeviceContext(), m_isWireFrame, m_isLOD, worldMatrix, viewMatrix, lightDiffuseColor, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), lihgtDirection, cameraPos, layers, weights);
 
 	m_terrainQuad->Render(Core::GetDeviceContext(), worldMatrix, m_isWireFrame);
 }

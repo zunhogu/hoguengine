@@ -229,26 +229,32 @@ void TerrainQuadTreeClass::CreateTreeNode(NodeType* node, float positionX, float
 
 			// Get the three vertices of this triangle from the vertex list.
 			vertices[index].position = m_vertexList[vertexIndex].position;
-			vertices[index].color = m_vertexList[vertexIndex].color;
 			vertices[index].texture = m_vertexList[vertexIndex].texture;
 			vertices[index].normal = m_vertexList[vertexIndex].normal;
+			vertices[index].tangent = m_vertexList[vertexIndex].tangent;
+			vertices[index].binormal = m_vertexList[vertexIndex].binormal;
+			vertices[index].texture2 = m_vertexList[vertexIndex].texture2;
 			indices[index] = index;
 			index++;
 
 			vertexIndex++;
 			vertices[index].position = m_vertexList[vertexIndex].position;
-			vertices[index].color = m_vertexList[vertexIndex].color;
 			vertices[index].texture = m_vertexList[vertexIndex].texture;
 			vertices[index].normal = m_vertexList[vertexIndex].normal;
+			vertices[index].tangent = m_vertexList[vertexIndex].tangent;
+			vertices[index].binormal = m_vertexList[vertexIndex].binormal;
+			vertices[index].texture2 = m_vertexList[vertexIndex].texture2;
 			indices[index] = index;
 			index++;
 			
 
 			vertexIndex++;
 			vertices[index].position = m_vertexList[vertexIndex].position;
-			vertices[index].color = m_vertexList[vertexIndex].color;
 			vertices[index].texture = m_vertexList[vertexIndex].texture;
 			vertices[index].normal = m_vertexList[vertexIndex].normal;
+			vertices[index].tangent = m_vertexList[vertexIndex].tangent;
+			vertices[index].binormal = m_vertexList[vertexIndex].binormal;
+			vertices[index].texture2 = m_vertexList[vertexIndex].texture2;
 			indices[index] = index;
 			index++;
 		}
