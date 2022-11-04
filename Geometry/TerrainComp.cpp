@@ -136,7 +136,7 @@ void TerrainComp::RederTerrain(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOA
 	// Brush Mode
 	if (m_isBrushMode)
 	{
-		brushPosition = GetBrushPosition(worldMatrix, cameraPos, viewMatrix);
+		//brushPosition = GetBrushPosition(worldMatrix, cameraPos, viewMatrix);
 		//cout << "X : " << brushPosition.x<< ", Z : " << brushPosition.z << endl;
 	}
 
