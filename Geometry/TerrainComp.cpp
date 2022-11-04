@@ -512,7 +512,8 @@ XMFLOAT3 TerrainComp::GetBrushPosition(XMMATRIX worldMatrix, XMFLOAT3 cameraPos,
 		float t = 0.0f;
 		if (CollisionClass::GetInst()->CheckPickingTriangle(rayOriginTemp, rayDirTemp, A, B, C, t))
 		{
-			cout << "p" << endl;
+			// 이 방식으로 하면 CPU로 매 프레임마다 피킹검사를 하기 때문에 성능상 문제가 발생한다
+			// 계산셰이더를 사용하자
 		}
 	}
 
