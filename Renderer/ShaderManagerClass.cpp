@@ -127,9 +127,9 @@ void ShaderManagerClass::RenderGridShader(ID3D11DeviceContext* deviceContext, in
 	m_gridShader->RenderShader(deviceContext, indexCount);
 }
 
-void ShaderManagerClass::RenderTerrainShaderSetParam(ID3D11DeviceContext* deviceContext, bool isWireFrame, bool isLOD, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, vector<ID3D11ShaderResourceView*>& layers, vector<float>& weights)
+void ShaderManagerClass::RenderTerrainShaderSetParam(ID3D11DeviceContext* deviceContext, bool isWireFrame, bool isLOD, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, vector<ID3D11ShaderResourceView*>& resourceViews, vector<XMFLOAT4>& chanelFlag, UINT brushType, XMFLOAT3 brushPos, FLOAT brushRange, XMFLOAT3 brushColor)
 {
-	m_terrainShader->SetShaderParameters(deviceContext, isWireFrame, isLOD, worldMatrix, viewMatrix, projectionMatrix, ambientColor, diffuseColor, lightDirection, cameraPos, layers, weights);
+	m_terrainShader->SetShaderParameters(deviceContext, isWireFrame, isLOD, worldMatrix, viewMatrix, projectionMatrix, ambientColor, diffuseColor, lightDirection, cameraPos, resourceViews, chanelFlag, brushType, brushPos, brushRange, brushColor);
 }
 
 void ShaderManagerClass::RenderTerrainShader(ID3D11DeviceContext* deviceContext, int indexCount)

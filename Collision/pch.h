@@ -13,7 +13,9 @@
 
 #include <iostream>
 using namespace std;
+
 #include <DirectXMath.h>
+#include <DirectXCollision.h>
 using namespace DirectX;
 
 #endif //PCH_H

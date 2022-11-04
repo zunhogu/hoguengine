@@ -37,6 +37,7 @@ bool Scene_Tool::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	if (!m_Camera)
 		return false;
 	m_Camera->UpdateViewMatrix();
+	m_Camera->SetScreenSize(XMFLOAT2(screenWidth, screenHeight));
 
 	m_Light = new LightClass(XMFLOAT3(0.0f, 20.0f, 100.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(-0.5f, -1.0f, 0.0f), XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), XMFLOAT4(0.05f, 0.05f, 0.05f, 1.0f));
 	if (!m_Light)
@@ -120,20 +121,20 @@ void Scene_Tool::Frame()
 		ResMgrClass::GetInst()->LoadPrefab(L"id_cylinder", L"contents\\assets\\id_cylinder\\id_cylinder.pref");
 		ResMgrClass::GetInst()->LoadPrefab(L"id_plane", L"contents\\assets\\id_plane\\id_plane.pref");
 
-		//ModelNode* empty = new ModelNode;
-		//empty->AddModelComp(new ModelInfoComp);
-		//empty->AddModelComp(new TransformComp);
-		//TerrainComp* terrain = new TerrainComp;
-		//if (terrain->Initialize(empty, L"contents\\texture\\heightmap01.bmp"))
-		//{
-		//	empty->AddModelComp(terrain);
-		//	empty->AddPathToRootNode(empty);
-		//	SceneMgrClass::GetInst()->GetCurScene()->AddNodeToScene(empty);
-		//}
-		//else {
-		//	terrain->Shutdown();
-		//	delete terrain;
-		//}
+		ModelNode* empty = new ModelNode;
+		empty->AddModelComp(new ModelInfoComp);
+		empty->AddModelComp(new TransformComp);
+		TerrainComp* terrain = new TerrainComp;
+		if (terrain->Initialize(empty, L"contents\\texture\\heightmap01.bmp"))
+		{
+			empty->AddModelComp(terrain);
+			empty->AddPathToRootNode(empty);
+			SceneMgrClass::GetInst()->GetCurScene()->AddNodeToScene(empty);
+		}
+		else {
+			terrain->Shutdown();
+			delete terrain;
+		}
 
 		//Prefab* dino = ResMgrClass::GetInst()->LoadPrefab(L"Ankylosaurus.pref", L"contents\\assets\\Ankylosaurus\\Ankylosaurus.pref");
 		//ModelNode* node = new ModelNode(*dino->GetModelNode());
@@ -413,9 +414,8 @@ void Scene_Tool::PickingCheckInViewPort()
 		rayOrigin = CollisionClass::GetInst()->GetRayOrigin();  // World Sapce
 		rayDir = CollisionClass::GetInst()->GetRayDir();  // View Space
 		rayDir = XMVector3TransformNormal(rayDir, invViewMatrix);  // View Space to World Sapce
-
 		rayDir = XMVector3Normalize(rayDir);
-
+		
 		int pickedIndex = -1;
 
 		// node가 pick 되있지 않다면 모든 씬 안의 모든 Root Node에 대해 피킹 선별 진행

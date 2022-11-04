@@ -6,6 +6,7 @@
 #include "ModelNode.h"
 #include "TerrainMesh.h"
 #include "Mesh.h"
+#include "TransformComp.h"
 
 TerrainComp::TerrainComp()
 {
@@ -14,6 +15,7 @@ TerrainComp::TerrainComp()
 	m_isWireFrame = false;
 	m_isLOD = false;
 	m_heightMapTexture = nullptr;
+	m_isBrushMode = true;
 }
 
 TerrainComp::TerrainComp(const TerrainComp& terrain)
@@ -98,22 +100,47 @@ void TerrainComp::RederTerrain(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOA
 	
 	ID3D11ShaderResourceView* texture = ResMgrClass::GetInst()->FindTexture(L"dirt01.dds")->GetTexture();
 
-	vector<ID3D11ShaderResourceView*> layers;
-	vector<float> weights;
-	layers.push_back(texture);
-	weights.push_back(1.0f);
+	vector<ID3D11ShaderResourceView*> resourceViews;
+	vector<XMFLOAT4> chanelFlag;
 	for (int i = 0; i < m_layers.size(); i++)
 	{
-		if (m_layers[i]->GetMaskID() != L"" && m_layers[i]->GetMaterialComp() != nullptr)
+		if (m_layers[i]->GetMaskID() == L"") continue;
+
+		XMFLOAT4 chanels = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
+		resourceViews.push_back(ResMgrClass::GetInst()->FindTexture(m_layers[i]->GetMaskID())->GetTexture());
+		if (m_layers[i]->GetMaterialComp1() != nullptr)
 		{
-			layers.push_back(ResMgrClass::GetInst()->FindTexture(m_layers[i]->GetMaskID())->GetTexture());
-			layers.push_back(m_layers[i]->GetMaterialComp()->GetShaderResourceView());
-			weights.push_back(m_layers[i]->GetWeight());
-			//layers.push_back(texture);
+			resourceViews.push_back(m_layers[i]->GetMaterialComp1()->GetShaderResourceView());
+			chanels.x = 1.0f;
 		}
+
+		if (m_layers[i]->GetMaterialComp2() != nullptr)
+		{
+			resourceViews.push_back(m_layers[i]->GetMaterialComp2()->GetShaderResourceView());
+			chanels.y = 1.0f;
+		}
+
+		if (m_layers[i]->GetMaterialComp3() != nullptr)
+		{
+			resourceViews.push_back(m_layers[i]->GetMaterialComp3()->GetShaderResourceView());
+			chanels.z = 1.0f;
+		}
+		chanelFlag.push_back(chanels);
 	}
 
-	GraphicsClass::GetInst()->RenderTerrainShaderSetParam(Core::GetDeviceContext(), m_isWireFrame, m_isLOD, worldMatrix, viewMatrix, lightDiffuseColor, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), lihgtDirection, cameraPos, layers, weights);
+
+	UINT brushType = 1;
+	XMFLOAT3 brushPosition = XMFLOAT3();
+	FLOAT brushRange = 20.0f;
+	XMFLOAT3 brushColor = XMFLOAT3(0.0f, 1.0f, 0.0f);
+	// Brush Mode
+	if (m_isBrushMode)
+	{
+		brushPosition = GetBrushPosition(worldMatrix, cameraPos, viewMatrix);
+		//cout << "X : " << brushPosition.x<< ", Z : " << brushPosition.z << endl;
+	}
+
+	GraphicsClass::GetInst()->RenderTerrainShaderSetParam(Core::GetDeviceContext(), m_isWireFrame, m_isLOD, worldMatrix, viewMatrix, lightDiffuseColor, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), lihgtDirection, cameraPos, resourceViews, chanelFlag, brushType, brushPosition, brushRange, brushColor);
 
 	m_terrainQuad->Render(Core::GetDeviceContext(), worldMatrix, m_isWireFrame);
 }
@@ -212,12 +239,13 @@ void TerrainComp::TextureLayer(ModelNode* node)
 		ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
 
 		const float inner_width_to_use = (flags & ImGuiTableFlags_ScrollX) ? inner_width_with_scroll : 0.0f;
-		if (ImGui::BeginTable("##TextureLayerTable", 5, flags, outer_size_enabled ? outer_size_value : ImVec2(0, 0), inner_width_to_use))
+		if (ImGui::BeginTable("##TextureLayerTable", 6, flags, outer_size_enabled ? outer_size_value : ImVec2(0, 0), inner_width_to_use))
 		{
 			ImGui::TableSetupColumn("Layer", ImGuiTableColumnFlags_DefaultSort);
-			ImGui::TableSetupColumn("Mask");
-			ImGui::TableSetupColumn("Material");
-			ImGui::TableSetupColumn("Weight");
+			ImGui::TableSetupColumn("Mask", ImGuiTableColumnFlags_NoResize);
+			ImGui::TableSetupColumn("Red", ImGuiTableColumnFlags_NoResize);
+			ImGui::TableSetupColumn("Green", ImGuiTableColumnFlags_NoResize);
+			ImGui::TableSetupColumn("Blue", ImGuiTableColumnFlags_NoResize);
 			ImGui::TableSetupColumn("");
 			ImGui::TableHeadersRow();
 
@@ -236,9 +264,8 @@ void TerrainComp::TextureLayer(ModelNode* node)
 
 				}
 
-
 				ImGui::TableSetColumnIndex(1);
-				ImRect rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(ImGui::GetItemRectSize().x, ImGui::GetItemRectSize().y));
+				ImRect rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(60.f, ImGui::GetItemRectSize().y));
 				string label = m_layers[i]->GetMaskID() == L"" ? "NONE##Mask" + flag : Core::ConvWcharTochar(m_layers[i]->GetMaskID() + L"##") + flag;
 				if (ImGui::Selectable(label.c_str(), (selected_item == i), 0))
 				{
@@ -248,7 +275,7 @@ void TerrainComp::TextureLayer(ModelNode* node)
 				if (ImGui::BeginPopup(("##" + label + "mask_image").c_str()))
 				{
 					TextureClass* texture = ResMgrClass::GetInst()->FindTexture(m_layers[i]->GetMaskID());
-					ImGui::Image((ImTextureID)texture->GetTexture(), ImVec2(70.0f, 70.0f));
+					ImGui::Image((ImTextureID)texture->GetTexture(), ImVec2(200.0f, 200.0f));
 					ImGui::EndPopup();
 				}
 
@@ -262,8 +289,8 @@ void TerrainComp::TextureLayer(ModelNode* node)
 				}
 
 				ImGui::TableSetColumnIndex(2);
-				rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(ImGui::GetItemRectSize().x, ImGui::GetItemRectSize().y));
-				label = m_layers[i]->GetMaterialComp() == nullptr ? "NONE##Material" + flag : Core::ConvWcharTochar(m_layers[i]->GetMaterialComp()->GetMaterialName() + L"##") + flag;
+				rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(60.f, ImGui::GetItemRectSize().y));
+				label = m_layers[i]->GetMaterialComp1() == nullptr ? "NONE##Material1" + flag : Core::ConvWcharTochar(m_layers[i]->GetMaterialComp1()->GetMaterialName() + L"##") + flag;
 				if (ImGui::Selectable(label.c_str(), (selected_item == i), 0))
 				{
 
@@ -280,28 +307,135 @@ void TerrainComp::TextureLayer(ModelNode* node)
 					// 기존의 materialComp 삭제
 					for (int j = 0; j < comps->size(); j++)
 					{
-						if (comps->at(j) == m_layers[i]->GetMaterialComp())
+						if (comps->at(j) == m_layers[i]->GetMaterialComp1())
+							comps->erase(comps->begin() + j);
+					}
+
+
+					Material* material = ResMgrClass::GetInst()->LoadMaterial(Core::GetFileName(filePath), filePath);
+
+					bool find = false;
+					vector<ModelComp*>* modelComps = node->GetModelComps();
+					for (int i = 0; i < modelComps->size(); i++)
+					{
+						if (modelComps->at(i)->GetCompType() == COMPONENT_TYPE::MATERIAL)
+						{
+							MaterialComp* comp = (MaterialComp*)modelComps->at(i);
+							if (material == comp->GetMaterial())
+								find = true;
+						}
+					}
+
+					if (!find)
+					{
+						MaterialComp* materialComp = new MaterialComp;
+						materialComp->SetMateriaName(material->GetMaterialName());
+						materialComp->SetMaterial(material);
+
+						comps->push_back(materialComp);
+						m_layers[i]->SetMaterialComp1(materialComp);
+					}
+				}
+
+
+				ImGui::TableSetColumnIndex(3);
+				rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(60.f, ImGui::GetItemRectSize().y));
+				label = m_layers[i]->GetMaterialComp2() == nullptr ? "NONE##Material" + flag : Core::ConvWcharTochar(m_layers[i]->GetMaterialComp2()->GetMaterialName() + L"##") + flag;
+				if (ImGui::Selectable(label.c_str(), (selected_item == i), 0))
+				{
+
+				}
+
+				payload = ImGuIRenderClass::DraAndDropToItem(rect, ImGui::GetMousePos(), "CONTENT_BROWSER_ITEM", IM_COL32(255, 255, 0, 0));
+				filePath = ProcessDragAndDropPayloadMaterial(payload);
+				if (filePath != L"")
+				{
+					wstring id = Core::GetFileName(filePath);
+
+					vector<ModelComp*>* comps = node->GetModelComps();
+
+					// 기존의 materialComp 삭제
+					for (int j = 0; j < comps->size(); j++)
+					{
+						if (comps->at(j) == m_layers[i]->GetMaterialComp2())
 							comps->erase(comps->begin() + j);
 					}
 
 					Material* material = ResMgrClass::GetInst()->LoadMaterial(Core::GetFileName(filePath), filePath);
 
-					MaterialComp* materialComp = new MaterialComp;
-					materialComp->SetMateriaName(material->GetMaterialName());
-					materialComp->SetMaterial(material);
+					bool find = false;
+					vector<ModelComp*>* modelComps = node->GetModelComps();
+					for (int i = 0; i < modelComps->size(); i++)
+					{
+						if (modelComps->at(i)->GetCompType() == COMPONENT_TYPE::MATERIAL)
+						{
+							MaterialComp* comp = (MaterialComp*)modelComps->at(i);
+							if (material == comp->GetMaterial())
+								find = true;
+						}
+					}
 
-					comps->push_back(materialComp);
-					m_layers[i]->SetMaterialComp(materialComp);
+					if (!find)
+					{
+						MaterialComp* materialComp = new MaterialComp;
+						materialComp->SetMateriaName(material->GetMaterialName());
+						materialComp->SetMaterial(material);
+
+						comps->push_back(materialComp);
+						m_layers[i]->SetMaterialComp2(materialComp);
+					}
 				}
 
-				ImGui::TableSetColumnIndex(3);
-				ImGui::SetNextItemWidth(100.f);
-				float weight = m_layers[i]->GetWeight();
-				if (ImGui::SliderFloat("", &weight, 0, 1))
-					m_layers[i]->SetWeight(weight);
-				
 
-				if (ImGui::TableSetColumnIndex(4))
+				ImGui::TableSetColumnIndex(4);
+				rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(60.f, ImGui::GetItemRectSize().y));
+				label = m_layers[i]->GetMaterialComp3() == nullptr ? "NONE##Material3" + flag : Core::ConvWcharTochar(m_layers[i]->GetMaterialComp3()->GetMaterialName() + L"##") + flag;
+				if (ImGui::Selectable(label.c_str(), (selected_item == i), 0))
+				{
+
+				}
+
+				payload = ImGuIRenderClass::DraAndDropToItem(rect, ImGui::GetMousePos(), "CONTENT_BROWSER_ITEM", IM_COL32(255, 255, 0, 0));
+				filePath = ProcessDragAndDropPayloadMaterial(payload);
+				if (filePath != L"")
+				{
+					wstring id = Core::GetFileName(filePath);
+
+					vector<ModelComp*>* comps = node->GetModelComps();
+
+					// 기존의 materialComp 삭제
+					for (int j = 0; j < comps->size(); j++)
+					{
+						if (comps->at(j) == m_layers[i]->GetMaterialComp3())
+							comps->erase(comps->begin() + j);
+					}
+
+					Material* material = ResMgrClass::GetInst()->LoadMaterial(Core::GetFileName(filePath), filePath);
+
+					bool find = false;
+					vector<ModelComp*>* modelComps = node->GetModelComps();
+					for (int i = 0; i < modelComps->size(); i++)
+					{
+						if (modelComps->at(i)->GetCompType() == COMPONENT_TYPE::MATERIAL)
+						{
+							MaterialComp* comp = (MaterialComp*)modelComps->at(i);
+							if (material == comp->GetMaterial())
+								find = true;
+						}
+					}
+
+					if (!find)
+					{
+						MaterialComp* materialComp = new MaterialComp;
+						materialComp->SetMateriaName(material->GetMaterialName());
+						materialComp->SetMaterial(material);
+
+						comps->push_back(materialComp);
+						m_layers[i]->SetMaterialComp3(materialComp);
+					}
+				}
+
+				if (ImGui::TableSetColumnIndex(5))
 				{
 					if (ImGui::SmallButton(("-##" + flag + "delete_button").c_str()))
 						m_layers.erase(m_layers.begin() + i);
@@ -324,8 +458,67 @@ void TerrainComp::Brush(ModelNode* node)
 	ImGuiTreeNodeFlags treeFlag = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_DefaultOpen;
 	if (ImGui::TreeNodeEx("Brush", treeFlag))
 	{
+		ImGui::Checkbox("IsBrush", &m_isBrushMode);
+
 		ImGui::TreePop();
 	}
+}
+
+XMFLOAT3 TerrainComp::GetBrushPosition(XMMATRIX worldMatrix, XMFLOAT3 cameraPos, XMMATRIX viewMatrix)
+{
+	int tmX, tmY;
+	XMFLOAT3 result;
+	XMVECTOR A, B, C;
+
+	ImGuIRenderClass::GetInst()->GetMousePosInViewPort(tmX, tmY);
+
+	// 반직선 생성
+	CollisionClass::GetInst()->SetRay(tmX, tmY, viewMatrix, Core::GetProjectionMatrix(), cameraPos);
+	XMMATRIX invViewMatrix = XMMatrixInverse(nullptr, viewMatrix);
+
+	float minDistance = INFINITY;
+
+	XMVECTOR rayOrigin, rayDir;
+
+	// Picking Test
+	rayOrigin = CollisionClass::GetInst()->GetRayOrigin();  // World Sapce
+	rayDir = CollisionClass::GetInst()->GetRayDir();  // View Space
+	rayDir = XMVector3TransformNormal(rayDir, invViewMatrix);  // View Space to World Sapce
+
+	XMMATRIX invWorldMatrix = XMMatrixInverse(nullptr, worldMatrix);
+
+	XMVECTOR rayOriginTemp, rayDirTemp;
+
+	rayOriginTemp = XMVector3TransformCoord(rayOrigin, invWorldMatrix);  // World Space to Local Space
+	rayDirTemp = XMVector3TransformNormal(rayDir, invWorldMatrix);  // World Space to Local Space
+
+	rayDirTemp = XMVector3Normalize(rayDirTemp);
+
+	TerrainVertexType* vertexArray = m_terrainMesh->GetVertexArray();
+	int vertexCount = m_terrainMesh->GetVertexCount();
+	for (int k = 0; k < vertexCount / 3; k++)
+	{
+		XMFLOAT4 plane;
+
+		int i0 = k * 3 + 0;
+		int i1 = k * 3 + 1;
+		int i2 = k * 3 + 2;
+
+		// 삼각형의 정점들
+		A = XMLoadFloat3(&vertexArray[i0].position);
+		B = XMLoadFloat3(&vertexArray[i1].position);
+		C = XMLoadFloat3(&vertexArray[i2].position);
+
+		float t = 0.0f;
+		if (CollisionClass::GetInst()->CheckPickingTriangle(rayOriginTemp, rayDirTemp, A, B, C, t))
+		{
+			cout << "p" << endl;
+		}
+	}
+
+	XMStoreFloat3(&result, XMVectorAdd(rayOrigin, rayDir * 2));
+
+	return result;
 }
 
 wstring TerrainComp::ProcessDragAndDropPayloadTexture(ImGuiPayload* payload)
@@ -372,7 +565,7 @@ wstring TerrainComp::ProcessDragAndDropPayloadMaterial(ImGuiPayload* payload)
 // Material Layer //////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////
 MaterialLayer::MaterialLayer()
-	: m_maskID(L""), m_material(nullptr), m_weight(1.0f)
+	: m_maskID(L""), m_material1(nullptr), m_material2(nullptr), m_material3(nullptr)
 {
 }
 

@@ -32,5 +32,7 @@ public:
 
 	void ConstructFrustum(float, XMMATRIX, XMMATRIX);
 	bool CheckCube(float, float, float, float);
+
+	bool CheckPickingTriangle(XMVECTOR rayOrigin, XMVECTOR rayDir, XMVECTOR A, XMVECTOR B, XMVECTOR C, float& tmin);
 };
 

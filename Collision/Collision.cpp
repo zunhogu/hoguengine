@@ -74,3 +74,8 @@ bool CollisionClass::CheckCube(float xCenter, float yCenter, float zCenter, floa
 {
 	return m_Frustum->CheckCube(xCenter, yCenter, zCenter, radius);
 }
+
+bool CollisionClass::CheckPickingTriangle(XMVECTOR rayOrigin, XMVECTOR rayDir, XMVECTOR A, XMVECTOR B, XMVECTOR C, float& tmin)
+{
+	return DirectX::TriangleTests::Intersects(rayOrigin, rayDir, A, B, C, tmin);
+}

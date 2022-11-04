@@ -5,13 +5,15 @@
 #include "MeshComp.h"
 #include "MaterialComp.h"
 #include "TerrainQuadTreeClass.h"
+#include "CameraClass.h"
 
 class MaterialLayer
 {
 private:
 	wstring m_maskID;  // texture layer id
-	MaterialComp* m_material;
-	float m_weight;
+	MaterialComp* m_material1;
+	MaterialComp* m_material2;
+	MaterialComp* m_material3;
 
 public:
 	MaterialLayer();
@@ -22,11 +24,12 @@ public:
 
 	wstring GetMaskID() { return m_maskID; }
 	void SetMaskID(wstring id) { m_maskID = id; }
-	MaterialComp* GetMaterialComp() { return m_material; }
-	void SetMaterialComp(MaterialComp* material) { m_material = material; }
-	float GetWeight() { return m_weight; }
-	void SetWeight(float weight) { m_weight = m_weight; }
-
+	MaterialComp* GetMaterialComp1() { return m_material1; }
+	void SetMaterialComp1(MaterialComp* material) { m_material1 = material; }
+	MaterialComp* GetMaterialComp2() { return m_material2; }
+	void SetMaterialComp2(MaterialComp* material) { m_material2 = material; }
+	MaterialComp* GetMaterialComp3() { return m_material3; }
+	void SetMaterialComp3(MaterialComp* material) { m_material3 = material; }
 };
 
 class TerrainComp : public ModelComp
@@ -42,6 +45,8 @@ private:
 	bool m_isRender;
 	bool m_isWireFrame;
 	bool m_isLOD;
+	bool m_isBrushMode;
+
 public:
 	TerrainComp();
 	TerrainComp(const TerrainComp& terrain);
@@ -55,6 +60,8 @@ public:
 	void Mesh(ModelNode* node);
 	void TextureLayer(ModelNode* node);
 	void Brush(ModelNode* node);
+
+	XMFLOAT3 GetBrushPosition(XMMATRIX worldMatrix, XMFLOAT3 cameraPos, XMMATRIX viewMatrix);
 
 	wstring GetTerrainMeshID() { return m_terrainMeshKey; }
 

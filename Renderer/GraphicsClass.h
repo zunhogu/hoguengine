@@ -76,7 +76,7 @@ public:
 	void RenderGridShaderSetParam(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix);
 	void RenderGirdShader(ID3D11DeviceContext* deviceContext, int indexCount);
 	void RenderSkyDome(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT4 apexColor, XMFLOAT4 centerColor);
-	void RenderTerrainShaderSetParam(ID3D11DeviceContext* deviceContext, bool isWireFrame, bool isLOD, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, vector<ID3D11ShaderResourceView*>& layers, vector<float>& weights);
+	void RenderTerrainShaderSetParam(ID3D11DeviceContext* deviceContext, bool isWireFrame, bool isLOD, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, vector<ID3D11ShaderResourceView*>& resourceViews, vector<XMFLOAT4>& chanelFlag, UINT brushType, XMFLOAT3 brushPos, FLOAT brushRange, XMFLOAT3 brushColor);
 	void RenderTerrainShader(ID3D11DeviceContext* deviceContext, int indexCount);
 	void RenderTerrainWireFrameShaderSetParam(ID3D11DeviceContext* deviceContext, XMMATRIX worldMatrix, XMMATRIX viewMatrix, float tessellationAmount);
 	void RenderTerrainWireFrameShader(ID3D11DeviceContext* deviceContext, int indexCount);

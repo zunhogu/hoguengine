@@ -37,9 +37,18 @@ private:
 
 	struct TextureBufferType
 	{
-		UINT texturesize;
-		XMFLOAT3 padding;
-		float textureWeight[100];
+		UINT resourceViewSize;
+		UINT chanelFlagSize;
+		XMFLOAT2 padding;
+		XMFLOAT4 chanelFlag[100];
+	};	
+	
+	struct BrushBufferType
+	{
+		UINT type;
+		XMFLOAT3 brushPos;
+		FLOAT brushRange;
+		XMFLOAT3 brushColor;
 	};
 
 	ID3D11VertexShader* m_vertexShader;
@@ -56,6 +65,7 @@ private:
 	ID3D11Buffer* m_wireFrameBuffer;
 	ID3D11Buffer* m_tessellationBuffer;
 	ID3D11Buffer* m_texureBuffer;
+	ID3D11Buffer* m_brushBuffer;
 
 public:
 	TerrainShader();
@@ -64,7 +74,7 @@ public:
 
 	bool Initialize(ID3D11Device* device, HWND hwnd);
 	void Shutdown();
-	bool SetShaderParameters(ID3D11DeviceContext* deviceContext, bool isWireFrame, bool isLOD, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, vector<ID3D11ShaderResourceView*>& layers, vector<float>& weights);
+	bool SetShaderParameters(ID3D11DeviceContext* deviceContext, bool isWireFrame, bool isLOD, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, vector<ID3D11ShaderResourceView*>& resourceViews, vector<XMFLOAT4>& chanelFlag, UINT brushType, XMFLOAT3 brushPos, FLOAT brushRange, XMFLOAT3 brushColor);
 	void RenderShader(ID3D11DeviceContext* deviceContext, int indexCount);
 
 private:

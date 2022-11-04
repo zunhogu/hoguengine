@@ -30,6 +30,8 @@ private:
 	XMMATRIX m_projectionMatrix;
 
 	float m_accumulateAngleX;
+
+	XMFLOAT2 m_screenSize;
 public:
 	CameraClass();
 	CameraClass(XMFLOAT3 position, XMFLOAT3 rotation, XMFLOAT3 scale, XMFLOAT3 cameraLook, XMFLOAT3 cameraRight, XMFLOAT3 cameraUp);
@@ -42,6 +44,8 @@ public:
 	void SetRotation(XMFLOAT3 rotation) { m_rotation = rotation; }
 	XMFLOAT3 GetScale() { return m_scale; }
 	void SetScale(XMFLOAT3 scale) { m_scale = scale; }
+
+	void SetScreenSize(XMFLOAT2 size) { m_screenSize = size; }
 
 	void SetFrustum(float, float, float, float);
 

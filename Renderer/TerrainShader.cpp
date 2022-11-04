@@ -55,6 +55,7 @@ bool TerrainShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsF
 	D3D11_BUFFER_DESC wireFrameBufferDesc;
 	D3D11_BUFFER_DESC tessellationBufferDesc;
 	D3D11_BUFFER_DESC textureBufferDesc;
+	D3D11_BUFFER_DESC brsuhBufferDesc;
 
 	errorMessage = 0;
 	vertexShaderBuffer = 0;
@@ -264,6 +265,17 @@ bool TerrainShader::InitializeShader(ID3D11Device* device, HWND hwnd, WCHAR* vsF
 	if (FAILED(result))
 		return false;
 
+	brsuhBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	brsuhBufferDesc.ByteWidth = sizeof(TextureBufferType);
+	brsuhBufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	brsuhBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	brsuhBufferDesc.MiscFlags = 0;
+	brsuhBufferDesc.StructureByteStride = 0;
+
+	result = device->CreateBuffer(&brsuhBufferDesc, NULL, &m_brushBuffer);
+	if (FAILED(result))
+		return false;
+
 	return true;
 }
 
@@ -307,7 +319,7 @@ void TerrainShader::ShutdownShader()
 
 }
 
-bool TerrainShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, bool isWireFrame, bool isLOD, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, vector<ID3D11ShaderResourceView*>& layers, vector<float>& weights)
+bool TerrainShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, bool isWireFrame, bool isLOD, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX projectionMatrix, XMFLOAT4 ambientColor, XMFLOAT4 diffuseColor, XMFLOAT3 lightDirection, XMFLOAT3 cameraPos, vector<ID3D11ShaderResourceView*>& resourceViews, vector<XMFLOAT4>& chanelFlag, UINT brushType, XMFLOAT3 brushPos, FLOAT brushRange, XMFLOAT3 brushColor)
 {
 	HRESULT result;
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
@@ -318,6 +330,7 @@ bool TerrainShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, bool
 	WireFrameBufferType* wireFrameBuffer;
 	TessellationBufferType* tessellationBuffer;
 	TextureBufferType* textureBuffer;
+	BrushBufferType* brushBuffer;
 
 	///////////////////////////////////////////////////////////////////////////////
 	// Vertex Shader //////////////////////////////////////////////////////////////
@@ -412,13 +425,28 @@ bool TerrainShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, bool
 		return false;
 
 	textureBuffer = (TextureBufferType*)mappedResource.pData;
-
-	for (int i = 0; i < weights.size(); i++)
-		textureBuffer->textureWeight[i] = weights[i];
-	textureBuffer->texturesize = layers.size();
-	textureBuffer->padding = XMFLOAT3();
+	
+	textureBuffer->resourceViewSize = (UINT)resourceViews.size();
+	textureBuffer->chanelFlagSize = (UINT)chanelFlag.size();
+	textureBuffer->padding = XMFLOAT2(1.0f, 1.0f);
+	for (int i = 0; i < chanelFlag.size(); i++)
+		textureBuffer->chanelFlag[i] = chanelFlag[i];
 
 	deviceContext->Unmap(m_texureBuffer, 0);
+
+	result = deviceContext->Map(m_brushBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	if (FAILED(result))
+		return false;
+
+	brushBuffer = (BrushBufferType*)mappedResource.pData;
+
+	brushBuffer->type = brushType;
+	brushBuffer->brushPos = brushPos;
+	brushBuffer->brushRange = brushRange;
+	brushBuffer->brushColor = brushColor;
+
+	deviceContext->Unmap(m_brushBuffer, 0);
+
 
 	bufferNumber = 0;
 	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_lightBuffer);
@@ -428,9 +456,11 @@ bool TerrainShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, bool
 	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_tessellationBuffer);
 	bufferNumber++;
 	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_texureBuffer);
+	bufferNumber++;
+	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_brushBuffer);
 
-	for (int i = 0; i < layers.size(); i++)
-		deviceContext->PSSetShaderResources(i, 1, &layers[i]);
+	for (int i = 0; i < resourceViews.size(); i++)
+		deviceContext->PSSetShaderResources(i, 1, &resourceViews[i]);
 	return true;
 }
 

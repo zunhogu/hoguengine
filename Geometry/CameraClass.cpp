@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "CameraClass.h"
+#include "Core.h"
 
 CameraClass::CameraClass() {
 }
@@ -136,7 +137,6 @@ void CameraClass::UpdateViewMatrix() {
 	viewMatrix(3, 3) = 1.0f;
 
 	m_viewMatrix = XMLoadFloat4x4(&viewMatrix);
-
 
 	return;
 }

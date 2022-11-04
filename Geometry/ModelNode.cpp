@@ -648,7 +648,6 @@ ModelNode* ModelNode::CheckPickingTriangle(XMVECTOR rayOrigin, XMVECTOR rayDir, 
 {
 	XMVECTOR  A, B, C;
 
-
 	// 현재 노드의 component를 순회하면 min max 값을 계산
 	for (int i = 0; i < m_modelComps.size(); i++)
 	{
@@ -685,7 +684,7 @@ ModelNode* ModelNode::CheckPickingTriangle(XMVECTOR rayOrigin, XMVECTOR rayDir, 
 					C = XMLoadFloat3(&vertexArray[i2]->position);
 
 					float t = 0.0f;
-					if (DirectX::TriangleTests::Intersects(rayOrigin, rayDir, A, B, C, t))
+					if (CollisionClass::GetInst()->CheckPickingTriangle(rayOrigin, rayDir, A, B, C, t))
 					{
 						if (t < tmin)
 						{
@@ -713,13 +712,13 @@ ModelNode* ModelNode::CheckPickingTriangle(XMVECTOR rayOrigin, XMVECTOR rayDir, 
 			TerrainVertexType* vertexArray = terrainMesh->GetVertexArray();
 			int vertexCount = terrainMesh->GetVertexCount();
 
-			for (int k = 0; k < vertexCount / 6; k++)
+			for (int k = 0; k < vertexCount / 3; k++)
 			{
 				XMFLOAT4 plane;
 
-				int i0 = k * 6 + 0;
-				int i1 = k * 6 + 2;
-				int i2 = k * 6 + 4;
+				int i0 = k * 3 + 0;
+				int i1 = k * 3 + 1;
+				int i2 = k * 3 + 2;
 				
 				// 삼각형의 정점들
 				A = XMLoadFloat3(&vertexArray[i0].position);
@@ -727,7 +726,7 @@ ModelNode* ModelNode::CheckPickingTriangle(XMVECTOR rayOrigin, XMVECTOR rayDir, 
 				C = XMLoadFloat3(&vertexArray[i2].position);
 
 				float t = 0.0f;
-				if (DirectX::TriangleTests::Intersects(rayOrigin, rayDir, A, B, C, t))
+				if (CollisionClass::GetInst()->CheckPickingTriangle(rayOrigin, rayDir, A, B, C, t))
 				{
 					g_currNode = this;
 					return this;
