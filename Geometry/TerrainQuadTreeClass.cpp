@@ -427,7 +427,7 @@ void TerrainQuadTreeClass::RenderNode(NodeType* node, ID3D11DeviceContext* devic
 	float scale = sqrt(pow(worldMat4X4._11, 2) + pow(worldMat4X4._33, 2));
 
 	// Frustum Check
-	result = CollisionClass::GetInst()->CheckCube(position.x, 0.0f, position.z, (node->width * scale / 2.0f));
+	result = CollisionClass::GetInst()->CheckCube(position.x, 0.0f, position.z, (node->width / 2.0f));
 	if (!result)
 		return;
 

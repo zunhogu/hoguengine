@@ -203,3 +203,8 @@ void GraphicsClass::RenderMaterialShader(ID3D11DeviceContext* deviceContext, int
 {
 	m_shaderMgr->RenderMaterialShader(deviceContext, indexCount, worldMatrix, viewMatrix, orthoMatrix, ambientColor, emmisiveColor, diffuseColor, specularColor, shinness, textures);
 }
+
+void GraphicsClass::RenderTerrainPaintShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX orthoMatrix, UINT type, XMFLOAT2 uv, float range, XMFLOAT3 chanel, ID3D11ShaderResourceView* texture)
+{
+	m_shaderMgr->RenderTerrainPaintShader(deviceContext, indexCount, worldMatrix, viewMatrix, orthoMatrix, type, uv, range, chanel, texture);
+}

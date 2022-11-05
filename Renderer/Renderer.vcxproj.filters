@@ -72,6 +72,9 @@
     <ClInclude Include="MaterialShader.h">
       <Filter>ShaderClass\MaterialShader</Filter>
     </ClInclude>
+    <ClInclude Include="TerrainPaintShader.h">
+      <Filter>ShaderClass\TerrainShader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3DClass.cpp">
@@ -107,6 +110,9 @@
     </ClCompile>
     <ClCompile Include="MaterialShader.cpp">
       <Filter>ShaderClass\MaterialShader</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainPaintShader.cpp">
+      <Filter>ShaderClass\TerrainShader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

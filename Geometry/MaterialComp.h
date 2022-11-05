@@ -25,10 +25,8 @@ public:
 	Material* GetMaterial() { return m_material; }
 	void SetMaterial(Material* material) { m_material = material; }
 
-	XMMATRIX GetBaseViewMatrix();
-
 	virtual void Render(ModelNode* node);
-	bool RenderMaterial(ID3D11DeviceContext* deviceContext);
+	bool RenderMaterial(ID3D11DeviceContext* deviceContext, XMMATRIX baseViewMatrix);
 
 	ID3D11ShaderResourceView* GetShaderResourceView();
 };

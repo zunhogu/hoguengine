@@ -311,7 +311,7 @@ ModelNode* ModelNode::FindChildeNode(wstring nodeName)
 	return node;
 }
 
-void ModelNode::Render(XMMATRIX viewMatirx, XMFLOAT3 cameraPos, XMFLOAT4 lightDiffuseColor, XMFLOAT3 lightPos, XMFLOAT3 lightDirection)
+void ModelNode::Render(XMMATRIX viewMatirx, XMMATRIX baseViewMatrix, XMFLOAT3 cameraPos, XMFLOAT4 lightDiffuseColor, XMFLOAT3 lightPos, XMFLOAT3 lightDirection)
 {
 
 	ModelInfoComp* modelInfoComp = GetModelInfoComp();
@@ -351,7 +351,7 @@ void ModelNode::Render(XMMATRIX viewMatirx, XMFLOAT3 cameraPos, XMFLOAT4 lightDi
 			case COMPONENT_TYPE::MATERIAL:
 			{
 				MaterialComp* comp = (MaterialComp*)m_modelComps[i];
-				comp->RenderMaterial(Core::GetDeviceContext());
+				comp->RenderMaterial(Core::GetDeviceContext(), baseViewMatrix);
 				break;
 			}
 			case COMPONENT_TYPE::BONE:
@@ -364,7 +364,7 @@ void ModelNode::Render(XMMATRIX viewMatirx, XMFLOAT3 cameraPos, XMFLOAT4 lightDi
 			{
 				TerrainComp* comp = (TerrainComp*)m_modelComps[i];
 
-				comp->RederTerrain(worldMatrix, viewMatirx, lightDiffuseColor, lightDirection, cameraPos);
+				comp->RederTerrain(worldMatrix, viewMatirx, baseViewMatrix, lightDiffuseColor, lightDirection, cameraPos);
 
 				break;
 			}
@@ -378,7 +378,7 @@ void ModelNode::Render(XMMATRIX viewMatirx, XMFLOAT3 cameraPos, XMFLOAT4 lightDi
 
 	for (int j = 0; j < m_childNodes.size(); j++)
 	{
-		m_childNodes[j]->Render(viewMatirx, cameraPos, lightDiffuseColor, lightPos, lightDirection);
+		m_childNodes[j]->Render(viewMatirx, baseViewMatrix, cameraPos, lightDiffuseColor, lightPos, lightDirection);
 	}
 }
 
@@ -660,7 +660,6 @@ ModelNode* ModelNode::CheckPickingTriangle(XMVECTOR rayOrigin, XMVECTOR rayDir, 
 
 			rayOrigin = XMVector3TransformCoord(rayOrigin, invWorldMatrix);  // World Space to Local Space
 			rayDir = XMVector3TransformNormal(rayDir, invWorldMatrix);  // World Space to Local Space
-
 			rayDir = XMVector3Normalize(rayDir);
 
 			MeshComp* meshComp = (MeshComp*)m_modelComps[i];
@@ -705,7 +704,6 @@ ModelNode* ModelNode::CheckPickingTriangle(XMVECTOR rayOrigin, XMVECTOR rayDir, 
 
 			rayOrigin = XMVector3TransformCoord(rayOrigin, invWorldMatrix);  // World Space to Local Space
 			rayDir = XMVector3TransformNormal(rayDir, invWorldMatrix);  // World Space to Local Space
-
 			rayDir = XMVector3Normalize(rayDir);
 
 

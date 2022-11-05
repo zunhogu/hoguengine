@@ -18,7 +18,16 @@ void TextureClass::Initialize(const wstring& _strFilePath)
 	
 	DirectX::ScratchImage image = LoadTexture(_strFilePath);
 
-	// ResourceView
+	//// 텍스처 로드 1
+	//DirectX::CreateTexture(m_device, image.GetImages(), image.GetImageCount(), image.GetMetadata(), (ID3D11Resource**)&m_texture);
+
+	//if (m_texture == nullptr) return;
+	//D3D11_TEXTURE2D_DESC textureDesc;
+	//m_texture->GetDesc(&textureDesc);
+
+	//m_device->CreateShaderResourceView(m_texture, &shaderResourceViewDesc, &m_resourceView);
+
+	// 텍스처 로드 2
 	DirectX::CreateShaderResourceView(m_device, image.GetImages(), image.GetImageCount(), image.GetMetadata(), &m_resourceView);
 }
 

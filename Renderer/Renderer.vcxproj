@@ -169,6 +169,7 @@
     <ClInclude Include="ShaderClass.h" />
     <ClInclude Include="ShaderManagerClass.h" />
     <ClInclude Include="SkyDomeShader.h" />
+    <ClInclude Include="TerrainPaintShader.h" />
     <ClInclude Include="TerrainShader.h" />
     <ClInclude Include="TerrainWireFrameShader.h" />
     <ClInclude Include="MaterialShader.h" />
@@ -188,6 +189,7 @@
     <ClCompile Include="ShaderClass.cpp" />
     <ClCompile Include="ShaderManagerClass.cpp" />
     <ClCompile Include="SkyDomeShader.cpp" />
+    <ClCompile Include="TerrainPaintShader.cpp" />
     <ClCompile Include="TerrainShader.cpp" />
     <ClCompile Include="TerrainWireFrameShader.cpp" />
     <ClCompile Include="MaterialShader.cpp" />

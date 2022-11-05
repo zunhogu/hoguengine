@@ -290,6 +290,12 @@
     <ClInclude Include="BitMapClass.h">
       <Filter>Model\Component\MaterialComp</Filter>
     </ClInclude>
+    <ClInclude Include="ComputePickingShader.h">
+      <Filter>Model\Component\TerrainComp</Filter>
+    </ClInclude>
+    <ClInclude Include="StructureBuffer.h">
+      <Filter>Model\Component\TerrainComp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Core.cpp">
@@ -436,6 +442,12 @@
     </ClCompile>
     <ClCompile Include="BitMapClass.cpp">
       <Filter>Model\Component\MaterialComp</Filter>
+    </ClCompile>
+    <ClCompile Include="ComputePickingShader.cpp">
+      <Filter>Model\Component\TerrainComp</Filter>
+    </ClCompile>
+    <ClCompile Include="StructureBuffer.cpp">
+      <Filter>Model\Component\TerrainComp</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

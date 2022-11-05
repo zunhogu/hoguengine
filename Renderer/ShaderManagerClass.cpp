@@ -6,6 +6,7 @@
 #include "TerrainShader.h"
 #include "TerrainWireFrameShader.h"
 #include "MaterialShader.h"
+#include "TerrainPaintShader.h"
 
 ShaderManagerClass::ShaderManagerClass()
 {
@@ -16,6 +17,7 @@ ShaderManagerClass::ShaderManagerClass()
 	m_skyDomeShader = 0;
 	m_terrainShader = 0;
 	m_materialShader = 0;
+	m_terrainPaintShader = 0;
 }
 
 ShaderManagerClass::ShaderManagerClass(const ShaderManagerClass&)
@@ -62,6 +64,14 @@ bool ShaderManagerClass::Initialize(D3DClass* d3d, HWND hwnd)
 
 	m_materialShader->Initialize(m_D3D->GetDevice(), m_hwnd);
 	if (!m_materialShader)
+		return false;
+
+	m_terrainPaintShader = new TerrainPaintShader;
+	if (!m_terrainPaintShader)
+		return false;
+
+	m_terrainPaintShader->Initialize(m_D3D->GetDevice(), m_hwnd);
+	if (!m_terrainPaintShader)
 		return false;
 
 	return true;
@@ -155,5 +165,10 @@ void ShaderManagerClass::RenderSkyDomeShader(ID3D11DeviceContext* deviceContext,
 void ShaderManagerClass::RenderMaterialShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX orthoMatrix, XMFLOAT4 ambientColor, XMFLOAT4 emmisiveColor, XMFLOAT4 diffuseColor, XMFLOAT4 specularColor, FLOAT shinness, ID3D11ShaderResourceView** textures)
 {
 	m_materialShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, orthoMatrix, ambientColor, emmisiveColor, diffuseColor, specularColor, shinness, textures);
+}
+
+void ShaderManagerClass::RenderTerrainPaintShader(ID3D11DeviceContext* deviceContext, int indexCount, XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX orthoMatrix, UINT type, XMFLOAT2 uv, float range, XMFLOAT3 chanel, ID3D11ShaderResourceView* texture)
+{
+	m_terrainPaintShader->Render(deviceContext, indexCount, worldMatrix, viewMatrix, orthoMatrix, type, uv, range, chanel, texture);
 }
 

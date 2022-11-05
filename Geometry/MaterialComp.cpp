@@ -59,41 +59,6 @@ bool MaterialComp::Initialize()
 	return true;
 }
 
-XMMATRIX MaterialComp::GetBaseViewMatrix()
-{
-	XMVECTOR up, position, lookAt;
-	float yaw, pitch, roll;
-	XMMATRIX rotationMatrix;
-
-	// 상향벡터 설정
-	up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-
-	// 카메라 위치 설정
-	position = XMVectorSet(0.0f, 0.0f, -1.f, 0.0f);
-
-	// 카메라가 바라보는 방향 설정
-	lookAt = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
-
-	// 카메라의 회전 정도 설정
-	pitch = 0.0f * 0.0174532925f;
-	yaw = 0.0f * 0.0174532925f;
-	roll = 0.0f * 0.0174532925f;
-
-	// 카메라 회전
-	rotationMatrix = XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
-
-	// 뷰행렬 구하기
-	// Transform the lookAt and up vector by the rotation matrix so the view is correctly rotated at the origin.
-	lookAt = XMVector3TransformCoord(lookAt, rotationMatrix);
-	up = XMVector3TransformCoord(up, rotationMatrix);
-
-	// Translate the rotated camera position to the location of the viewer.
-	lookAt = position + lookAt;
-
-	// Finally create the view matrix from the three updated vectors.
-	return  XMMatrixLookAtLH(position, lookAt, up);
-}
-
 void MaterialComp::Render(ModelNode* node)
 {
 	wstring collapsingHeadrName = L"Material : " + m_materialName;
@@ -645,7 +610,7 @@ void MaterialComp::Render(ModelNode* node)
 	}
 }
 
-bool MaterialComp::RenderMaterial(ID3D11DeviceContext* deviceContext)
+bool MaterialComp::RenderMaterial(ID3D11DeviceContext* deviceContext, XMMATRIX baseViewMatrix)
 {
 	bool result;
 
@@ -682,7 +647,7 @@ bool MaterialComp::RenderMaterial(ID3D11DeviceContext* deviceContext)
 	if (m_material->GetNormalTextureID() != "NONE")
 		textures[4] = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetNormalTextureID().c_str()))->GetTexture();
 
-	GraphicsClass::GetInst()->RenderMaterialShader(deviceContext, m_bitmap->GetIndexCount(), XMMatrixIdentity(), GetBaseViewMatrix(), m_renderTexture->GetOrthoMatirx(), ambientColor, emissiveColor, diffuseColor, specularColor, shiness, textures);
+	GraphicsClass::GetInst()->RenderMaterialShader(deviceContext, m_bitmap->GetIndexCount(), XMMatrixIdentity(), baseViewMatrix, m_renderTexture->GetOrthoMatirx(), ambientColor, emissiveColor, diffuseColor, specularColor, shiness, textures);
 
 	// 2D 렌더링이 끝나면 3D 객체를 그리기위해서 Z버퍼를 다시 켠다.
 	GraphicsClass::GetInst()->TurnZBufferOn();

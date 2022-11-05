@@ -59,7 +59,7 @@ public:
 
 	void UpdateViewMatrix();
 	XMMATRIX GetViewMatrix() { return m_viewMatrix; }
-
+	XMMATRIX GetBaseViewMatrix();
 };
 
 #endif

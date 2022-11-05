@@ -6,6 +6,8 @@
 #include "MaterialComp.h"
 #include "TerrainQuadTreeClass.h"
 #include "CameraClass.h"
+#include "ComputePickingShader.h"
+#include "StructureBuffer.h"
 
 class MaterialLayer
 {
@@ -45,8 +47,39 @@ private:
 	bool m_isRender;
 	bool m_isWireFrame;
 	bool m_isLOD;
-	bool m_isBrushMode;
 
+
+	// Editor 
+	bool m_isEditMode;
+	int m_selected_layer;
+	struct Brush
+	{
+		int brushType;
+		XMFLOAT3 brushPosition;
+		FLOAT brushRange;
+		XMFLOAT3 brushColor;
+		XMFLOAT3 chanel;
+	};
+	Brush m_brush;
+	ComputePickingShader* m_computeShader;
+	BitMapClass* m_bitmap;
+	RenderTextureClass* m_alphaMapBoard;
+	StructureBuffer* m_structureBuffer;
+
+	struct InputDesc
+	{
+		UINT index;
+		XMFLOAT3 v0, v1, v2;
+	};
+
+	struct OutputDesc
+	{
+		int picked;
+		float u, v, distance;
+	};
+
+	InputDesc* m_input;
+	OutputDesc* m_output;
 public:
 	TerrainComp();
 	TerrainComp(const TerrainComp& terrain);
@@ -56,14 +89,18 @@ public:
 	virtual void Shutdown();
 
 	virtual void Render(ModelNode* node);
-	void RederTerrain(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT4 lightDiffuseColor, XMFLOAT3 lihgtDirection, XMFLOAT3 cameraPos);
+	void RederTerrain(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX baseViewMatrix, XMFLOAT4 lightDiffuseColor, XMFLOAT3 lihgtDirection, XMFLOAT3 cameraPos);
 	void Mesh(ModelNode* node);
 	void TextureLayer(ModelNode* node);
 	void Brush(ModelNode* node);
 
-	XMFLOAT3 GetBrushPosition(XMMATRIX worldMatrix, XMFLOAT3 cameraPos, XMMATRIX viewMatrix);
+	void CreateComputeShader();
+	bool GetBrushPosition(XMMATRIX worldMatrix, XMFLOAT3 cameraPos, XMMATRIX viewMatrix, XMFLOAT3& position);
+	void PaintBrush(XMMATRIX baseViewMatrix);
+	XMFLOAT2 CalculateUV(XMFLOAT3 position, float width, float heigth);
 
 	wstring GetTerrainMeshID() { return m_terrainMeshKey; }
+
 
 	wstring ProcessDragAndDropPayloadTexture(ImGuiPayload* payload);
 	wstring ProcessDragAndDropPayloadMaterial(ImGuiPayload* payload);

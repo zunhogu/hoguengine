@@ -7,6 +7,8 @@
 #include "TerrainMesh.h"
 #include "Mesh.h"
 #include "TransformComp.h"
+#include "KeyMgrClass.h"
+#include "BitMapClass.h"
 
 TerrainComp::TerrainComp()
 {
@@ -15,7 +17,22 @@ TerrainComp::TerrainComp()
 	m_isWireFrame = false;
 	m_isLOD = false;
 	m_heightMapTexture = nullptr;
-	m_isBrushMode = true;
+	m_isEditMode = false;
+
+	// Brush 
+	m_selected_layer = -1;
+	m_brush.brushType = 0;
+	m_brush.brushPosition = XMFLOAT3();
+	m_brush.brushRange = 20.0f;
+	m_brush.brushColor = XMFLOAT3(0.0f, 1.0f, 0.0f);
+	m_brush.chanel = XMFLOAT3();
+
+	m_computeShader = 0;
+	m_structureBuffer = 0;
+	m_input = 0;
+	m_output = 0;
+
+	CreateComputeShader();
 }
 
 TerrainComp::TerrainComp(const TerrainComp& terrain)
@@ -62,6 +79,45 @@ bool TerrainComp::Initialize(ModelNode* node, wstring relativePath)
 
 	node->SetIsOnlyMeshPicking(true);
 
+
+	// Brush
+	TerrainVertexType* vertexArray = m_terrainMesh->GetVertexArray();
+	int size = m_terrainMesh->GetVertexCount() / 3;
+	InputDesc* m_input = new InputDesc[size];
+	m_output = new OutputDesc[size];
+	for (int i = 0; i < size; i++)
+	{
+		UINT index0 = i* 3 + 0;
+		UINT index1 = i * 3 + 1;
+		UINT index2 = i * 3 + 2;
+
+		m_input[i].v0 = vertexArray[index0].position;
+		m_input[i].v1 = vertexArray[index1].position;
+		m_input[i].v2 = vertexArray[index2].position;
+
+		m_input[i].index = i;
+	}
+	m_structureBuffer = new StructureBuffer(m_input, sizeof(InputDesc), size, sizeof(OutputDesc), size);
+
+	m_alphaMapBoard = new RenderTextureClass;
+	if (!m_alphaMapBoard)
+		return false;
+
+	float screenWidth = 100.f;
+	float screenHeight = 100.f;
+
+	result = m_alphaMapBoard->Initialize(Core::GetDevice(), Core::GetDeviceContext(), screenWidth, screenHeight, SCREEN_NEAR, SCREEN_DEPTH);
+	if (!result)
+		return false;
+
+	m_bitmap = new BitMapClass;
+	if (!m_bitmap)
+		return false;
+
+	result = m_bitmap->Initialize(Core::GetDevice(), 100.f, 100.f);
+	if (!result)
+		return false;
+
 	return true;
 }
 
@@ -90,11 +146,12 @@ void TerrainComp::Render(ModelNode* node)
 	{
 		Mesh(node);
 		TextureLayer(node);
-		Brush(node);
+		if(m_isEditMode)
+			Brush(node);
 	}
 }
 
-void TerrainComp::RederTerrain(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOAT4 lightDiffuseColor, XMFLOAT3 lihgtDirection, XMFLOAT3 cameraPos)
+void TerrainComp::RederTerrain(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX baseViewMatrix, XMFLOAT4 lightDiffuseColor, XMFLOAT3 lihgtDirection, XMFLOAT3 cameraPos)
 {
 	if (!m_isRender) return;
 	
@@ -128,19 +185,17 @@ void TerrainComp::RederTerrain(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMFLOA
 		chanelFlag.push_back(chanels);
 	}
 
-
-	UINT brushType = 1;
-	XMFLOAT3 brushPosition = XMFLOAT3();
-	FLOAT brushRange = 20.0f;
-	XMFLOAT3 brushColor = XMFLOAT3(0.0f, 1.0f, 0.0f);
 	// Brush Mode
-	if (m_isBrushMode)
+	if (m_isEditMode)
 	{
-		//brushPosition = GetBrushPosition(worldMatrix, cameraPos, viewMatrix);
-		//cout << "X : " << brushPosition.x<< ", Z : " << brushPosition.z << endl;
+		if (GetBrushPosition(worldMatrix, cameraPos, viewMatrix, m_brush.brushPosition))
+		{
+			XMStoreFloat3(&m_brush.brushPosition, XMVector3TransformCoord(XMLoadFloat3(&m_brush.brushPosition), worldMatrix));
+			PaintBrush(baseViewMatrix);
+		}
 	}
 
-	GraphicsClass::GetInst()->RenderTerrainShaderSetParam(Core::GetDeviceContext(), m_isWireFrame, m_isLOD, worldMatrix, viewMatrix, lightDiffuseColor, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), lihgtDirection, cameraPos, resourceViews, chanelFlag, brushType, brushPosition, brushRange, brushColor);
+	GraphicsClass::GetInst()->RenderTerrainShaderSetParam(Core::GetDeviceContext(), m_isWireFrame, m_isLOD, worldMatrix, viewMatrix, lightDiffuseColor, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), lihgtDirection, cameraPos, resourceViews, chanelFlag, m_brush.brushType, m_brush.brushPosition, m_brush.brushRange, m_brush.brushColor);
 
 	m_terrainQuad->Render(Core::GetDeviceContext(), worldMatrix, m_isWireFrame);
 }
@@ -215,11 +270,27 @@ void TerrainComp::TextureLayer(ModelNode* node)
 
 	if (ImGui::TreeNodeEx("Texture Layer", treeFlag))
 	{
+
 		if (ImGui::Button("Add Layer"))
 		{
 			MaterialLayer* layer = new MaterialLayer;
 			m_layers.push_back(layer);
 		}
+		ImGui::SameLine();
+		if (ImGui::Button("Edit Layer"))
+		{
+			if (m_selected_layer != -1 && !m_isEditMode)
+			{
+				m_isEditMode = true;
+				m_brush.brushType = 1;
+			}
+			else if(m_selected_layer != -1 && m_isEditMode)
+			{	
+				m_isEditMode = false;
+				m_brush.brushType = 0;
+			}
+		}
+
 		// color
 		static bool alpha_preview = true;
 		static bool alpha_half_preview = false;
@@ -255,19 +326,21 @@ void TerrainComp::TextureLayer(ModelNode* node)
 
 				string flag = "Layer" + to_string(i);
 
-				static int selected_item = -1;
-
 				ImGui::TableSetColumnIndex(0);
 				ImGuiSelectableFlags selectable_flags = ImGuiSelectableFlags_SpanAllColumns;
-				if (ImGui::Selectable(flag.c_str(), (selected_item == i), 0))
+				if (ImGui::Selectable(flag.c_str(), (m_selected_layer == i), 0))
 				{
-
+					if (!m_isEditMode)
+					{
+						if (m_selected_layer == i) m_selected_layer = -1;
+						else m_selected_layer = i;
+					}
 				}
 
 				ImGui::TableSetColumnIndex(1);
 				ImRect rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(60.f, ImGui::GetItemRectSize().y));
 				string label = m_layers[i]->GetMaskID() == L"" ? "NONE##Mask" + flag : Core::ConvWcharTochar(m_layers[i]->GetMaskID() + L"##") + flag;
-				if (ImGui::Selectable(label.c_str(), (selected_item == i), 0))
+				if (ImGui::Selectable(label.c_str(), (m_selected_layer == i), 0))
 				{
 					if (m_layers[i]->GetMaskID() != L"")
 						ImGui::OpenPopup(("##" + label + "mask_image").c_str());
@@ -291,7 +364,7 @@ void TerrainComp::TextureLayer(ModelNode* node)
 				ImGui::TableSetColumnIndex(2);
 				rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(60.f, ImGui::GetItemRectSize().y));
 				label = m_layers[i]->GetMaterialComp1() == nullptr ? "NONE##Material1" + flag : Core::ConvWcharTochar(m_layers[i]->GetMaterialComp1()->GetMaterialName() + L"##") + flag;
-				if (ImGui::Selectable(label.c_str(), (selected_item == i), 0))
+				if (ImGui::Selectable(label.c_str(), (m_selected_layer == i), 0))
 				{
 
 				}
@@ -341,7 +414,7 @@ void TerrainComp::TextureLayer(ModelNode* node)
 				ImGui::TableSetColumnIndex(3);
 				rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(60.f, ImGui::GetItemRectSize().y));
 				label = m_layers[i]->GetMaterialComp2() == nullptr ? "NONE##Material" + flag : Core::ConvWcharTochar(m_layers[i]->GetMaterialComp2()->GetMaterialName() + L"##") + flag;
-				if (ImGui::Selectable(label.c_str(), (selected_item == i), 0))
+				if (ImGui::Selectable(label.c_str(), (m_selected_layer == i), 0))
 				{
 
 				}
@@ -390,7 +463,7 @@ void TerrainComp::TextureLayer(ModelNode* node)
 				ImGui::TableSetColumnIndex(4);
 				rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(60.f, ImGui::GetItemRectSize().y));
 				label = m_layers[i]->GetMaterialComp3() == nullptr ? "NONE##Material3" + flag : Core::ConvWcharTochar(m_layers[i]->GetMaterialComp3()->GetMaterialName() + L"##") + flag;
-				if (ImGui::Selectable(label.c_str(), (selected_item == i), 0))
+				if (ImGui::Selectable(label.c_str(), (m_selected_layer == i), 0))
 				{
 
 				}
@@ -458,16 +531,49 @@ void TerrainComp::Brush(ModelNode* node)
 	ImGuiTreeNodeFlags treeFlag = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_DefaultOpen;
 	if (ImGui::TreeNodeEx("Brush", treeFlag))
 	{
-		ImGui::Checkbox("IsBrush", &m_isBrushMode);
+		int* type = &m_brush.brushType;
+		FLOAT* range = &m_brush.brushRange;
+		XMFLOAT3* color = &m_brush.brushColor;
+		XMFLOAT3* chanel = &m_brush.chanel;
 
+		TextureClass* texture = ResMgrClass::GetInst()->FindTexture(m_layers[m_selected_layer]->GetMaskID());
+		if(texture == nullptr)
+			ImGui::Image(nullptr, ImVec2(200.0f, 200.0f), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(3, 3, 3, 3));
+		else
+			ImGui::Image((ImTextureID)texture->GetTexture(), ImVec2(200.0f, 200.0f), ImVec2(0,0), ImVec2(1, 1), ImVec4(1,1,1,1), ImVec4(3,3,3,3));
+
+		ImGui::SameLine();
+		ImGui::BeginGroup();
+		if (ImGui::Button("Save Texture "))
+		{
+		}
+		if (ImGui::Button("Reset Texture"))
+		{
+		}
+		ImGui::EndGroup();
+
+		ImGui::SetNextItemWidth(200.f);
+		ImGui::Text("[Brush]");
+		ImGui::SetNextItemWidth(200.f);
+		ImGui::SliderInt("Type", type, 1, 2);
+		ImGui::SetNextItemWidth(200.f);
+		ImGui::SliderFloat("Range", range, 1.0f, 50.0f);
+		ImGui::SetNextItemWidth(200.f);
+		ImGui::ColorEdit3("Brush Color", (float*)color);
+		ImGui::SetNextItemWidth(200.f);
+		ImGui::ColorEdit3("Chanel", (float*)chanel);
+
+		if(m_alphaMapBoard->GetShaderResourceView() != nullptr)
+			ImGui::Image((ImTextureID)m_alphaMapBoard->GetShaderResourceView(), ImVec2(200.0f, 200.0f), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(3, 3, 3, 3));
+		
 		ImGui::TreePop();
 	}
 }
 
-XMFLOAT3 TerrainComp::GetBrushPosition(XMMATRIX worldMatrix, XMFLOAT3 cameraPos, XMMATRIX viewMatrix)
+bool TerrainComp::GetBrushPosition(XMMATRIX worldMatrix, XMFLOAT3 cameraPos, XMMATRIX viewMatrix, XMFLOAT3& position)
 {
+	bool result = false;
 	int tmX, tmY;
-	XMFLOAT3 result;
 	XMVECTOR A, B, C;
 
 	ImGuIRenderClass::GetInst()->GetMousePosInViewPort(tmX, tmY);
@@ -475,8 +581,7 @@ XMFLOAT3 TerrainComp::GetBrushPosition(XMMATRIX worldMatrix, XMFLOAT3 cameraPos,
 	// 반직선 생성
 	CollisionClass::GetInst()->SetRay(tmX, tmY, viewMatrix, Core::GetProjectionMatrix(), cameraPos);
 	XMMATRIX invViewMatrix = XMMatrixInverse(nullptr, viewMatrix);
-
-	float minDistance = INFINITY;
+	XMMATRIX invWorldMatrix = XMMatrixInverse(nullptr, worldMatrix);
 
 	XMVECTOR rayOrigin, rayDir;
 
@@ -484,42 +589,95 @@ XMFLOAT3 TerrainComp::GetBrushPosition(XMMATRIX worldMatrix, XMFLOAT3 cameraPos,
 	rayOrigin = CollisionClass::GetInst()->GetRayOrigin();  // World Sapce
 	rayDir = CollisionClass::GetInst()->GetRayDir();  // View Space
 	rayDir = XMVector3TransformNormal(rayDir, invViewMatrix);  // View Space to World Sapce
+	rayDir = XMVector3Normalize(rayDir);
 
-	XMMATRIX invWorldMatrix = XMMatrixInverse(nullptr, worldMatrix);
+	rayOrigin = XMVector3TransformCoord(rayOrigin, invWorldMatrix);  // World Space to Local Space
+	rayDir = XMVector3TransformNormal(rayDir, invWorldMatrix);  // World Space to Local Space
+	rayDir = XMVector3Normalize(rayDir);
 
-	XMVECTOR rayOriginTemp, rayDirTemp;
+	XMFLOAT3 pos, dir;
+	XMStoreFloat3(&pos, rayOrigin);
+	XMStoreFloat3(&dir, rayDir);
 
-	rayOriginTemp = XMVector3TransformCoord(rayOrigin, invWorldMatrix);  // World Space to Local Space
-	rayDirTemp = XMVector3TransformNormal(rayDir, invWorldMatrix);  // World Space to Local Space
+	// 셰이더와 상수버퍼 설정
+	m_computeShader->SetShader();
+	int triangleSize = m_terrainMesh->GetVertexCount() / 3;
+	m_computeShader->SetConstantBuffer(pos, triangleSize, dir);
 
-	rayDirTemp = XMVector3Normalize(rayDirTemp);
+	// CS에서 사용하는 구조체 버퍼를 설정한다.
+	Core::GetDeviceContext()->CSSetShaderResources(0, 1, &m_structureBuffer->GetSRV());  // 입력자원의 경우 셰이더 자원 뷰를 생성한다.
+	Core::GetDeviceContext()->CSSetUnorderedAccessViews(0, 1, &m_structureBuffer->GetUAV(), nullptr);  // 출력 자원의 경우 순서 없는 접근 뷰를 생성한다.
 
-	TerrainVertexType* vertexArray = m_terrainMesh->GetVertexArray();
-	int vertexCount = m_terrainMesh->GetVertexCount();
-	for (int k = 0; k < vertexCount / 3; k++)
+	UINT x = ceil((float)triangleSize / 1024.0f);
+
+	// Dispatch 함수를 통해 스레드 그룹들을 3차원 격자 형태로 구성한다. 
+	Core::GetDeviceContext()->Dispatch(x, 1, 1);	
+
+	// 셰이더가 실행되고 나면 출력값을 복사해온다.
+	m_structureBuffer->Copy(m_output, sizeof(OutputDesc) * triangleSize);
+
+	float minDistance = FLT_MAX;
+	int minIndex = -1;
+
+	for (UINT i = 0; i < triangleSize; i++)
 	{
-		XMFLOAT4 plane;
-
-		int i0 = k * 3 + 0;
-		int i1 = k * 3 + 1;
-		int i2 = k * 3 + 2;
-
-		// 삼각형의 정점들
-		A = XMLoadFloat3(&vertexArray[i0].position);
-		B = XMLoadFloat3(&vertexArray[i1].position);
-		C = XMLoadFloat3(&vertexArray[i2].position);
-
-		float t = 0.0f;
-		if (CollisionClass::GetInst()->CheckPickingTriangle(rayOriginTemp, rayDirTemp, A, B, C, t))
+		OutputDesc temp = m_output[i];
+		if (temp.picked)
 		{
-			// 이 방식으로 하면 CPU로 매 프레임마다 피킹검사를 하기 때문에 성능상 문제가 발생한다
-			// 계산셰이더를 사용하자
+			if (minDistance > temp.distance)
+			{
+				minDistance = temp.distance;
+				minIndex = i;
+			}
 		}
 	}
 
-	XMStoreFloat3(&result, XMVectorAdd(rayOrigin, rayDir * 2));
-
+	if (minIndex >= 0)
+	{
+		XMStoreFloat3(&position, XMVectorAdd(rayOrigin, rayDir * minDistance));
+		result = true;
+	}
+	
 	return result;
+
+}
+
+void TerrainComp::CreateComputeShader()
+{
+	wstring filePath = PathMgr::GetInst()->GetContentPath();
+	wstring path;
+	
+	path = filePath + L"contents\\shader\\ComputeShader.hlsl";
+	m_computeShader = new ComputePickingShader(path);
+
+}
+
+
+void TerrainComp::PaintBrush(XMMATRIX baseViewMatrix)
+{
+	if (MOUSE_HOLD(0))
+	{
+		TextureClass* alphaMap = ResMgrClass::GetInst()->FindTexture(m_layers[m_selected_layer]->GetMaskID());
+
+		XMFLOAT2 uv = CalculateUV(m_brush.brushPosition, m_terrainMesh->GetTerrainWidth(), m_terrainMesh->GetTerrainHeight());
+		float range = m_brush.brushRange / (m_terrainMesh->GetTerrainWidth());
+
+		m_alphaMapBoard->RenderToTextureStart(Core::GetDeviceContext());
+
+		GraphicsClass::GetInst()->TurnZBufferOff();
+
+		m_bitmap->Render(Core::GetDeviceContext());
+
+		GraphicsClass::GetInst()->RenderTerrainPaintShader(Core::GetDeviceContext(), m_bitmap->GetIndexCount(), XMMatrixIdentity(), baseViewMatrix, m_alphaMapBoard->GetOrthoMatirx(), m_brush.brushType, uv, range, m_brush.chanel, alphaMap->GetTexture());
+
+		Core::GetDeviceContext()->CopyResource((ID3D11Resource*)alphaMap->GetTexture(), (ID3D11Resource*)m_alphaMapBoard->GetShaderResourceView());
+
+		GraphicsClass::GetInst()->TurnZBufferOn();
+
+		m_alphaMapBoard->RenderToTextureEnd();
+
+		ImGuIRenderClass::GetInst()->SetRenderToTexture(Core::GetDeviceContext());
+	}
 }
 
 wstring TerrainComp::ProcessDragAndDropPayloadTexture(ImGuiPayload* payload)
@@ -559,6 +717,29 @@ wstring TerrainComp::ProcessDragAndDropPayloadMaterial(ImGuiPayload* payload)
 		result = fileRelativePath;
 
 	return result;
+}
+
+XMFLOAT2 TerrainComp::CalculateUV(XMFLOAT3 position, float width, float heigth)
+{
+	float percentX, percentY;
+
+	if (position.x < 0)
+		position.x = 0;
+
+	if (position.z < 0)
+		position.y = 0;
+
+	if (position.x > width)
+		position.x = width;
+
+	if (position.z > heigth)
+		position.y = heigth;
+
+	// Terrain 사이즈를 기준으로 현재위치의 비율값 즉 uv를 구한다.
+	percentX = position.x / width;
+	percentY = 1.0f - (position.z / heigth);
+
+	return XMFLOAT2(percentX, percentY);
 }
 
 

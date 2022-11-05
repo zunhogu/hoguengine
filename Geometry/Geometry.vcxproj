@@ -166,7 +166,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BitMapClass.h" />
+    <ClInclude Include="ComputePickingShader.h" />
     <ClInclude Include="RenderTextureClass.h" />
+    <ClInclude Include="StructureBuffer.h" />
     <ClInclude Include="TerrainMesh.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationComp.h" />
@@ -220,7 +222,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitMapClass.cpp" />
+    <ClCompile Include="ComputePickingShader.cpp" />
     <ClCompile Include="RenderTextureClass.cpp" />
+    <ClCompile Include="StructureBuffer.cpp" />
     <ClCompile Include="TerrainMesh.cpp" />
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AnimationComp.cpp" />

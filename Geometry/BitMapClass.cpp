@@ -27,7 +27,7 @@ bool BitMapClass::Initialize(ID3D11Device* device, int screenWidth, int screenHe
 	if (!result)
 		return false;
 
-	return false;
+	return true;
 }
 
 void BitMapClass::Shutdown()

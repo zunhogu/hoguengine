@@ -210,9 +210,7 @@ bool SkyDomeShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMA
 	// Lock the constant buffer so it can be written to.
 	result = deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (FAILED(result))
-	{
 		return false;
-	}
 
 	// Get a pointer to the data in the constant buffer.
 	dataPtr = (MatrixBufferType*)mappedResource.pData;
@@ -234,9 +232,7 @@ bool SkyDomeShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, XMMA
 	// Lock the gradient constant buffer so it can be written to.
 	result = deviceContext->Map(m_gradientBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if (FAILED(result))
-	{
 		return false;
-	}
 
 	// Get a pointer to the data in the constant buffer.
 	dataPtr2 = (GradientBufferType*)mappedResource.pData;

@@ -140,3 +140,38 @@ void CameraClass::UpdateViewMatrix() {
 
 	return;
 }
+
+XMMATRIX CameraClass::GetBaseViewMatrix()
+{
+	XMVECTOR up, position, lookAt;
+	float yaw, pitch, roll;
+	XMMATRIX rotationMatrix;
+
+	// 상향벡터 설정
+	up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
+
+	// 카메라 위치 설정
+	position = XMVectorSet(0.0f, 0.0f, -1.f, 0.0f);
+
+	// 카메라가 바라보는 방향 설정
+	lookAt = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+
+	// 카메라의 회전 정도 설정
+	pitch = 0.0f * 0.0174532925f;
+	yaw = 0.0f * 0.0174532925f;
+	roll = 0.0f * 0.0174532925f;
+
+	// 카메라 회전
+	rotationMatrix = XMMatrixRotationRollPitchYaw(pitch, yaw, roll);
+
+	// 뷰행렬 구하기
+	// Transform the lookAt and up vector by the rotation matrix so the view is correctly rotated at the origin.
+	lookAt = XMVector3TransformCoord(lookAt, rotationMatrix);
+	up = XMVector3TransformCoord(up, rotationMatrix);
+
+	// Translate the rotated camera position to the location of the viewer.
+	lookAt = position + lookAt;
+
+	// Finally create the view matrix from the three updated vectors.
+	return  XMMatrixLookAtLH(position, lookAt, up);
+}

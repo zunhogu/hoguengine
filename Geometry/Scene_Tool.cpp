@@ -239,7 +239,7 @@ void Scene_Tool::Render()
 	{
 		ModelNode* node = m_allNode->at(i);
 
-		node->Render(m_Camera->GetViewMatrix(), cameraPos, m_Light->GetDiffuseColor(), m_Light->GetPosition(), m_Light->GetDirection());
+		node->Render(m_Camera->GetViewMatrix(), m_Camera->GetBaseViewMatrix(), cameraPos, m_Light->GetDiffuseColor(), m_Light->GetPosition(), m_Light->GetDirection());
 
 	}
 	ImGuIRenderClass::GetInst()->RenderToTextureEnd();
