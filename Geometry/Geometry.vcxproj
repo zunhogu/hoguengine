@@ -166,9 +166,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BitMapClass.h" />
+    <ClInclude Include="ComputePaintingShader.h" />
     <ClInclude Include="ComputePickingShader.h" />
     <ClInclude Include="RenderTextureClass.h" />
-    <ClInclude Include="StructureBuffer.h" />
+    <ClInclude Include="StructuredBuffer.h" />
     <ClInclude Include="TerrainMesh.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationComp.h" />
@@ -215,6 +216,7 @@
     <ClInclude Include="SoundClass.h" />
     <ClInclude Include="TerrainComp.h" />
     <ClInclude Include="TerrainQuadTreeClass.h" />
+    <ClInclude Include="TextureBuffer.h" />
     <ClInclude Include="TextureClass.h" />
     <ClInclude Include="TimeMgrClass.h" />
     <ClInclude Include="TransformComp.h" />
@@ -222,9 +224,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BitMapClass.cpp" />
+    <ClCompile Include="ComputePaintingShader.cpp" />
     <ClCompile Include="ComputePickingShader.cpp" />
     <ClCompile Include="RenderTextureClass.cpp" />
-    <ClCompile Include="StructureBuffer.cpp" />
+    <ClCompile Include="StructuredBuffer.cpp" />
     <ClCompile Include="TerrainMesh.cpp" />
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AnimationComp.cpp" />
@@ -273,6 +276,7 @@
     <ClCompile Include="SoundClass.cpp" />
     <ClCompile Include="TerrainComp.cpp" />
     <ClCompile Include="TerrainQuadTreeClass.cpp" />
+    <ClCompile Include="TextureBuffer.cpp" />
     <ClCompile Include="TextureClass.cpp" />
     <ClCompile Include="TimeMgrClass.cpp" />
     <ClCompile Include="TransformComp.cpp" />

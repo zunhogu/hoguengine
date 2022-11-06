@@ -32,7 +32,7 @@ public:
     void ShowDirectoryTree(std::filesystem::path path, string searchStr);
     bool SearchDiectory(std::filesystem::path path, string searchStr, int& idx);
 
-    void SetFileImage(wstring filePath, ID3D11ShaderResourceView** view);
+    ID3D11ShaderResourceView* SetFileImage(wstring filePath);
 
     void CenterTextWrapped(string str, float width);
 };

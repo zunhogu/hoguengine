@@ -3,7 +3,7 @@
 #include "Core.h"
 
 RenderTextureClass::RenderTextureClass() {
-	m_renderTargetTexture = 0;
+	m_texture = 0;
 	m_renderTargetView = 0;
 	m_shaderResourceView = 0;
 	m_depthStencilBuffer = 0;
@@ -17,7 +17,7 @@ RenderTextureClass::~RenderTextureClass() { }
 // Initialize 함수는 RTT를 할 텍스처의 너비와 높이를 인자로 받는다. 
 // 만약 화면의 내용을 텍스처에 그린다면 찌그러짐 방지를 위해  반드시 RTT의 가로세로 비율을 화면 비율과 같게 해야하낟.
 
-bool RenderTextureClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int screeWidth, int screenHeight, float screenDepth, float screenNear) {
+bool RenderTextureClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int screeWidth, int screenHeight, float screenDepth, float screenNear, D3D11_TEXTURE2D_DESC* desc) {
 	D3D11_TEXTURE2D_DESC textureDesc;
 	HRESULT result;
 	D3D11_RENDER_TARGET_VIEW_DESC renderTargetViewDesc;
@@ -33,15 +33,16 @@ bool RenderTextureClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* d
 	textureDesc.Height = screenHeight;
 	textureDesc.MipLevels = 1;
 	textureDesc.ArraySize = 1;
-	textureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	textureDesc.Format = desc == nullptr ? DXGI_FORMAT_R32G32B32A32_FLOAT : desc->Format;
 	textureDesc.SampleDesc.Count = 1;
+	textureDesc.SampleDesc.Quality = 0;
 	textureDesc.Usage = D3D11_USAGE_DEFAULT;
 	textureDesc.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
-	textureDesc.CPUAccessFlags = 0;
+	textureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ ;
 	textureDesc.MiscFlags = 0;
 
 	// RTT를 생성한다.
-	result = device->CreateTexture2D(&textureDesc, NULL, &m_renderTargetTexture);
+	result = device->CreateTexture2D(&textureDesc, NULL, &m_texture);
 	if (FAILED(result))
 		return false;
 
@@ -51,7 +52,7 @@ bool RenderTextureClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* d
 	renderTargetViewDesc.Texture2D.MipSlice = 0;
 
 	// 렌더 타겟뷰를 생성한다. 
-	result = device->CreateRenderTargetView(m_renderTargetTexture, &renderTargetViewDesc, &m_renderTargetView);
+	result = device->CreateRenderTargetView(m_texture, &renderTargetViewDesc, &m_renderTargetView);
 	if (FAILED(result))
 		return false;
 
@@ -62,7 +63,7 @@ bool RenderTextureClass::Initialize(ID3D11Device* device, ID3D11DeviceContext* d
 	shaderResourceViewDesc.Texture2D.MipLevels = 1;
 
 	// 리소스뷰를 생성한다.
-	result = device->CreateShaderResourceView(m_renderTargetTexture, &shaderResourceViewDesc, &m_shaderResourceView);
+	result = device->CreateShaderResourceView(m_texture, &shaderResourceViewDesc, &m_shaderResourceView);
 	if (FAILED(result))
 		return false;
 
@@ -137,9 +138,9 @@ void RenderTextureClass::Shutdown() {
 		m_renderTargetView = 0;
 	}
 
-	if (m_renderTargetTexture) {
-		m_renderTargetTexture->Release();
-		m_renderTargetTexture = 0;
+	if (m_texture) {
+		m_texture->Release();
+		m_texture = 0;
 	}
 
 	return;
@@ -178,7 +179,7 @@ void RenderTextureClass::ClearRenderTarget(ID3D11DeviceContext* deviceContext, f
 // GetShaderResourceView 함수는 텍스처 리소스 뷰를 반환한다.
 // 이렇게 하면 RTT의 결과물을 다른 셰이더가 사용할 수 있게 된다.
 // RTT 텍스처를 사용한다면 일반적으로 셰이더에 텍스처를 직접 전달해주던 부분에 이 함수를 호출하면 된다.
-ID3D11ShaderResourceView* RenderTextureClass::GetShaderResourceView() {
+ID3D11ShaderResourceView*& RenderTextureClass::GetShaderResourceView() {
 	return m_shaderResourceView;
 }
 

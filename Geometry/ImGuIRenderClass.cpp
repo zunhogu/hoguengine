@@ -326,7 +326,7 @@ bool ImGuIRenderClass::IsGizmoClicked()
 	return g_isGizmoClicked;
 }
 
-ID3D11ShaderResourceView* ImGuIRenderClass::GetTexture(const wstring& _strFilePath)
+ID3D11ShaderResourceView* ImGuIRenderClass::GetShaderResourceView(const wstring& _strFilePath)
 {
 	HRESULT result;
 

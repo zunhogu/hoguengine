@@ -257,7 +257,7 @@ void MaterialComp::Render(ModelNode* node)
 				texturePos = ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY());
 				ImGui::SetItemAllowOverlap();
 				ImRect rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(70.0f, 70.0f));
-				ImGui::Image((ImTextureID)texture->GetTexture(), ImVec2(70.0f, 70.0f));
+				ImGui::Image((ImTextureID)texture->GetShaderResourceView(), ImVec2(70.0f, 70.0f));
 				ImGui::SameLine();
 				ImGui::SetCursorPos(texturePos);
 				ImGui::Dummy(ImVec2(70.0f, 70.0f));
@@ -339,7 +339,7 @@ void MaterialComp::Render(ModelNode* node)
 				texturePos = ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY());
 				ImGui::SetItemAllowOverlap();
 				rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(70.0f, 70.0f));
-				ImGui::Image((ImTextureID)texture->GetTexture(), ImVec2(70.0f, 70.0f));
+				ImGui::Image((ImTextureID)texture->GetShaderResourceView(), ImVec2(70.0f, 70.0f));
 				ImGui::SameLine();
 				ImGui::SetCursorPos(texturePos);
 				ImGui::Dummy(ImVec2(70.0f, 70.0f));
@@ -422,7 +422,7 @@ void MaterialComp::Render(ModelNode* node)
 				texturePos = ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY());
 				ImGui::SetItemAllowOverlap();
 				rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(70.0f, 70.0f));
-				ImGui::Image((ImTextureID)texture->GetTexture(), ImVec2(70.0f, 70.0f));
+				ImGui::Image((ImTextureID)texture->GetShaderResourceView(), ImVec2(70.0f, 70.0f));
 				ImGui::SameLine();
 				ImGui::SetCursorPos(texturePos);
 				ImGui::Dummy(ImVec2(70.0f, 70.0f));
@@ -505,7 +505,7 @@ void MaterialComp::Render(ModelNode* node)
 				texturePos = ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY());
 				ImGui::SetItemAllowOverlap();
 				rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(70.0f, 70.0f));
-				ImGui::Image((ImTextureID)texture->GetTexture(), ImVec2(70.0f, 70.0f));
+				ImGui::Image((ImTextureID)texture->GetShaderResourceView(), ImVec2(70.0f, 70.0f));
 				ImGui::SameLine();
 				ImGui::SetCursorPos(texturePos);
 				ImGui::Dummy(ImVec2(70.0f, 70.0f));
@@ -587,7 +587,7 @@ void MaterialComp::Render(ModelNode* node)
 				texturePos = ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY());
 				ImGui::SetItemAllowOverlap();
 				rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(70.0f, 70.0f));
-				ImGui::Image((ImTextureID)texture->GetTexture(), ImVec2(70.0f, 70.0f));
+				ImGui::Image((ImTextureID)texture->GetShaderResourceView(), ImVec2(70.0f, 70.0f));
 				ImGui::SameLine();
 				ImGui::SetCursorPos(texturePos);
 				ImGui::Dummy(ImVec2(70.0f, 70.0f));
@@ -626,7 +626,7 @@ bool MaterialComp::RenderMaterial(ID3D11DeviceContext* deviceContext, XMMATRIX b
 	m_material->GetAmbientTextureID();
 	
 	TextureClass* defaultTexture = ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), L"defaultTexture");
-	ID3D11ShaderResourceView* textures[5] = { defaultTexture->GetTexture(), defaultTexture->GetTexture(), defaultTexture->GetTexture(), defaultTexture->GetTexture(), defaultTexture->GetTexture() };
+	ID3D11ShaderResourceView* textures[5] = { defaultTexture->GetShaderResourceView(), defaultTexture->GetShaderResourceView(), defaultTexture->GetShaderResourceView(), defaultTexture->GetShaderResourceView(), defaultTexture->GetShaderResourceView() };
 	XMFLOAT4 ambientColor, emissiveColor, diffuseColor, specularColor;
 	float shiness;
 
@@ -637,15 +637,15 @@ bool MaterialComp::RenderMaterial(ID3D11DeviceContext* deviceContext, XMMATRIX b
 	shiness = m_material->GetShinness();
 
 	if (m_material->GetAmbientTextureID() != "NONE")
-		textures[0] = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetAmbientTextureID().c_str()))->GetTexture();
+		textures[0] = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetAmbientTextureID().c_str()))->GetShaderResourceView();
 	if (m_material->GetEmissiveTextureID() != "NONE")
-		textures[1] = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetEmissiveTextureID().c_str()))->GetTexture();
+		textures[1] = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetEmissiveTextureID().c_str()))->GetShaderResourceView();
 	if (m_material->GetDiffuseTextureID() != "NONE")
-		textures[2] = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetDiffuseTextureID().c_str()))->GetTexture();
+		textures[2] = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetDiffuseTextureID().c_str()))->GetShaderResourceView();
 	if (m_material->GetSpecularTextureID() != "NONE")
-		textures[3] = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetSpecularTextureID().c_str()))->GetTexture();
+		textures[3] = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetSpecularTextureID().c_str()))->GetShaderResourceView();
 	if (m_material->GetNormalTextureID() != "NONE")
-		textures[4] = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetNormalTextureID().c_str()))->GetTexture();
+		textures[4] = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetNormalTextureID().c_str()))->GetShaderResourceView();
 
 	GraphicsClass::GetInst()->RenderMaterialShader(deviceContext, m_bitmap->GetIndexCount(), XMMatrixIdentity(), baseViewMatrix, m_renderTexture->GetOrthoMatirx(), ambientColor, emissiveColor, diffuseColor, specularColor, shiness, textures);
 

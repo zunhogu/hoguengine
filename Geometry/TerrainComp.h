@@ -7,7 +7,9 @@
 #include "TerrainQuadTreeClass.h"
 #include "CameraClass.h"
 #include "ComputePickingShader.h"
-#include "StructureBuffer.h"
+#include "StructuredBuffer.h"
+#include "ComputePaintingShader.h"
+#include "TextureBuffer.h"
 
 class MaterialLayer
 {
@@ -16,6 +18,9 @@ private:
 	MaterialComp* m_material1;
 	MaterialComp* m_material2;
 	MaterialComp* m_material3;
+	TextureBuffer* m_textureBuffer;
+	BitMapClass* m_bitmap;
+	RenderTextureClass* m_alphaMapBoard;
 
 public:
 	MaterialLayer();
@@ -32,6 +37,12 @@ public:
 	void SetMaterialComp2(MaterialComp* material) { m_material2 = material; }
 	MaterialComp* GetMaterialComp3() { return m_material3; }
 	void SetMaterialComp3(MaterialComp* material) { m_material3 = material; }
+
+	TextureBuffer* GetTexturebuffer() { return m_textureBuffer; }
+	void SetTextureBuffer(TextureClass* texture);
+
+	BitMapClass* GetBitmap() { return m_bitmap; }
+	RenderTextureClass* GetAlphaMapBoard() { return m_alphaMapBoard; }
 };
 
 class TerrainComp : public ModelComp
@@ -62,9 +73,8 @@ private:
 	};
 	Brush m_brush;
 	ComputePickingShader* m_computeShader;
-	BitMapClass* m_bitmap;
-	RenderTextureClass* m_alphaMapBoard;
-	StructureBuffer* m_structureBuffer;
+	StructuredBuffer* m_structuredBuffer;
+	ComputePaintingShader* m_computePaintingShader;
 
 	struct InputDesc
 	{

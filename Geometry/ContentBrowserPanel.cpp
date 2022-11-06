@@ -22,19 +22,19 @@ ContentBrowserPanel::ContentBrowserPanel()
 	// folder in Output Directory 
 	m_CurrentDirectory = g_contentsPath;
 
-	m_folderImage = ImGuIRenderClass::GetTexture(L"default\\texture\\folder_icon.png");
-	m_folder_open_img = ImGuIRenderClass::GetTexture(L"default\\texture\\folder_open.png");
-	m_open_button_img = ImGuIRenderClass::GetTexture(L"default\\texture\\open_button.png");
-	m_open_hover_button_img = ImGuIRenderClass::GetTexture(L"default\\texture\\open_hover_button.png");
-	m_close_button_img = ImGuIRenderClass::GetTexture(L"default\\texture\\close_button.png");
-	m_close_hover_button_img = ImGuIRenderClass::GetTexture(L"default\\texture\\close_hover_button.png");
-	m_folder_close_img = ImGuIRenderClass::GetTexture(L"default\\texture\\folder_close.png");
-	m_search_directory_button_img = ImGuIRenderClass::GetTexture(L"default\\texture\\search_directory_button_img.png");
-	m_search_directory_cancel_button_img = ImGuIRenderClass::GetTexture(L"default\\texture\\search_directory_cancel_button_img.png");
+	m_folderImage = ImGuIRenderClass::GetShaderResourceView(L"default\\texture\\folder_icon.png");
+	m_folder_open_img = ImGuIRenderClass::GetShaderResourceView(L"default\\texture\\folder_open.png");
+	m_open_button_img = ImGuIRenderClass::GetShaderResourceView(L"default\\texture\\open_button.png");
+	m_open_hover_button_img = ImGuIRenderClass::GetShaderResourceView(L"default\\texture\\open_hover_button.png");
+	m_close_button_img = ImGuIRenderClass::GetShaderResourceView(L"default\\texture\\close_button.png");
+	m_close_hover_button_img = ImGuIRenderClass::GetShaderResourceView(L"default\\texture\\close_hover_button.png");
+	m_folder_close_img = ImGuIRenderClass::GetShaderResourceView(L"default\\texture\\folder_close.png");
+	m_search_directory_button_img = ImGuIRenderClass::GetShaderResourceView(L"default\\texture\\search_directory_button_img.png");
+	m_search_directory_cancel_button_img = ImGuIRenderClass::GetShaderResourceView(L"default\\texture\\search_directory_cancel_button_img.png");
 
 
-	m_fileImage = ImGuIRenderClass::GetTexture(L"default\\texture\\file_icon.png");
-	m_fbxFileImage = ImGuIRenderClass::GetTexture(L"default\\texture\\file_icon_fbx.png");
+	m_fileImage = ImGuIRenderClass::GetShaderResourceView(L"default\\texture\\file_icon.png");
+	m_fbxFileImage = ImGuIRenderClass::GetShaderResourceView(L"default\\texture\\file_icon_fbx.png");
 	m_openedDir.push_back(g_contentsPath);
 }
 
@@ -222,8 +222,7 @@ void ContentBrowserPanel::ShowContents()
 			}
 			else  // if path is not directory
 			{
-				ID3D11ShaderResourceView* fileImg;
-				SetFileImage(path.c_str(), &fileImg);
+				ID3D11ShaderResourceView* fileImg = SetFileImage(path.c_str());
 
 				ImGui::PushID(id);
 				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
@@ -488,7 +487,7 @@ bool ContentBrowserPanel::SearchDiectory(std::filesystem::path path, string sear
 }
 
 // file imageÀ» °áÁ¤
-void ContentBrowserPanel::SetFileImage(wstring filePath, ID3D11ShaderResourceView** view)
+ID3D11ShaderResourceView* ContentBrowserPanel::SetFileImage(wstring filePath)
 {
 	wstring fileExtension = Core::GetFileExtension(filePath);
 
@@ -496,8 +495,7 @@ void ContentBrowserPanel::SetFileImage(wstring filePath, ID3D11ShaderResourceVie
 	{
 		if (fileExtension == g_modelExtension[i])
 		{
-			*view = m_fbxFileImage;
-			return;
+			return m_fbxFileImage;
 		}
 	}
 
@@ -506,13 +504,11 @@ void ContentBrowserPanel::SetFileImage(wstring filePath, ID3D11ShaderResourceVie
 		if (fileExtension == g_textureExtension[i])
 		{
 			TextureClass* texture = ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Core::GetFileName(filePath), filePath);
-			*view = texture->GetTexture();
-			return;
+			return texture->GetShaderResourceView();
 		}
 	}
 
-	*view = m_fileImage;
-	return;
+	return m_fileImage;
 }
 
 void ContentBrowserPanel::CenterTextWrapped(string str, float width)

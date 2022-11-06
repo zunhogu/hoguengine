@@ -450,11 +450,11 @@ void ModelNode::RenderMesh(MeshComp* meshComp, XMMATRIX worldMatrix, XMMATRIX vi
 				GraphicsClass::GetInst()->RenderModel(meshParts[i]->GetIndexCount(), worldMatrix, viewMatirx,
 													cameraPos, lightColor, lightPos, lightDirection,
 													ambientColor, emissiveColor, diffuseColor, specularColor, shiness,
-													ambientTexture->GetTexture(),
-													emissiveTexture->GetTexture(),
-													diffuseTexture->GetTexture(),
-													specularTexture->GetTexture(),
-													normalTexture->GetTexture(),
+													ambientTexture->GetShaderResourceView(),
+													emissiveTexture->GetShaderResourceView(),
+													diffuseTexture->GetShaderResourceView(),
+													specularTexture->GetShaderResourceView(),
+													normalTexture->GetShaderResourceView(),
 													boneScale, boneMatrixArray, skinning);
 			}
 		}

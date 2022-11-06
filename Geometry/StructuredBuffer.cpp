@@ -1,8 +1,8 @@
 #include "pch.h"
-#include "StructureBuffer.h"
+#include "StructuredBuffer.h"
 #include "Core.h"
 
-StructureBuffer::StructureBuffer(void* inputData, UINT inputStride, UINT inputCount, UINT outputStride, UINT outputCount)
+StructuredBuffer::StructuredBuffer(void* inputData, UINT inputStride, UINT inputCount, UINT outputStride, UINT outputCount)
 	: m_inputData(inputData), m_inputStride(inputStride), m_inputCount(inputCount), m_outputStride(outputStride), m_outputCount(outputCount)
 {
 	if (outputStride == 0 || outputCount == 0)
@@ -18,7 +18,7 @@ StructureBuffer::StructureBuffer(void* inputData, UINT inputStride, UINT inputCo
 	CreateResult();
 }
 
-StructureBuffer::~StructureBuffer()
+StructuredBuffer::~StructuredBuffer()
 {
 	m_input->Release();
 	m_srv->Release();
@@ -27,7 +27,7 @@ StructureBuffer::~StructureBuffer()
 	m_result->Release();
 }
 
-void StructureBuffer::Copy(void* data, UINT size)
+void StructuredBuffer::Copy(void* data, UINT size)
 {
 	Core::GetDeviceContext()->CopyResource(m_result, m_output);
 
@@ -38,7 +38,7 @@ void StructureBuffer::Copy(void* data, UINT size)
 	Core::GetDeviceContext()->Unmap(m_result, 0);
 }
 
-void StructureBuffer::CreateInput()
+void StructuredBuffer::CreateInput()
 {
 	ID3D11Buffer* buffer;
 
@@ -57,7 +57,7 @@ void StructureBuffer::CreateInput()
 	m_input = (ID3D11Resource*)buffer;
 }
 
-void StructureBuffer::CreateSRV()
+void StructuredBuffer::CreateSRV()
 {
 	ID3D11Buffer* buffer = (ID3D11Buffer*)m_input;
 
@@ -73,7 +73,7 @@ void StructureBuffer::CreateSRV()
 	Core::GetDevice()->CreateShaderResourceView(buffer, &srvDesc, &m_srv);
 }
 
-void StructureBuffer::CreateOutput()
+void StructuredBuffer::CreateOutput()
 {
 	ID3D11Buffer* buffer;
 
@@ -89,7 +89,7 @@ void StructureBuffer::CreateOutput()
 	m_output = (ID3D11Resource*)buffer;
 }
 
-void StructureBuffer::CreateUAV()
+void StructuredBuffer::CreateUAV()
 {
 	ID3D11Buffer* buffer = (ID3D11Buffer*)m_output;
 
@@ -105,7 +105,7 @@ void StructureBuffer::CreateUAV()
 	Core::GetDevice()->CreateUnorderedAccessView(buffer, &uavDesc, &m_uav);
 }
 
-void StructureBuffer::CreateResult()
+void StructuredBuffer::CreateResult()
 {
 	ID3D11Buffer* buffer;
 

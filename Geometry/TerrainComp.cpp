@@ -28,7 +28,7 @@ TerrainComp::TerrainComp()
 	m_brush.chanel = XMFLOAT3();
 
 	m_computeShader = 0;
-	m_structureBuffer = 0;
+	m_structuredBuffer = 0;
 	m_input = 0;
 	m_output = 0;
 
@@ -63,7 +63,7 @@ bool TerrainComp::Initialize(ModelNode* node, wstring relativePath)
 	m_terrainMeshKey = Core::GetRandomKey();
 	m_terrainQuad = new TerrainQuadTreeClass;
 
-	ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), L"dirt01.dds", L"contents\\texture\\dirt01.dds");
+	ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), L"dirt001.dds", L"contents\\texture\\dirt001.dds");
 	
 	m_heightMapTexture = ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), m_terrainMeshKey, relativePath);
 
@@ -97,26 +97,7 @@ bool TerrainComp::Initialize(ModelNode* node, wstring relativePath)
 
 		m_input[i].index = i;
 	}
-	m_structureBuffer = new StructureBuffer(m_input, sizeof(InputDesc), size, sizeof(OutputDesc), size);
-
-	m_alphaMapBoard = new RenderTextureClass;
-	if (!m_alphaMapBoard)
-		return false;
-
-	float screenWidth = 100.f;
-	float screenHeight = 100.f;
-
-	result = m_alphaMapBoard->Initialize(Core::GetDevice(), Core::GetDeviceContext(), screenWidth, screenHeight, SCREEN_NEAR, SCREEN_DEPTH);
-	if (!result)
-		return false;
-
-	m_bitmap = new BitMapClass;
-	if (!m_bitmap)
-		return false;
-
-	result = m_bitmap->Initialize(Core::GetDevice(), 100.f, 100.f);
-	if (!result)
-		return false;
+	m_structuredBuffer = new StructuredBuffer(m_input, sizeof(InputDesc), size, sizeof(OutputDesc), size);
 
 	return true;
 }
@@ -155,7 +136,7 @@ void TerrainComp::RederTerrain(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATR
 {
 	if (!m_isRender) return;
 	
-	ID3D11ShaderResourceView* texture = ResMgrClass::GetInst()->FindTexture(L"dirt01.dds")->GetTexture();
+	ID3D11ShaderResourceView* texture = ResMgrClass::GetInst()->FindTexture(L"dirt001.dds")->GetShaderResourceView();
 
 	vector<ID3D11ShaderResourceView*> resourceViews;
 	vector<XMFLOAT4> chanelFlag;
@@ -164,7 +145,7 @@ void TerrainComp::RederTerrain(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATR
 		if (m_layers[i]->GetMaskID() == L"") continue;
 
 		XMFLOAT4 chanels = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
-		resourceViews.push_back(ResMgrClass::GetInst()->FindTexture(m_layers[i]->GetMaskID())->GetTexture());
+		resourceViews.push_back(ResMgrClass::GetInst()->FindTexture(m_layers[i]->GetMaskID())->GetShaderResourceView());
 		if (m_layers[i]->GetMaterialComp1() != nullptr)
 		{
 			resourceViews.push_back(m_layers[i]->GetMaterialComp1()->GetShaderResourceView());
@@ -194,6 +175,7 @@ void TerrainComp::RederTerrain(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATR
 			PaintBrush(baseViewMatrix);
 		}
 	}
+	Core::GetDeviceContext()->PSSetShaderResources(0, 1, &texture);
 
 	GraphicsClass::GetInst()->RenderTerrainShaderSetParam(Core::GetDeviceContext(), m_isWireFrame, m_isLOD, worldMatrix, viewMatrix, lightDiffuseColor, XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f), lihgtDirection, cameraPos, resourceViews, chanelFlag, m_brush.brushType, m_brush.brushPosition, m_brush.brushRange, m_brush.brushColor);
 
@@ -219,7 +201,7 @@ void TerrainComp::Mesh(ModelNode* node)
 		ImVec2 texturePos = ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY());
 		ImGui::SetItemAllowOverlap();
 		rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(70.0f, 70.0f));
-		ImGui::Image((ImTextureID)m_heightMapTexture->GetTexture(), ImVec2(70.0f, 70.0f));
+		ImGui::Image((ImTextureID)m_heightMapTexture->GetShaderResourceView(), ImVec2(70.0f, 70.0f));
 		ImGui::SameLine();
 		ImGui::SetCursorPos(texturePos);
 		ImGui::Dummy(ImVec2(70.0f, 70.0f));
@@ -348,7 +330,7 @@ void TerrainComp::TextureLayer(ModelNode* node)
 				if (ImGui::BeginPopup(("##" + label + "mask_image").c_str()))
 				{
 					TextureClass* texture = ResMgrClass::GetInst()->FindTexture(m_layers[i]->GetMaskID());
-					ImGui::Image((ImTextureID)texture->GetTexture(), ImVec2(200.0f, 200.0f));
+					ImGui::Image((ImTextureID)texture->GetShaderResourceView(), ImVec2(200.0f, 200.0f));
 					ImGui::EndPopup();
 				}
 
@@ -357,8 +339,9 @@ void TerrainComp::TextureLayer(ModelNode* node)
 				if (filePath != L"")
 				{
 					wstring id = Core::GetFileName(filePath);
-					ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), id, filePath);
+					TextureClass* texture = ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), id, filePath);
 					m_layers[i]->SetMaskID(id);
+					m_layers[i]->SetTextureBuffer(texture);
 				}
 
 				ImGui::TableSetColumnIndex(2);
@@ -540,7 +523,7 @@ void TerrainComp::Brush(ModelNode* node)
 		if(texture == nullptr)
 			ImGui::Image(nullptr, ImVec2(200.0f, 200.0f), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(3, 3, 3, 3));
 		else
-			ImGui::Image((ImTextureID)texture->GetTexture(), ImVec2(200.0f, 200.0f), ImVec2(0,0), ImVec2(1, 1), ImVec4(1,1,1,1), ImVec4(3,3,3,3));
+			ImGui::Image((ImTextureID)texture->GetShaderResourceView(), ImVec2(200.0f, 200.0f), ImVec2(0,0), ImVec2(1, 1), ImVec4(1,1,1,1), ImVec4(3,3,3,3));
 
 		ImGui::SameLine();
 		ImGui::BeginGroup();
@@ -550,6 +533,12 @@ void TerrainComp::Brush(ModelNode* node)
 		if (ImGui::Button("Reset Texture"))
 		{
 		}
+
+		//ImGui::Image((ImTextureID)m_layers[m_selected_layer]->GetTexturebuffer()->GetSRV(), ImVec2(200, 200), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(3, 3, 3, 3));
+
+		//if (m_layers[m_selected_layer]->GetAlphaMapBoard()->GetShaderResourceView() != nullptr)
+		//	ImGui::Image((ImTextureID)m_layers[m_selected_layer]->GetAlphaMapBoard()->GetShaderResourceView(), ImVec2(200, 200), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(3, 3, 3, 3));
+
 		ImGui::EndGroup();
 
 		ImGui::SetNextItemWidth(200.f);
@@ -563,9 +552,6 @@ void TerrainComp::Brush(ModelNode* node)
 		ImGui::SetNextItemWidth(200.f);
 		ImGui::ColorEdit3("Chanel", (float*)chanel);
 
-		if(m_alphaMapBoard->GetShaderResourceView() != nullptr)
-			ImGui::Image((ImTextureID)m_alphaMapBoard->GetShaderResourceView(), ImVec2(200.0f, 200.0f), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(3, 3, 3, 3));
-		
 		ImGui::TreePop();
 	}
 }
@@ -605,8 +591,8 @@ bool TerrainComp::GetBrushPosition(XMMATRIX worldMatrix, XMFLOAT3 cameraPos, XMM
 	m_computeShader->SetConstantBuffer(pos, triangleSize, dir);
 
 	// CS에서 사용하는 구조체 버퍼를 설정한다.
-	Core::GetDeviceContext()->CSSetShaderResources(0, 1, &m_structureBuffer->GetSRV());  // 입력자원의 경우 셰이더 자원 뷰를 생성한다.
-	Core::GetDeviceContext()->CSSetUnorderedAccessViews(0, 1, &m_structureBuffer->GetUAV(), nullptr);  // 출력 자원의 경우 순서 없는 접근 뷰를 생성한다.
+	Core::GetDeviceContext()->CSSetShaderResources(0, 1, &m_structuredBuffer->GetSRV());  // 입력자원의 경우 셰이더 자원 뷰를 생성한다.
+	Core::GetDeviceContext()->CSSetUnorderedAccessViews(0, 1, &m_structuredBuffer->GetUAV(), nullptr);  // 출력 자원의 경우 순서 없는 접근 뷰를 생성한다.
 
 	UINT x = ceil((float)triangleSize / 1024.0f);
 
@@ -614,7 +600,7 @@ bool TerrainComp::GetBrushPosition(XMMATRIX worldMatrix, XMFLOAT3 cameraPos, XMM
 	Core::GetDeviceContext()->Dispatch(x, 1, 1);	
 
 	// 셰이더가 실행되고 나면 출력값을 복사해온다.
-	m_structureBuffer->Copy(m_output, sizeof(OutputDesc) * triangleSize);
+	m_structuredBuffer->Copy(m_output, sizeof(OutputDesc) * triangleSize);
 
 	float minDistance = FLT_MAX;
 	int minIndex = -1;
@@ -650,6 +636,8 @@ void TerrainComp::CreateComputeShader()
 	path = filePath + L"contents\\shader\\ComputeShader.hlsl";
 	m_computeShader = new ComputePickingShader(path);
 
+	path = filePath + L"contents\\shader\\ComputePaintingShader.hlsl";
+	m_computePaintingShader = new ComputePaintingShader(path);
 }
 
 
@@ -658,25 +646,45 @@ void TerrainComp::PaintBrush(XMMATRIX baseViewMatrix)
 	if (MOUSE_HOLD(0))
 	{
 		TextureClass* alphaMap = ResMgrClass::GetInst()->FindTexture(m_layers[m_selected_layer]->GetMaskID());
-
+		
 		XMFLOAT2 uv = CalculateUV(m_brush.brushPosition, m_terrainMesh->GetTerrainWidth(), m_terrainMesh->GetTerrainHeight());
 		float range = m_brush.brushRange / (m_terrainMesh->GetTerrainWidth());
 
-		m_alphaMapBoard->RenderToTextureStart(Core::GetDeviceContext());
+		// rtt
+		m_layers[m_selected_layer]->GetAlphaMapBoard()->RenderToTextureStart(Core::GetDeviceContext());
 
 		GraphicsClass::GetInst()->TurnZBufferOff();
 
-		m_bitmap->Render(Core::GetDeviceContext());
+		m_layers[m_selected_layer]->GetBitmap()->Render(Core::GetDeviceContext());
 
-		GraphicsClass::GetInst()->RenderTerrainPaintShader(Core::GetDeviceContext(), m_bitmap->GetIndexCount(), XMMatrixIdentity(), baseViewMatrix, m_alphaMapBoard->GetOrthoMatirx(), m_brush.brushType, uv, range, m_brush.chanel, alphaMap->GetTexture());
+		GraphicsClass::GetInst()->RenderTerrainPaintShader(Core::GetDeviceContext(), m_layers[m_selected_layer]->GetBitmap()->GetIndexCount(), XMMatrixIdentity(), baseViewMatrix, m_layers[m_selected_layer]->GetAlphaMapBoard()->GetOrthoMatirx(), m_brush.brushType, uv, range, m_brush.chanel, alphaMap->GetShaderResourceView());
 
-		Core::GetDeviceContext()->CopyResource((ID3D11Resource*)alphaMap->GetTexture(), (ID3D11Resource*)m_alphaMapBoard->GetShaderResourceView());
-
+		//alphaMap->UpdateTexture(m_alphaMapBoard->GetResource());
+		
 		GraphicsClass::GetInst()->TurnZBufferOn();
 
-		m_alphaMapBoard->RenderToTextureEnd();
+		m_layers[m_selected_layer]->GetAlphaMapBoard()->RenderToTextureEnd();
 
 		ImGuIRenderClass::GetInst()->SetRenderToTexture(Core::GetDeviceContext());
+
+		// cs
+		TextureBuffer* textureBuffer = m_layers[m_selected_layer]->GetTexturebuffer();
+
+		m_computePaintingShader->SetShader();
+		m_computePaintingShader->SetConstantBuffer(m_brush.brushType, uv, range, m_brush.chanel);
+
+		Core::GetDeviceContext()->CSSetShaderResources(0, 1, &alphaMap->GetShaderResourceView());
+		Core::GetDeviceContext()->CSSetShaderResources(1, 1, &m_layers[m_selected_layer]->GetAlphaMapBoard()->GetShaderResourceView());
+		Core::GetDeviceContext()->CSSetUnorderedAccessViews(0, 1, &textureBuffer->GetUAV(), nullptr);
+
+		alphaMap->Copy(textureBuffer->GetOutput());
+
+		D3D11_TEXTURE2D_DESC desc;
+		alphaMap->GetTexture()->GetDesc(&desc);
+
+		// Dispatch 함수를 통해 스레드 그룹들을 3차원 격자 형태로 구성한다. 
+		Core::GetDeviceContext()->Dispatch(desc.Width, desc.Height, 1);
+
 	}
 }
 
@@ -761,4 +769,21 @@ MaterialLayer::MaterialLayer(const MaterialLayer&)
 
 void MaterialLayer::Shutdown()
 {
+}
+
+void MaterialLayer::SetTextureBuffer(TextureClass* texture)
+{
+	m_textureBuffer = texture->GetTextureBuffer();
+
+	m_alphaMapBoard = new RenderTextureClass;
+
+	D3D11_TEXTURE2D_DESC desc;
+	texture->GetTexture()->GetDesc(&desc);
+	float screenWidth = desc.Width;
+	float screenHeight = desc.Height;
+
+	m_alphaMapBoard->Initialize(Core::GetDevice(), Core::GetDeviceContext(), screenWidth, screenHeight, SCREEN_NEAR, SCREEN_DEPTH, &desc);
+
+	m_bitmap = new BitMapClass;
+	m_bitmap->Initialize(Core::GetDevice(), screenWidth, screenHeight);
 }

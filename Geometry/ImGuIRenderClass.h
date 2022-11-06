@@ -50,7 +50,7 @@ public:
 	bool IsGizmoClicked();
 
 	// Scene Tool에서 만 쓸 Textures 가져오는 함수 
-	static ID3D11ShaderResourceView* GetTexture(const wstring& _strFilePath);
+	static ID3D11ShaderResourceView* GetShaderResourceView(const wstring& _strFilePath);
 
 	//ImGui Drag And Drop
 	static ImGuiPayload* DragAndDropToWindow(const char* type);

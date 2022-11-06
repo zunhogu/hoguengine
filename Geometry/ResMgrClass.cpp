@@ -27,9 +27,9 @@ bool ResMgrClass::Initialize()
 	m_defaultResource.push_back(make_pair(L"id_black_tex.dds", L"default\\texture\\id_black_tex.dds"));
 	ResMgrClass::GetInst()->LoadTexture(GraphicsClass::GetInst()->GetDevice(), m_defaultResource[m_defaultResource.size() - 1].first, m_defaultResource[m_defaultResource.size() - 1].second);
 	
-	m_defaultResource.push_back(make_pair(L"NONE", L""));
-	ResMgrClass::GetInst()->LoadTexture(GraphicsClass::GetInst()->GetDevice(), m_defaultResource[m_defaultResource.size() - 1].first, m_defaultResource[m_defaultResource.size() - 1].second);
-	
+	//m_defaultResource.push_back(make_pair(L"NONE", L""));
+	//ResMgrClass::GetInst()->LoadTexture(GraphicsClass::GetInst()->GetDevice(), m_defaultResource[m_defaultResource.size() - 1].first, m_defaultResource[m_defaultResource.size() - 1].second);
+	//
 	return true;
 }
 

@@ -23,8 +23,8 @@ HierachyPanel::HierachyPanel()
 	m_type = IMGUI_WINDOW_TYPE::HIERACHY;
 	m_isRender = false;
 
-	m_close_node_img = ImGuIRenderClass::GetTexture(L"default\\texture\\triangle_icon2.png");
-	m_open_node_img = ImGuIRenderClass::GetTexture(L"default\\texture\\triangle_icon1.png");
+	m_close_node_img = ImGuIRenderClass::GetShaderResourceView(L"default\\texture\\triangle_icon2.png");
+	m_open_node_img = ImGuIRenderClass::GetShaderResourceView(L"default\\texture\\triangle_icon1.png");
 }
 
 HierachyPanel::~HierachyPanel()

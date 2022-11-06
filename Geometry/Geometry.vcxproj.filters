@@ -293,8 +293,14 @@
     <ClInclude Include="ComputePickingShader.h">
       <Filter>Model\Component\TerrainComp</Filter>
     </ClInclude>
-    <ClInclude Include="StructureBuffer.h">
+    <ClInclude Include="StructuredBuffer.h">
       <Filter>Model\Component\TerrainComp</Filter>
+    </ClInclude>
+    <ClInclude Include="ComputePaintingShader.h">
+      <Filter>Model\Component\TerrainComp</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureBuffer.h">
+      <Filter>Resource\Texture</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -446,8 +452,14 @@
     <ClCompile Include="ComputePickingShader.cpp">
       <Filter>Model\Component\TerrainComp</Filter>
     </ClCompile>
-    <ClCompile Include="StructureBuffer.cpp">
+    <ClCompile Include="StructuredBuffer.cpp">
       <Filter>Model\Component\TerrainComp</Filter>
+    </ClCompile>
+    <ClCompile Include="ComputePaintingShader.cpp">
+      <Filter>Model\Component\TerrainComp</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureBuffer.cpp">
+      <Filter>Resource\Texture</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
