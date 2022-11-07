@@ -93,6 +93,15 @@ struct HeightMapType
 	float nx, ny, nz;
 };
 
+struct Brush
+{
+	int brushType = 0;
+	XMFLOAT3 brushPosition;
+	FLOAT brushRange;
+	XMFLOAT3 brushColor;
+	XMFLOAT3 chanel;
+};
+
 #define KEY_CHECK(key, state) KeyMgrClass::GetInst()->GetKeyboardState(key) == state
 #define KEY_HOLD(key) KEY_CHECK(key, KEY_STATE::HOLD)
 #define KEY_TAP(key) KEY_CHECK(key, KEY_STATE::TAP)

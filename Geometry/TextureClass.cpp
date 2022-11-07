@@ -5,7 +5,9 @@
 TextureClass::TextureClass()
 {
 	m_device = Core::GetDevice();
+	m_texture = 0;
 	m_textureBuffer = 0;
+	m_shaderResourceView = 0;
 }
 
 TextureClass::~TextureClass()
@@ -22,6 +24,8 @@ void TextureClass::Initialize(const wstring& _strFilePath)
 	// 텍스처 로드 1
 	DirectX::CreateTexture(m_device, image.GetImages(), image.GetImageCount(), image.GetMetadata(), (ID3D11Resource**)&m_texture);
 
+	if (!m_texture) return;
+
 	D3D11_TEXTURE2D_DESC textureDesc;
 	m_texture->GetDesc(&textureDesc);
 	textureDesc.Usage = D3D11_USAGE_STAGING;
@@ -33,15 +37,7 @@ void TextureClass::Initialize(const wstring& _strFilePath)
 	srvDesc.Texture2D.MipLevels = textureDesc.MipLevels;
 	srvDesc.Texture2D.MostDetailedMip = 0;
 
-	m_device->CreateShaderResourceView(m_texture, &srvDesc, &m_textureView);
-
-	// UAV
-	D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc;
-	uavDesc.Format = textureDesc.Format;
-	uavDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
-	uavDesc.Texture2D.MipSlice = 0;
-
-	Core::GetDevice()->CreateUnorderedAccessView(m_texture, &uavDesc, &m_uav);
+	m_device->CreateShaderResourceView(m_texture, &srvDesc, &m_shaderResourceView);
 
 	m_textureBuffer = new TextureBuffer(this);
 
@@ -51,11 +47,11 @@ void TextureClass::Initialize(const wstring& _strFilePath)
 
 void TextureClass::Shutdown()
 {
-	if (m_textureView)
+	if (m_shaderResourceView)
 	{
-		m_textureView->Release();
-		delete m_textureView;
-		m_textureView = 0;
+		m_shaderResourceView->Release();
+		delete m_shaderResourceView;
+		m_shaderResourceView = 0;
 	}
 }
 

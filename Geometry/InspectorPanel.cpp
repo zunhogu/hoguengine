@@ -13,6 +13,7 @@
 #include "ModelNode.h"
 #include "ModelComp.h"
 #include "TerrainComp.h"
+#include "MaterialComp.h"
 
 // Selected Model
 extern vector<ModelNode*> g_selectedNodes;
@@ -82,6 +83,12 @@ void InspectorPanel::Render()
 			{
 				if ((*modelComps->at(i)->GetIsDelete()) == false)
 				{
+					vector<ModelComp*>* referComps = modelComps->at(i)->GetReferComponent();
+					for (int j = 0; j < referComps->size(); j++)
+					{
+						MaterialComp* comps = (MaterialComp*)modelComps->at(i);
+						referComps->at(j)->UpdateReferComponent(modelComps->at(i));
+					}
 					modelComps->at(i)->Shutdown();
 					modelComps->erase(modelComps->begin() + i);
 					break;

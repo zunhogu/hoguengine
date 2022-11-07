@@ -19,6 +19,7 @@ public:
 	~MaterialComp();
 
 	bool Initialize();
+	virtual void Shutdown();
 	wstring GetMaterialName() { return m_materialName; }
 	void SetMateriaName(wstring name) { m_materialName = name; }
 

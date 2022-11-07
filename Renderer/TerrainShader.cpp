@@ -447,7 +447,6 @@ bool TerrainShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, bool
 
 	deviceContext->Unmap(m_brushBuffer, 0);
 
-
 	bufferNumber = 0;
 	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_lightBuffer);
 	bufferNumber++;
@@ -460,7 +459,7 @@ bool TerrainShader::SetShaderParameters(ID3D11DeviceContext* deviceContext, bool
 	deviceContext->PSSetConstantBuffers(bufferNumber, 1, &m_brushBuffer);
 
 	for (int i = 0; i < resourceViews.size(); i++)
-		deviceContext->PSSetShaderResources(i+1, 1, &resourceViews[i]);
+		deviceContext->PSSetShaderResources(i, 1, &resourceViews[i]);
 	return true;
 }
 

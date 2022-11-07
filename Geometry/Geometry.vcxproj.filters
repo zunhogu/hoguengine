@@ -134,6 +134,15 @@
     <Filter Include="Model\RenderToTexture">
       <UniqueIdentifier>{9b15590e-fc49-4d22-9aad-f8983cfd2b15}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Model\Component\TerrainComp\TerrainEdit">
+      <UniqueIdentifier>{07338549-c845-4c41-954e-03aa0519a7ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Model\Component\TerrainComp\TerrainEdit\WeightMapEdit">
+      <UniqueIdentifier>{83ac6cdf-f92c-4e0c-8cb7-e692f23b6513}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Model\Component\TerrainComp\TerrainEdit\HeightMapEdit">
+      <UniqueIdentifier>{01c6b6ed-1882-4709-a0b7-491fdd0b50fe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="define.h">
@@ -290,17 +299,23 @@
     <ClInclude Include="BitMapClass.h">
       <Filter>Model\Component\MaterialComp</Filter>
     </ClInclude>
-    <ClInclude Include="ComputePickingShader.h">
-      <Filter>Model\Component\TerrainComp</Filter>
-    </ClInclude>
-    <ClInclude Include="StructuredBuffer.h">
-      <Filter>Model\Component\TerrainComp</Filter>
-    </ClInclude>
-    <ClInclude Include="ComputePaintingShader.h">
-      <Filter>Model\Component\TerrainComp</Filter>
-    </ClInclude>
     <ClInclude Include="TextureBuffer.h">
       <Filter>Resource\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="StructuredBuffer.h">
+      <Filter>Model\Component\TerrainComp\TerrainEdit</Filter>
+    </ClInclude>
+    <ClInclude Include="ComputePickingShader.h">
+      <Filter>Model\Component\TerrainComp\TerrainEdit</Filter>
+    </ClInclude>
+    <ClInclude Include="ComputePaintingShader.h">
+      <Filter>Model\Component\TerrainComp\TerrainEdit\WeightMapEdit</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainEditor.h">
+      <Filter>Model\Component\TerrainComp\TerrainEdit</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainLayer.h">
+      <Filter>Model\Component\TerrainComp</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -449,17 +464,23 @@
     <ClCompile Include="BitMapClass.cpp">
       <Filter>Model\Component\MaterialComp</Filter>
     </ClCompile>
-    <ClCompile Include="ComputePickingShader.cpp">
-      <Filter>Model\Component\TerrainComp</Filter>
-    </ClCompile>
-    <ClCompile Include="StructuredBuffer.cpp">
-      <Filter>Model\Component\TerrainComp</Filter>
-    </ClCompile>
-    <ClCompile Include="ComputePaintingShader.cpp">
-      <Filter>Model\Component\TerrainComp</Filter>
-    </ClCompile>
     <ClCompile Include="TextureBuffer.cpp">
       <Filter>Resource\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="StructuredBuffer.cpp">
+      <Filter>Model\Component\TerrainComp\TerrainEdit</Filter>
+    </ClCompile>
+    <ClCompile Include="ComputePickingShader.cpp">
+      <Filter>Model\Component\TerrainComp\TerrainEdit</Filter>
+    </ClCompile>
+    <ClCompile Include="ComputePaintingShader.cpp">
+      <Filter>Model\Component\TerrainComp\TerrainEdit\WeightMapEdit</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainEditor.cpp">
+      <Filter>Model\Component\TerrainComp\TerrainEdit</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainLayer.cpp">
+      <Filter>Model\Component\TerrainComp</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -4,6 +4,7 @@
 #include "ResMgrClass.h"
 #include "TextureClass.h"
 #include "ContentBrowserPanel.h"
+#include "ModelNode.h"
 
 extern ImVec2 g_viewPortSize;
 
@@ -59,26 +60,47 @@ bool MaterialComp::Initialize()
 	return true;
 }
 
+void MaterialComp::Shutdown()
+{
+	if (m_bitmap)
+	{
+		m_bitmap->Shutdown();
+		delete m_bitmap;
+		m_bitmap = 0;
+	}
+
+	if (m_renderTexture)
+	{
+		m_renderTexture->Shutdown();
+		delete m_renderTexture;
+		m_renderTexture = 0;
+	}
+
+	m_material = nullptr;
+}
+
 void MaterialComp::Render(ModelNode* node)
 {
 	wstring collapsingHeadrName = L"Material : " + m_materialName;
-	if (ImGui::CollapsingHeader(Core::ConvWcharTochar(m_materialName), ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader(Core::ConvWcharTochar(m_materialName), &m_isDelete, ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		bool isChanged = false;
 
 		ImGui::Dummy(ImVec2(0.0f, 4.0f));  // padding
 		ImGui::Dummy(ImVec2(1.0f, 0.0f));  // padding
 		ImGui::SameLine();
-		ImGui::AlignTextToFramePadding();  // 텍스트 정렬
-		ImGui::Text("Material  ");
+
+		ImGui::BeginGroup();
+
+		ImGui::Image((ImTextureID)m_renderTexture->GetShaderResourceView(), ImVec2(100.0f, 100.0f));
 		ImGui::SameLine();
 
 		char buffer[255];
-		char buffer2[255] = "##";
+		char buffer2[255] = "Material##";
 		strcpy(buffer, Core::ConvWcharTochar(m_materialName));
 		strcat(buffer2, Core::ConvWcharTochar(m_materialName));
 
-		ImGui::SetNextItemWidth(200.0f);
+		ImGui::SetNextItemWidth(150.0f);
 		isChanged = ImGui::InputText(buffer2, buffer, sizeof(buffer));
 		if (isChanged)
 		{
@@ -86,24 +108,26 @@ void MaterialComp::Render(ModelNode* node)
 		ImGui::Dummy(ImVec2(0.0f, 2.0f));
 
 
-		ImGui::SameLine();
-		ImGui::AlignTextToFramePadding();  // 텍스트 정렬
-		ImGui::Text("Shader   ");
-		ImGui::SameLine();
-		ImGui::Dummy(ImVec2(1.0f, 0.0f));
-		ImGui::SameLine();
+		//ImGui::SameLine();
+		//ImGui::AlignTextToFramePadding();  // 텍스트 정렬
+		//ImGui::Text("Shader   ");
+		//ImGui::SameLine();
+		//ImGui::Dummy(ImVec2(1.0f, 0.0f));
+		//ImGui::SameLine();
 
-		char buffer3[255] = "Shader";
-		char buffer4[255] = "##Shader_";
+		//char buffer3[255] = "Shader";
+		//char buffer4[255] = "##Shader_";
 		//strcpy(buffer, Core::ConvWcharTochar(m_materialName));
-		strcat(buffer2, Core::ConvWcharTochar(m_materialName));
+		//strcat(buffer2, Core::ConvWcharTochar(m_materialName));
 
-		ImGui::SetNextItemWidth(200.0f);
-		isChanged = ImGui::InputText(buffer4, buffer3, sizeof(buffer3));
-		if (isChanged)
-		{
-		}
-		ImGui::Dummy(ImVec2(0.0f, 2.0f));
+		//ImGui::SetNextItemWidth(200.0f);
+		//isChanged = ImGui::InputText(buffer4, buffer3, sizeof(buffer3));
+		//if (isChanged)
+		//{
+		//}
+		//ImGui::Dummy(ImVec2(0.0f, 2.0f));
+		
+		ImGui::EndGroup();
 
 		// Detail
 		{
@@ -601,8 +625,6 @@ void MaterialComp::Render(ModelNode* node)
 				ImGui::PopStyleVar();
 				ImGui::EndChild();
 				////////////////////////////////////////////////////////////////////
-
-				ImGui::Image((ImTextureID)m_renderTexture->GetShaderResourceView(), ImVec2(100.0f, 100.0f));
 
 				ImGui::TreePop();
 			}

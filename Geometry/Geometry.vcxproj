@@ -170,6 +170,8 @@
     <ClInclude Include="ComputePickingShader.h" />
     <ClInclude Include="RenderTextureClass.h" />
     <ClInclude Include="StructuredBuffer.h" />
+    <ClInclude Include="TerrainEditor.h" />
+    <ClInclude Include="TerrainLayer.h" />
     <ClInclude Include="TerrainMesh.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationComp.h" />
@@ -228,6 +230,8 @@
     <ClCompile Include="ComputePickingShader.cpp" />
     <ClCompile Include="RenderTextureClass.cpp" />
     <ClCompile Include="StructuredBuffer.cpp" />
+    <ClCompile Include="TerrainEditor.cpp" />
+    <ClCompile Include="TerrainLayer.cpp" />
     <ClCompile Include="TerrainMesh.cpp" />
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AnimationComp.cpp" />

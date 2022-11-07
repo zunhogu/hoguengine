@@ -9,3 +9,8 @@ ModelComp::ModelComp()
 ModelComp::~ModelComp()
 {
 }
+
+void ModelComp::SetReferComponent(ModelComp* comp)
+{
+	m_referComponents.push_back(comp);
+}
