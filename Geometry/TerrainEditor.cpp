@@ -36,13 +36,42 @@ TerrainEditor::TerrainEditor(TerrainVertexType* vertexArray, int triangleSize, i
 
 TerrainEditor::~TerrainEditor()
 {
+	m_prevResource->Release();
+
+	if (m_computePaintingShader)
+	{
+		delete m_computePaintingShader;
+		m_computePaintingShader = 0;
+	}
+
+	if (m_structuredBuffer)
+	{
+		delete m_structuredBuffer;
+		m_structuredBuffer = 0;
+	}
+
+	if (m_computeShader)
+	{
+		delete m_computeShader;
+		m_computeShader = 0;
+	}
+
 }
 
 void TerrainEditor::StartTerrainEditMode(TerrainLayer* layer)
 {
-	if(layer != nullptr)
+	if (layer != nullptr)
+	{
 		m_layer = layer;
 
+		TextureClass* alphaMap = ResMgrClass::GetInst()->FindTexture(m_layer->GetMaskID());
+
+		ID3D11Texture2D* buffer = alphaMap->GetTexture();
+		D3D11_TEXTURE2D_DESC textureDesc;
+		buffer->GetDesc(&textureDesc);
+
+		Core::GetDevice()->CreateTexture2D(&textureDesc, NULL, &m_prevResource);
+	}
 	//Brush Setting
 	m_brush.brushType = 1;
 	m_brush.brushPosition = XMFLOAT3();
@@ -53,7 +82,12 @@ void TerrainEditor::StartTerrainEditMode(TerrainLayer* layer)
 
 void TerrainEditor::EndTerrainEditMode()
 {
-	m_layer = 0;
+	if (m_layer)
+	{
+		while (!m_weightStack.empty())
+		{ m_weightStack.pop();}
+		m_layer = 0;
+	}
 	m_brush.brushType = 0;
 }
 
@@ -141,9 +175,17 @@ bool TerrainEditor::GetBrushPosition(XMMATRIX worldMatrix, XMFLOAT3 cameraPos, X
 
 void TerrainEditor::PaintWeightMap(XMMATRIX baseViewMatrix)
 {
-	if (MOUSE_HOLD(0) && m_layer->GetMaskID() != L"")
+	static bool isPushToStack = false;
+
+	if(MOUSE_HOLD(0) && m_layer->GetMaskID() != L"")
 	{
 		TextureClass* alphaMap = ResMgrClass::GetInst()->FindTexture(m_layer->GetMaskID());
+
+		if(!isPushToStack)
+		{
+			Core::GetDeviceContext()->CopyResource(m_prevResource, alphaMap->GetTexture());
+			isPushToStack = true;
+		}
 
 		XMFLOAT2 uv = CalculateUV(m_brush.brushPosition, m_terrainWidth, m_terrainHeight);
 		float range = m_brush.brushRange / m_terrainWidth;
@@ -190,27 +232,26 @@ void TerrainEditor::PaintWeightMap(XMMATRIX baseViewMatrix)
 	if (MOUSE_AWAY(0) && m_layer->GetMaskID() != L"")
 	{
 		ID3D11Texture2D* input = nullptr;
-		ID3D11Resource* resource = nullptr;
-		m_layer->GetAlphaMapBoard()->GetShaderResourceView()->GetResource(&resource);
 
-		ID3D11Texture2D* buffer = (ID3D11Texture2D*)resource;
+		ID3D11Texture2D* buffer = (ID3D11Texture2D*)m_prevResource;
 		D3D11_TEXTURE2D_DESC textureDesc;
 
-		//ZeroMemory(&textureDesc, sizeof(textureDesc));
 		buffer->GetDesc(&textureDesc);
 
 		// RTT를 생성한다.
 		Core::GetDevice()->CreateTexture2D(&textureDesc, NULL, &input);
 
-		Core::GetDeviceContext()->CopyResource((ID3D11Resource*)input, resource);
+		Core::GetDeviceContext()->CopyResource(input, m_prevResource);
 		m_weightStack.push(input);
+
+		isPushToStack = false;
 	}
 
 	if ((KEY_HOLD(DIK_LCONTROL) && KEY_TAP(DIK_Z)))
 	{
 		if (!m_weightStack.empty())
 		{
-			ID3D11Resource* resource = m_weightStack.top();
+			ID3D11Texture2D* resource = m_weightStack.top();
 			m_weightStack.pop();
 			TextureClass* alphaMap = ResMgrClass::GetInst()->FindTexture(m_layer->GetMaskID());
 			alphaMap->Copy(resource);

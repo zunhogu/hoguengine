@@ -33,7 +33,8 @@ private:
 	InputDesc* m_input;
 	OutputDesc* m_output;
 
-	stack<ID3D11Resource*> m_weightStack;
+	ID3D11Texture2D* m_prevResource;
+	stack<ID3D11Texture2D*> m_weightStack;
 
 	// weight map painting을 위한 shader -> rtt에 렌더링
 	ComputePaintingShader* m_computePaintingShader;

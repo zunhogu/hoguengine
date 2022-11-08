@@ -4,6 +4,7 @@
 #include "ResMgrClass.h"
 
 Material::Material()
+	: m_ambientColor(1.0f, 1.0f, 1.0f, 1.0f), m_emissiveColor(1.0, 1.0f, 1.0f, 1.0f), m_diffuseColor(1.0, 1.0f, 1.0f, 1.0f), m_specularColor(1.0, 1.0f, 1.0f, 1.0f)
 {
 }
 
