@@ -4,6 +4,7 @@
 #include "Core.h"
 #include "KeyMgrClass.h"
 #include "ResMgrClass.h"
+#include "TimeMgrClass.h"
 
 TerrainEditor::TerrainEditor(TerrainVertexType* vertexArray, int triangleSize, int terrainWidth, int terrainHeight)
 {
@@ -39,7 +40,8 @@ TerrainEditor::~TerrainEditor()
 
 void TerrainEditor::StartTerrainEditMode(TerrainLayer* layer)
 {
-	m_layer = layer;
+	if(layer != nullptr)
+		m_layer = layer;
 
 	//Brush Setting
 	m_brush.brushType = 1;
@@ -47,15 +49,6 @@ void TerrainEditor::StartTerrainEditMode(TerrainLayer* layer)
 	m_brush.brushRange = 20.0f;
 	m_brush.brushColor = XMFLOAT3(0.0f, 1.0f, 0.0f);
 	m_brush.chanel = XMFLOAT3();
-}
-
-void TerrainEditor::UpdateTerrainEditor(XMMATRIX worldMatrix, XMFLOAT3 cameraPos, XMMATRIX baseViewMatrix, XMMATRIX viewMatrix)
-{
-	if (GetBrushPosition(worldMatrix, cameraPos, viewMatrix, m_brush.brushPosition))
-	{
-		XMStoreFloat3(&m_brush.brushPosition, XMVector3TransformCoord(XMLoadFloat3(&m_brush.brushPosition), worldMatrix));
-		PaintBrush(baseViewMatrix);
-	}
 }
 
 void TerrainEditor::EndTerrainEditMode()
@@ -146,7 +139,7 @@ bool TerrainEditor::GetBrushPosition(XMMATRIX worldMatrix, XMFLOAT3 cameraPos, X
 	return result;
 }
 
-void TerrainEditor::PaintBrush(XMMATRIX baseViewMatrix)
+void TerrainEditor::PaintWeightMap(XMMATRIX baseViewMatrix)
 {
 	if (MOUSE_HOLD(0) && m_layer->GetMaskID() != L"")
 	{
@@ -169,8 +162,8 @@ void TerrainEditor::PaintBrush(XMMATRIX baseViewMatrix)
 		m_layer->GetAlphaMapBoard()->RenderToTextureEnd();
 
 		ImGuIRenderClass::GetInst()->SetRenderToTexture(Core::GetDeviceContext());
-
-		ID3D11Resource* resource; 
+		
+		ID3D11Resource* resource = nullptr;
 		m_layer->GetAlphaMapBoard()->GetShaderResourceView()->GetResource(&resource);
 		alphaMap->Copy(resource);
 
@@ -192,6 +185,65 @@ void TerrainEditor::PaintBrush(XMMATRIX baseViewMatrix)
 		//// Dispatch 함수를 통해 스레드 그룹들을 3차원 격자 형태로 구성한다. 
 		//Core::GetDeviceContext()->Dispatch(desc.Width, desc.Height, 1);
 
+	}
+	
+	if (MOUSE_AWAY(0) && m_layer->GetMaskID() != L"")
+	{
+		ID3D11Texture2D* input = nullptr;
+		ID3D11Resource* resource = nullptr;
+		m_layer->GetAlphaMapBoard()->GetShaderResourceView()->GetResource(&resource);
+
+		ID3D11Texture2D* buffer = (ID3D11Texture2D*)resource;
+		D3D11_TEXTURE2D_DESC textureDesc;
+
+		//ZeroMemory(&textureDesc, sizeof(textureDesc));
+		buffer->GetDesc(&textureDesc);
+
+		// RTT를 생성한다.
+		Core::GetDevice()->CreateTexture2D(&textureDesc, NULL, &input);
+
+		Core::GetDeviceContext()->CopyResource((ID3D11Resource*)input, resource);
+		m_weightStack.push(input);
+	}
+
+	if ((KEY_HOLD(DIK_LCONTROL) && KEY_TAP(DIK_Z)))
+	{
+		if (!m_weightStack.empty())
+		{
+			ID3D11Resource* resource = m_weightStack.top();
+			m_weightStack.pop();
+			TextureClass* alphaMap = ResMgrClass::GetInst()->FindTexture(m_layer->GetMaskID());
+			alphaMap->Copy(resource);
+			resource->Release();
+		}
+	}
+}
+
+void TerrainEditor::PaintHeightMap(TerrainVertexType* vertices, int vertexSize, bool isRaise, int paintValue)
+{
+	float range = m_brush.brushRange / m_terrainWidth;
+
+	if (MOUSE_HOLD(0))
+	{
+		for (int i = 0; i < vertexSize; i++)
+		{
+			XMFLOAT3 vertexPos = vertices[i].position;
+			XMFLOAT3 brushPos = m_brush.brushPosition;
+
+			float distX = abs(brushPos.x - vertexPos.x);
+			float distZ = abs(brushPos.z - vertexPos.z);
+
+			if (distX <= range && distZ <= range)
+			{
+				if (isRaise)
+					vertices[i].position.y += paintValue * TimeMgrClass::GetInst()->GetDT();
+				else
+					vertices[i].position.y -= paintValue * TimeMgrClass::GetInst()->GetDT();
+
+				// saturate
+				vertices[i].position.y = max(0.0f, min(1.0f, vertices[i].position.y));
+			}
+		}
 	}
 }
 

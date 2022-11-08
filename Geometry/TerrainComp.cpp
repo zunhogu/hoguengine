@@ -18,7 +18,8 @@ TerrainComp::TerrainComp()
 	m_isWireFrame = false;
 	m_isLOD = false;
 	m_heightMapTexture = nullptr;
-	m_isEditMode = false;
+	m_isWeightEditMode = false;
+	m_isHeightEditMode = false;
 	m_terrainEditor = 0;
 
 	m_selected_layer = -1;
@@ -105,9 +106,11 @@ void TerrainComp::Render(ModelNode* node)
 	if (ImGui::CollapsingHeader("Terrain Mesh Renderer", &m_isDelete, ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		Mesh(node);
+		if (m_isHeightEditMode)
+			BrushHeightMap(node);
 		TextureLayer(node);
-		if(m_isEditMode)
-			Brush(node);
+		if(m_isWeightEditMode)
+			BrushWeightMap(node);
 	}
 }
 
@@ -149,10 +152,24 @@ void TerrainComp::RederTerrain(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATR
 		chanelFlag.push_back(chanels);
 	}
 
+
 	// Brush Mode
-	if (m_isEditMode)
-		m_terrainEditor->UpdateTerrainEditor(worldMatrix, cameraPos, baseViewMatrix, viewMatrix);
-	
+	if (m_isWeightEditMode)
+	{
+		if (m_terrainEditor->GetBrushPosition(worldMatrix, cameraPos, viewMatrix, m_terrainEditor->GetBrush()->brushPosition))
+		{
+			XMStoreFloat3(&m_terrainEditor->GetBrush()->brushPosition, XMVector3TransformCoord(XMLoadFloat3(&m_terrainEditor->GetBrush()->brushPosition), worldMatrix));
+			m_terrainEditor->PaintWeightMap(baseViewMatrix);
+		}
+	}
+	else if (m_isHeightEditMode)
+	{
+		if (m_terrainEditor->GetBrushPosition(worldMatrix, cameraPos, viewMatrix, m_terrainEditor->GetBrush()->brushPosition))
+		{
+			XMStoreFloat3(&m_terrainEditor->GetBrush()->brushPosition, XMVector3TransformCoord(XMLoadFloat3(&m_terrainEditor->GetBrush()->brushPosition), worldMatrix));
+			m_terrainEditor->PaintHeightMap(m_terrainMesh->GetVertexArray(), m_terrainMesh->GetVertexCount(), m_isRaise, m_paintValue);
+		}
+	}
 	int brushType = m_terrainEditor->GetBrush()->brushType;
 	XMFLOAT3 brushPosition = m_terrainEditor->GetBrush()->brushPosition;
 	float brushRange = m_terrainEditor->GetBrush()->brushRange;
@@ -216,6 +233,27 @@ void TerrainComp::Mesh(ModelNode* node)
 			sprintf(buffer, "%d", m_terrainMesh->GetTerrainHeight());
 			ImGui::InputText("##terrain_height", buffer, sizeof(buffer));
 
+			if (ImGui::Button("Height Map Editor"))
+			{
+				if (m_isWeightEditMode) {}
+				else
+				{
+					if (m_isHeightEditMode)
+					{
+						m_isHeightEditMode = false;
+						m_terrainEditor->EndTerrainEditMode();
+					}
+					else
+					{
+						m_isHeightEditMode = true;
+						m_terrainEditor->StartTerrainEditMode();
+					}
+				}
+			}
+			if (ImGui::Button("Save Height Map"))
+			{
+			}
+
 
 			ImGui::EndGroup();
 		}
@@ -244,14 +282,14 @@ void TerrainComp::TextureLayer(ModelNode* node)
 		ImGui::SameLine();
 		if (ImGui::Button("Edit Layer"))
 		{
-			if (m_selected_layer != -1 && !m_isEditMode)
+			if (m_selected_layer != -1 && !m_isWeightEditMode && !m_isHeightEditMode)
 			{
-				m_isEditMode = true;
+				m_isWeightEditMode = true;
 				m_terrainEditor->StartTerrainEditMode(m_layers[m_selected_layer]);
 			}
-			else if(m_selected_layer != -1 && m_isEditMode)
+			else if(m_selected_layer != -1 && m_isWeightEditMode)
 			{	
-				m_isEditMode = false;
+				m_isWeightEditMode = false;
 				m_terrainEditor->EndTerrainEditMode();
 			}
 		}
@@ -319,7 +357,7 @@ void TerrainComp::TextureLayer(ModelNode* node)
 				ImGuiSelectableFlags selectable_flags = ImGuiSelectableFlags_SpanAllColumns;
 				if (ImGui::Selectable(flag.c_str(), (m_selected_layer == i), 0))
 				{
-					if (!m_isEditMode)
+					if (!m_isWeightEditMode)
 					{
 						if (m_selected_layer == i) m_selected_layer = -1;
 						else m_selected_layer = i;
@@ -406,7 +444,7 @@ void TerrainComp::TextureLayer(ModelNode* node)
 				{
 					if (ImGui::SmallButton(("-##" + flag + "delete_button").c_str()))
 					{
-						m_isEditMode = false;
+						m_isWeightEditMode = false;
 						m_terrainEditor->EndTerrainEditMode();
 						m_layers.erase(m_layers.begin() + i);
 					}
@@ -420,14 +458,14 @@ void TerrainComp::TextureLayer(ModelNode* node)
 	}
 }
 
-void TerrainComp::Brush(ModelNode* node)
+void TerrainComp::BrushWeightMap(ModelNode* node)
 {
 	ImGuiPayload* payload = nullptr;
 	wstring filePath = L"";
 	float textWidth = 180.0f;
 	bool isChanged = false;
 	ImGuiTreeNodeFlags treeFlag = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_DefaultOpen;
-	if (ImGui::TreeNodeEx("Brush", treeFlag))
+	if (ImGui::TreeNodeEx("Brush##Weight", treeFlag))
 	{
 		int* type = &m_terrainEditor->GetBrush()->brushType;
 		FLOAT* range = &m_terrainEditor->GetBrush()->brushRange;
@@ -435,10 +473,8 @@ void TerrainComp::Brush(ModelNode* node)
 		XMFLOAT3* chanel = &m_terrainEditor->GetBrush()->chanel;
 
 		TextureClass* texture = ResMgrClass::GetInst()->FindTexture(m_layers[m_selected_layer]->GetMaskID());
-		if(texture == nullptr)
-			ImGui::Image(nullptr, ImVec2(200.0f, 200.0f), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(3, 3, 3, 3));
-		else
-			ImGui::Image((ImTextureID)texture->GetShaderResourceView(), ImVec2(200.0f, 200.0f), ImVec2(0,0), ImVec2(1, 1), ImVec4(1,1,1,1), ImVec4(3,3,3,3));
+		if(texture == nullptr) ImGui::Image(nullptr, ImVec2(200.0f, 200.0f), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(3, 3, 3, 3));
+		else ImGui::Image((ImTextureID)texture->GetShaderResourceView(), ImVec2(200.0f, 200.0f), ImVec2(0,0), ImVec2(1, 1), ImVec4(1,1,1,1), ImVec4(3,3,3,3));
 
 		ImGui::SameLine();
 		ImGui::BeginGroup();
@@ -461,6 +497,39 @@ void TerrainComp::Brush(ModelNode* node)
 		ImGui::ColorEdit3("Brush Color", (float*)color);
 		ImGui::SetNextItemWidth(200.f);
 		ImGui::ColorEdit3("Chanel", (float*)chanel);
+
+		ImGui::TreePop();
+	}
+}
+
+void TerrainComp::BrushHeightMap(ModelNode* node)
+{
+	ImGuiPayload* payload = nullptr;
+	wstring filePath = L"";
+	float textWidth = 180.0f;
+	bool isChanged = false;
+	ImGuiTreeNodeFlags treeFlag = ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_DefaultOpen;
+	if (ImGui::TreeNodeEx("Brush##Height", treeFlag))
+	{
+		if (m_heightMapTexture == nullptr) ImGui::Image(nullptr, ImVec2(200.0f, 200.0f), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(3, 3, 3, 3));
+		else ImGui::Image((ImTextureID)m_heightMapTexture->GetShaderResourceView(), ImVec2(200.0f, 200.0f), ImVec2(0, 0), ImVec2(1, 1), ImVec4(1, 1, 1, 1), ImVec4(3, 3, 3, 3));
+		
+		int* type = &m_terrainEditor->GetBrush()->brushType;
+		FLOAT* range = &m_terrainEditor->GetBrush()->brushRange;
+		XMFLOAT3* color = &m_terrainEditor->GetBrush()->brushColor;
+		XMFLOAT3* chanel = &m_terrainEditor->GetBrush()->chanel;
+		
+		ImGui::SetNextItemWidth(200.f);
+		ImGui::Text("[Brush]");
+		ImGui::Checkbox("isRaise", &m_isRaise);
+		ImGui::SetNextItemWidth(200.f);
+		ImGui::SliderInt("Type", type, 1, 2);
+		ImGui::SetNextItemWidth(200.f);
+		ImGui::SliderFloat("Range", range, 1.0f, 50.0f);
+		ImGui::SetNextItemWidth(200.f);
+		ImGui::ColorEdit3("Brush Color", (float*)color);
+		ImGui::SetNextItemWidth(200.f);
+		ImGui::SliderInt("Value", &m_paintValue, 0, 20);
 
 		ImGui::TreePop();
 	}

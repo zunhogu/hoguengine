@@ -17,7 +17,6 @@ private:
 	BitMapClass* m_bitmap;
 	RenderTextureClass* m_alphaMapBoard;
 	TextureBuffer* m_textureBuffer;
-
 public:
 	TerrainLayer();
 	~TerrainLayer();

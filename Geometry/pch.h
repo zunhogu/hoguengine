@@ -33,6 +33,8 @@ using std::pair;
 using std::string;
 #include <wtypes.h>
 using std::wstring;
+#include <stack>
+using std::stack;
 
 #include <cstdarg>
 #include <fstream>

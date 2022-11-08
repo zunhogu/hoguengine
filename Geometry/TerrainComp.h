@@ -23,8 +23,11 @@ private:
 	bool m_isWireFrame;
 	bool m_isLOD;
 
-	bool m_isEditMode;
 	int m_selected_layer;
+	bool m_isHeightEditMode;
+	bool m_isWeightEditMode;
+	bool m_isRaise;  // height map raise
+	int m_paintValue;  // height map paint value
 	TerrainEditor* m_terrainEditor;
 
 public:
@@ -39,7 +42,8 @@ public:
 	void RederTerrain(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATRIX baseViewMatrix, XMFLOAT4 lightDiffuseColor, XMFLOAT3 lihgtDirection, XMFLOAT3 cameraPos);
 	void Mesh(ModelNode* node);
 	void TextureLayer(ModelNode* node);
-	void Brush(ModelNode* node);
+	void BrushWeightMap(ModelNode* node);
+	void BrushHeightMap(ModelNode* node);
 
 	wstring GetTerrainMeshID() { return m_terrainMeshKey; }
 
