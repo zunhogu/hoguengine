@@ -437,15 +437,15 @@ void ModelNode::RenderMesh(MeshComp* meshComp, XMMATRIX worldMatrix, XMMATRIX vi
 				shiness = material->GetShinness();
 
 				if(material->GetAmbientTextureID() != "NONE")
-					ambientTexture = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)material->GetAmbientTextureID().c_str()));
+					ambientTexture = ResMgrClass::GetInst()->FindTexture(Utility::GetInst()->Utility::GetInst()->ConvCharToWchar((char*)material->GetAmbientTextureID().c_str()));
 				if (material->GetEmissiveTextureID() != "NONE")
-					emissiveTexture = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)material->GetEmissiveTextureID().c_str()));
+					emissiveTexture = ResMgrClass::GetInst()->FindTexture(Utility::GetInst()->Utility::GetInst()->ConvCharToWchar((char*)material->GetEmissiveTextureID().c_str()));
 				if (material->GetDiffuseTextureID() != "NONE")
-					diffuseTexture = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)material->GetDiffuseTextureID().c_str()));
+					diffuseTexture = ResMgrClass::GetInst()->FindTexture(Utility::GetInst()->Utility::GetInst()->ConvCharToWchar((char*)material->GetDiffuseTextureID().c_str()));
 				if (material->GetSpecularTextureID() != "NONE")
-					specularTexture = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)material->GetSpecularTextureID().c_str()));
+					specularTexture = ResMgrClass::GetInst()->FindTexture(Utility::GetInst()->Utility::GetInst()->ConvCharToWchar((char*)material->GetSpecularTextureID().c_str()));
 				if (material->GetNormalTextureID() != "NONE")
-					normalTexture = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)material->GetNormalTextureID().c_str()));
+					normalTexture = ResMgrClass::GetInst()->FindTexture(Utility::GetInst()->Utility::GetInst()->ConvCharToWchar((char*)material->GetNormalTextureID().c_str()));
 
 				GraphicsClass::GetInst()->RenderModel(meshParts[i]->GetIndexCount(), worldMatrix, viewMatirx,
 													cameraPos, lightColor, lightPos, lightDirection,

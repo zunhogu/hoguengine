@@ -144,7 +144,6 @@ void TerrainQuadTreeClass::CreateTreeNode(NodeType* node, float positionX, float
 {
 	int numTriangles, i, count, vertexCount, index, vertexIndex;
 	float offsetX, offsetZ;
-	TerrainVertexType* vertices;
 	unsigned long* indices;
 	bool result;
 	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
@@ -209,7 +208,7 @@ void TerrainQuadTreeClass::CreateTreeNode(NodeType* node, float positionX, float
 	vertexCount = numTriangles * 3;
 
 	// Create the vertex array.
-	vertices = new TerrainVertexType[vertexCount];
+	node->vertices = new TerrainVertexType[vertexCount];
 
 	// Create the index array.
 	indices = new unsigned long[vertexCount];
@@ -228,39 +227,38 @@ void TerrainQuadTreeClass::CreateTreeNode(NodeType* node, float positionX, float
 			vertexIndex = i * 3;
 
 			// Get the three vertices of this triangle from the vertex list.
-			vertices[index].position = m_vertexList[vertexIndex].position;
-			vertices[index].texture = m_vertexList[vertexIndex].texture;
-			vertices[index].normal = m_vertexList[vertexIndex].normal;
-			vertices[index].tangent = m_vertexList[vertexIndex].tangent;
-			vertices[index].binormal = m_vertexList[vertexIndex].binormal;
-			vertices[index].texture2 = m_vertexList[vertexIndex].texture2;
+			node->vertices[index].position = m_vertexList[vertexIndex].position;
+			node->vertices[index].texture = m_vertexList[vertexIndex].texture;
+			node->vertices[index].normal = m_vertexList[vertexIndex].normal;
+			node->vertices[index].tangent = m_vertexList[vertexIndex].tangent;
+			node->vertices[index].binormal = m_vertexList[vertexIndex].binormal;
+			node->vertices[index].texture2 = m_vertexList[vertexIndex].texture2;
 			indices[index] = index;
 			index++;
 
 			vertexIndex++;
-			vertices[index].position = m_vertexList[vertexIndex].position;
-			vertices[index].texture = m_vertexList[vertexIndex].texture;
-			vertices[index].normal = m_vertexList[vertexIndex].normal;
-			vertices[index].tangent = m_vertexList[vertexIndex].tangent;
-			vertices[index].binormal = m_vertexList[vertexIndex].binormal;
-			vertices[index].texture2 = m_vertexList[vertexIndex].texture2;
+			node->vertices[index].position = m_vertexList[vertexIndex].position;
+			node->vertices[index].texture = m_vertexList[vertexIndex].texture;
+			node->vertices[index].normal = m_vertexList[vertexIndex].normal;
+			node->vertices[index].tangent = m_vertexList[vertexIndex].tangent;
+			node->vertices[index].binormal = m_vertexList[vertexIndex].binormal;
+			node->vertices[index].texture2 = m_vertexList[vertexIndex].texture2;
 			indices[index] = index;
 			index++;
 			
 
 			vertexIndex++;
-			vertices[index].position = m_vertexList[vertexIndex].position;
-			vertices[index].texture = m_vertexList[vertexIndex].texture;
-			vertices[index].normal = m_vertexList[vertexIndex].normal;
-			vertices[index].tangent = m_vertexList[vertexIndex].tangent;
-			vertices[index].binormal = m_vertexList[vertexIndex].binormal;
-			vertices[index].texture2 = m_vertexList[vertexIndex].texture2;
+			node->vertices[index].position = m_vertexList[vertexIndex].position;
+			node->vertices[index].texture = m_vertexList[vertexIndex].texture;
+			node->vertices[index].normal = m_vertexList[vertexIndex].normal;
+			node->vertices[index].tangent = m_vertexList[vertexIndex].tangent;
+			node->vertices[index].binormal = m_vertexList[vertexIndex].binormal;
+			node->vertices[index].texture2 = m_vertexList[vertexIndex].texture2;
 			indices[index] = index;
 			index++;
 		}
 	}
 
-	// Set up the description of the vertex buffer.
 	vertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	vertexBufferDesc.ByteWidth = sizeof(TerrainVertexType) * vertexCount;
 	vertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -268,15 +266,12 @@ void TerrainQuadTreeClass::CreateTreeNode(NodeType* node, float positionX, float
 	vertexBufferDesc.MiscFlags = 0;
 	vertexBufferDesc.StructureByteStride = 0;
 
-	// Give the subresource structure a pointer to the vertex data.
-	vertexData.pSysMem = vertices;
+	vertexData.pSysMem = node->vertices;
 	vertexData.SysMemPitch = 0;
 	vertexData.SysMemSlicePitch = 0;
 
-	// Now finally create the vertex buffer.
 	device->CreateBuffer(&vertexBufferDesc, &vertexData, &node->vertexBuffer);
 
-	// Set up the description of the index buffer.
 	indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	indexBufferDesc.ByteWidth = sizeof(unsigned long) * vertexCount;
 	indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
@@ -284,17 +279,11 @@ void TerrainQuadTreeClass::CreateTreeNode(NodeType* node, float positionX, float
 	indexBufferDesc.MiscFlags = 0;
 	indexBufferDesc.StructureByteStride = 0;
 
-	// Give the subresource structure a pointer to the index data.
 	indexData.pSysMem = indices;
 	indexData.SysMemPitch = 0;
 	indexData.SysMemSlicePitch = 0;
 
-	// Create the index buffer.
 	device->CreateBuffer(&indexBufferDesc, &indexData, &node->indexBuffer);
-
-	// Release the vertex and index arrays now that the data is stored in the buffers in the node.
-	delete[] vertices;
-	vertices = 0;
 
 	delete[] indices;
 	indices = 0;
@@ -427,7 +416,7 @@ void TerrainQuadTreeClass::RenderNode(NodeType* node, ID3D11DeviceContext* devic
 	float scale = sqrt(pow(worldMat4X4._11, 2) + pow(worldMat4X4._33, 2));
 
 	// Frustum Check
-	result = CollisionClass::GetInst()->CheckCube(position.x, 0.0f, position.z, (node->width / 2.0f));
+	result = CollisionClass::GetInst()->CheckCube(position.x, 0.0f, position.z, (node->width * scale / 2.0f));
 	if (!result)
 		return;
 
@@ -475,4 +464,44 @@ void TerrainQuadTreeClass::RenderNode(NodeType* node, ID3D11DeviceContext* devic
 	m_drawCount += node->triangleCount;
 
 	return;
+}
+
+void TerrainQuadTreeClass::NodeTraversal(vector<NodeType*>& result, NodeType* node)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		if (node->nodes[i] == nullptr)
+		{
+			result.push_back(node);
+			break;
+		}
+		else NodeTraversal(result, node->nodes[i]);
+	}
+}
+
+unsigned char* TerrainQuadTreeClass::CreateHeightMap(int terrainWidth, int terrainHeight)
+{
+	unsigned char* bitMapImage;
+	int imageSize;
+	int k;
+
+	imageSize = terrainWidth * terrainHeight * 3;
+	bitMapImage = new unsigned char[imageSize];
+	if (!bitMapImage)
+		return false;
+
+	vector<NodeType*> nodes;
+	NodeTraversal(nodes, m_parentNode);
+
+	k = 0;
+	for (int i = 0; i < nodes.size(); i++)
+	{
+		TerrainVertexType* vertices = nodes[i]->vertices;
+		int triangleSize = nodes[i]->triangleCount;
+
+		for (int j = 0; j<triangleSize; j += 6)
+		{
+
+		}
+	}
 }

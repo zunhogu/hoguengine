@@ -105,7 +105,7 @@ void TransformComp::Render(ModelNode* node)
 		sprintf_s(buff, "%.2f", m_position.x);   // float -> char*
 		IsChanged = ImGui::InputText("##PosX", buff, sizeof(buff), input_text_flags);
 		if (IsChanged) {
-			Core::ConvertData(buff, m_position.x);
+			Utility::GetInst()->ConvertData(buff, m_position.x);
 			SetPosition(XMFLOAT3(m_position.x, m_position.y, m_position.z));
 		}
 		ImGui::SameLine();
@@ -115,7 +115,7 @@ void TransformComp::Render(ModelNode* node)
 		sprintf_s(buff, "%.2f", m_position.y);
 		IsChanged = ImGui::InputText("##PosY", buff, sizeof(buff), input_text_flags);
 		if (IsChanged) {
-			Core::ConvertData(buff, m_position.y);
+			Utility::GetInst()->ConvertData(buff, m_position.y);
 			SetPosition(XMFLOAT3(m_position.x, m_position.y, m_position.z));
 
 
@@ -127,7 +127,7 @@ void TransformComp::Render(ModelNode* node)
 		sprintf_s(buff, "%.2f", m_position.z);
 		IsChanged = ImGui::InputText("##PosZ", buff, sizeof(buff), input_text_flags);
 		if (IsChanged) {
-			Core::ConvertData(buff, m_position.z);
+			Utility::GetInst()->ConvertData(buff, m_position.z);
 			SetPosition(XMFLOAT3(m_position.x, m_position.y, m_position.z));
 		}
 
@@ -145,7 +145,7 @@ void TransformComp::Render(ModelNode* node)
 		sprintf_s(buff, "%.2f", m_rotation.x);   // float -> char*
 		IsChanged = ImGui::InputText("##RotX", buff, sizeof(buff), input_text_flags);
 		if (IsChanged) {
-			Core::ConvertData(buff, m_rotation.x);
+			Utility::GetInst()->ConvertData(buff, m_rotation.x);
 			SetRotation(XMFLOAT3(m_rotation.x, m_rotation.y, m_rotation.z));
 		}
 		ImGui::SameLine();
@@ -155,7 +155,7 @@ void TransformComp::Render(ModelNode* node)
 		sprintf_s(buff, "%.2f", m_rotation.y);
 		IsChanged = ImGui::InputText("##RotY", buff, sizeof(buff), input_text_flags);
 		if (IsChanged) {
-			Core::ConvertData(buff, m_rotation.y);
+			Utility::GetInst()->ConvertData(buff, m_rotation.y);
 			SetRotation(XMFLOAT3(m_rotation.x, m_rotation.y, m_rotation.z));
 		}
 		ImGui::SameLine();
@@ -165,7 +165,7 @@ void TransformComp::Render(ModelNode* node)
 		sprintf_s(buff, "%.2f", m_rotation.z);
 		IsChanged = ImGui::InputText("##RotZ", buff, sizeof(buff), input_text_flags);
 		if (IsChanged) {
-			Core::ConvertData(buff, m_rotation.z);
+			Utility::GetInst()->ConvertData(buff, m_rotation.z);
 			SetRotation(XMFLOAT3(m_rotation.x, m_rotation.y, m_rotation.z));
 		}
 
@@ -182,7 +182,7 @@ void TransformComp::Render(ModelNode* node)
 		sprintf_s(buff, "%.2f", m_scale.x);   // float -> char*
 		IsChanged = ImGui::InputText("##ScaX", buff, sizeof(buff), input_text_flags);
 		if (IsChanged) {
-			Core::ConvertData(buff, m_scale.x);
+			Utility::GetInst()->ConvertData(buff, m_scale.x);
 			SetScale(XMFLOAT3(m_scale.x, m_scale.y, m_scale.z));
 		}
 		ImGui::SameLine();
@@ -192,7 +192,7 @@ void TransformComp::Render(ModelNode* node)
 		sprintf_s(buff, "%.2f", m_scale.y);
 		IsChanged = ImGui::InputText("##ScaY", buff, sizeof(buff), input_text_flags);
 		if (IsChanged) {
-			Core::ConvertData(buff, m_scale.y);
+			Utility::GetInst()->ConvertData(buff, m_scale.y);
 			SetScale(XMFLOAT3(m_scale.x, m_scale.y, m_scale.z));
 
 		}
@@ -203,7 +203,7 @@ void TransformComp::Render(ModelNode* node)
 		sprintf_s(buff, "%.2f", m_scale.z);
 		IsChanged = ImGui::InputText("##ScaZ", buff, sizeof(buff), input_text_flags);
 		if (IsChanged) {
-			Core::ConvertData(buff, m_scale.z);
+			Utility::GetInst()->ConvertData(buff, m_scale.z);
 			SetScale(XMFLOAT3(m_scale.x, m_scale.y, m_scale.z));
 		}
 	}

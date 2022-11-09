@@ -132,7 +132,7 @@ void AnimationComp::Render(ModelNode* node)
 		{
 			for (int n = 0; n < m_animations.size(); n++)
 			{
-				char* animName = Core::ConvWcharTochar(m_animations[n]->GetAnimationName());
+				char* animName = Utility::GetInst()->ConvWcharTochar(m_animations[n]->GetAnimationName());
 
 				static bool is_selected = (m_currAnimName == animName);
 				

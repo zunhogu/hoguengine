@@ -47,7 +47,7 @@ bool Prefab::LoadPrefab(const wstring& _strFilePath)
             node = new ModelNode();
 
             ModelInfoComp* modelInfoComp = new ModelInfoComp();
-            modelInfoComp->SetModelName(Core::ConvCharToWchar((char*)buffer.c_str()));
+            modelInfoComp->SetModelName(Utility::GetInst()->Utility::GetInst()->ConvCharToWchar((char*)buffer.c_str()));
             node->AddModelComp(modelInfoComp);
             
             //TransformComp* transformComp = new TransformComp(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 1.0f, 1.0f));
@@ -65,7 +65,7 @@ bool Prefab::LoadPrefab(const wstring& _strFilePath)
                     fin >> buffer;  // parent node name
 					for (int i = 0; i < m_modelNodes.size(); i++)
 					{
-						if (m_modelNodes[i]->GetModelInfoComp()->GetModelName() == Core::ConvCharToWchar((char*)buffer.c_str()))
+						if (m_modelNodes[i]->GetModelInfoComp()->GetModelName() == Utility::GetInst()->Utility::GetInst()->ConvCharToWchar((char*)buffer.c_str()))
                             parentNodeIndex = i;
 					}
           
@@ -128,13 +128,13 @@ bool Prefab::LoadPrefab(const wstring& _strFilePath)
                         fin >> buffer;
                         fin >> buffer;  // relativePath;
 
-                        wstring relativePath = Core::ConvCharToWchar((char*)buffer.c_str());
+                        wstring relativePath = Utility::GetInst()->Utility::GetInst()->ConvCharToWchar((char*)buffer.c_str());
                         relativePath = L"contents\\assets\\" + relativePath;
-                        Mesh* mesh = ResMgrClass::GetInst()->LoadMesh(Core::GetDevice(), Core::GetFileName(relativePath), relativePath);
+                        Mesh* mesh = ResMgrClass::GetInst()->LoadMesh(Core::GetDevice(), Utility::GetInst()->GetFileName(relativePath), relativePath);
 
                         MeshComp* meshComp = new MeshComp;
 
-                        meshComp->SetMeshID(Core::ConvWcharTochar(Core::GetFileName(relativePath)));
+                        meshComp->SetMeshID(Utility::GetInst()->ConvWcharTochar(Utility::GetInst()->GetFileName(relativePath)));
 
                         // Mesh component를 채워넣기 위해서 Mesh Resource를 살펴본다.
                         vector<MeshPart*> meshParts = *mesh->GetMeshParts();  // src
@@ -194,7 +194,7 @@ bool Prefab::LoadPrefab(const wstring& _strFilePath)
     // Node에 대한 추가작업
     
     // node가 Root면 해당 prefab 파일의 이름을 노드 이름으로 설정한다.
-    wstring name = Core::GetFileName(_strFilePath);
+    wstring name = Utility::GetInst()->GetFileName(_strFilePath);
     wstring only_file_name = name.substr(0, name.find(L'.'));
     m_modelNode->GetModelInfoComp()->SetModelName(only_file_name);
 

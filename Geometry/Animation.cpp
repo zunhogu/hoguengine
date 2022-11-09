@@ -36,7 +36,7 @@ bool Animation::LoadAnimation(const wstring& _strFilePath)
 {
 	ifstream fin;
 
-	m_animationName = Core::GetFileName(_strFilePath);
+	m_animationName = Utility::GetInst()->GetFileName(_strFilePath);
 
 	fin.open(_strFilePath.c_str());
 	if (fin.fail())

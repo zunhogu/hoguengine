@@ -190,10 +190,10 @@ bool Mesh::LoadMesh(const wstring& _strFilePath)
 
 		// material path
 		fin >> buffer;  // relativePath 
-		wstring relativePath = Core::ConvCharToWchar((char*)buffer.c_str());
+		wstring relativePath = Utility::GetInst()->Utility::GetInst()->ConvCharToWchar((char*)buffer.c_str());
 		relativePath = L"contents\\assets\\" + relativePath;
-		ResMgrClass::GetInst()->LoadMaterial(Core::GetFileName(relativePath), relativePath);
-		part->SetMaterialID(Core::GetFileName(relativePath));
+		ResMgrClass::GetInst()->LoadMaterial(Utility::GetInst()->GetFileName(relativePath), relativePath);
+		part->SetMaterialID(Utility::GetInst()->GetFileName(relativePath));
 
 		// Vertex Data
 		fin >> buffer;  // Vetex_Data string

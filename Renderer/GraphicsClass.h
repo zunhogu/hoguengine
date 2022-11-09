@@ -18,7 +18,7 @@
 //헤더에 풀스크린 모드와 같은 그래픽과 관련된 전역변수 선언을 하였다.
 
 const bool FULL_SCREEN = false;
-const bool VSYNC_ENABLED = true;
+const bool VSYNC_ENABLED = false;
 const float SCREEN_DEPTH = 4000.0f;
 const float SCREEN_NEAR = 0.1f;
 

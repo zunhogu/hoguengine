@@ -25,7 +25,7 @@ bool SkyDomeClass::Initialize(ID3D11Device* device)
 	strFilePath += L"default\\mesh\\skydome.txt";
 		
 	// Load in the sky dome model.
-	result = LoadSkyDomeModel(Core::ConvWcharTochar(strFilePath));
+	result = LoadSkyDomeModel(Utility::GetInst()->ConvWcharTochar(strFilePath));
 	if (!result)
 		return false;
 

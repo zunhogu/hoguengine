@@ -489,7 +489,7 @@ bool ContentBrowserPanel::SearchDiectory(std::filesystem::path path, string sear
 // file imageÀ» °áÁ¤
 ID3D11ShaderResourceView* ContentBrowserPanel::SetFileImage(wstring filePath)
 {
-	wstring fileExtension = Core::GetFileExtension(filePath);
+	wstring fileExtension = Utility::GetInst()->GetFileExtension(filePath);
 
 	for (int i = 0; i < IM_ARRAYSIZE(g_modelExtension); i++)
 	{
@@ -503,7 +503,7 @@ ID3D11ShaderResourceView* ContentBrowserPanel::SetFileImage(wstring filePath)
 	{
 		if (fileExtension == g_textureExtension[i])
 		{
-			TextureClass* texture = ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Core::GetFileName(filePath), filePath);
+			TextureClass* texture = ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Utility::GetInst()->GetFileName(filePath), filePath);
 			return texture->GetShaderResourceView();
 		}
 	}

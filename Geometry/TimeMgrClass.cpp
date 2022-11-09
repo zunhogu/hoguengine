@@ -104,7 +104,7 @@ bool TimeMgrClass::Frame(HWND _hWnd)
 
 		wchar_t szBuffer[255] = {};
 		swprintf_s(szBuffer, L"hoguengine ( FPS : %d, CPU : %d )", m_iFPS, m_cpuUsage);
-		SetWindowText(_hWnd, Core::ConvWcharTochar(szBuffer));
+		SetWindowText(_hWnd, Utility::GetInst()->ConvWcharTochar(szBuffer));
 	}
 
 

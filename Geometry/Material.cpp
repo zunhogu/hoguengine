@@ -31,7 +31,7 @@ bool Material::LoadMaterial(const wstring& _strFilePath)
 {
 	ifstream fin;
 
-	m_materialName = Core::GetFileName(_strFilePath);
+	m_materialName = Utility::GetInst()->GetFileName(_strFilePath);
 
 	// 파일을 연다.
 	fin.open(_strFilePath.c_str());
@@ -69,12 +69,12 @@ bool Material::LoadMaterial(const wstring& _strFilePath)
 	fin >> buffer;  // Emissive Color string
 	fin >> buffer;  // :
 	fin >> buffer;  // relativePath
-	wstring relativePath = Core::ConvCharToWchar((char*)buffer.c_str());
+	wstring relativePath = Utility::GetInst()->Utility::GetInst()->ConvCharToWchar((char*)buffer.c_str());
 	if (relativePath != L"NONE")
 	{
 		relativePath = L"contents\\assets\\" + relativePath;
-		ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Core::GetFileName(relativePath), relativePath);
-		m_ambientTextureID = Core::ConvWcharTochar(Core::GetFileName(relativePath));
+		ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Utility::GetInst()->GetFileName(relativePath), relativePath);
+		m_ambientTextureID = Utility::GetInst()->ConvWcharTochar(Utility::GetInst()->GetFileName(relativePath));
 	}
 	else
 		m_ambientTextureID = "NONE";
@@ -83,12 +83,12 @@ bool Material::LoadMaterial(const wstring& _strFilePath)
 	fin >> buffer;  // Emissive Color string
 	fin >> buffer;  // :
 	fin >> buffer;  // relativePath
-	relativePath = Core::ConvCharToWchar((char*)buffer.c_str());
+	relativePath = Utility::GetInst()->Utility::GetInst()->ConvCharToWchar((char*)buffer.c_str());
 	if (relativePath != L"NONE")
 	{
 		relativePath = L"contents\\assets\\" + relativePath;
-		ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Core::GetFileName(relativePath), relativePath);
-		m_emissiveTextureID = Core::ConvWcharTochar(Core::GetFileName(relativePath));
+		ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Utility::GetInst()->GetFileName(relativePath), relativePath);
+		m_emissiveTextureID = Utility::GetInst()->ConvWcharTochar(Utility::GetInst()->GetFileName(relativePath));
 	}
 	else
 		m_emissiveTextureID = "NONE";
@@ -97,12 +97,12 @@ bool Material::LoadMaterial(const wstring& _strFilePath)
 	fin >> buffer;  // Emissive Color string
 	fin >> buffer;  // :
 	fin >> buffer;  // relativePath
-	relativePath = Core::ConvCharToWchar((char*)buffer.c_str());
+	relativePath = Utility::GetInst()->Utility::GetInst()->ConvCharToWchar((char*)buffer.c_str());
 	if (relativePath != L"NONE")
 	{
 		relativePath = L"contents\\assets\\" + relativePath;
-		ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Core::GetFileName(relativePath), relativePath);
-		m_diffuseTextureID = Core::ConvWcharTochar(Core::GetFileName(relativePath));
+		ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Utility::GetInst()->GetFileName(relativePath), relativePath);
+		m_diffuseTextureID = Utility::GetInst()->ConvWcharTochar(Utility::GetInst()->GetFileName(relativePath));
 	}
 	else
 		m_diffuseTextureID = "NONE";
@@ -111,12 +111,12 @@ bool Material::LoadMaterial(const wstring& _strFilePath)
 	fin >> buffer;  // Emissive Color string
 	fin >> buffer;  // :
 	fin >> buffer;  // relativePath
-	relativePath = Core::ConvCharToWchar((char*)buffer.c_str());
+	relativePath = Utility::GetInst()->Utility::GetInst()->ConvCharToWchar((char*)buffer.c_str());
 	if (relativePath != L"NONE")
 	{
 		relativePath = L"contents\\assets\\" + relativePath;
-		ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Core::GetFileName(relativePath), relativePath);
-		m_specularTextureID = Core::ConvWcharTochar(Core::GetFileName(relativePath));
+		ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Utility::GetInst()->GetFileName(relativePath), relativePath);
+		m_specularTextureID = Utility::GetInst()->ConvWcharTochar(Utility::GetInst()->GetFileName(relativePath));
 	}
 	else
 		m_specularTextureID = "NONE";
@@ -125,12 +125,12 @@ bool Material::LoadMaterial(const wstring& _strFilePath)
 	fin >> buffer;  // NormalMap Texture string
 	fin >> buffer;  // :
 	fin >> buffer;  // relativePath
-	relativePath = Core::ConvCharToWchar((char*)buffer.c_str());
+	relativePath = Utility::GetInst()->Utility::GetInst()->ConvCharToWchar((char*)buffer.c_str());
 	if (relativePath != L"NONE")
 	{
 		relativePath = L"contents\\assets\\" + relativePath;
-		ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Core::GetFileName(relativePath), relativePath);
-		m_normalTextureID = Core::ConvWcharTochar(Core::GetFileName(relativePath));
+		ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Utility::GetInst()->GetFileName(relativePath), relativePath);
+		m_normalTextureID = Utility::GetInst()->ConvWcharTochar(Utility::GetInst()->GetFileName(relativePath));
 	}
 	else
 		m_normalTextureID = "NONE";

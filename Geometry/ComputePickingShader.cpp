@@ -14,7 +14,7 @@ ComputePickingShader::ComputePickingShader(wstring file)
 
 	DWORD flags = D3DCOMPILE_ENABLE_STRICTNESS | D3DCOMPILE_DEBUG;
 
-	result = D3DCompileFromFile(file.c_str(), NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "ComputePickingShader", "cs_5_0", flags, 0, &computeShader, &errorMessage);
+	result = D3DCompileFromFile(file.c_str(), NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "ComputePickingCheckShader", "cs_5_0", flags, 0, &computeShader, &errorMessage);
 	if (FAILED(result))
 		MessageBox(nullptr, "Compute shasder", "Compie Error", MB_OK);
 

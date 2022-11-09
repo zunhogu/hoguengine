@@ -67,6 +67,7 @@ public:
 
 	TerrainVertexType* GetVertexArray() { return m_vertices; }
 
+	bool SaveHeightMap(unsigned char* bitMapImage, char* path);
 	bool LoadHeightMap(char* path);
 	void NormalizeHeightMap(float maximumHeight);
 	bool CalculateNormals();

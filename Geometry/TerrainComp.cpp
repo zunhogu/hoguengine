@@ -21,6 +21,7 @@ TerrainComp::TerrainComp()
 	m_isWeightEditMode = false;
 	m_isHeightEditMode = false;
 	m_terrainEditor = 0;
+	m_isRaise = true;
 
 	m_selected_layer = -1;
 }
@@ -50,14 +51,14 @@ bool TerrainComp::Initialize(ModelNode* node, wstring relativePath)
 	}
 
 	m_terrainMesh = new TerrainMesh;
-	m_terrainMeshKey = Core::GetRandomKey();
+	m_terrainMeshKey = Utility::GetInst()->GetRandomKey();
 	m_terrainQuad = new TerrainQuadTreeClass;
 
 	ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), L"dirt001.dds", L"contents\\texture\\dirt001.dds");
 	
 	m_heightMapTexture = ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), m_terrainMeshKey, relativePath);
 
-	result = m_terrainMesh->Initialize(Core::GetDevice(), Core::ConvWcharTochar(relativePath), 10.0f);
+	result = m_terrainMesh->Initialize(Core::GetDevice(), Utility::GetInst()->ConvWcharTochar(relativePath), 10.0f);
 	if (!result)
 		return result;
 
@@ -167,7 +168,7 @@ void TerrainComp::RederTerrain(XMMATRIX worldMatrix, XMMATRIX viewMatrix, XMMATR
 		if (m_terrainEditor->GetBrushPosition(worldMatrix, cameraPos, viewMatrix, m_terrainEditor->GetBrush()->brushPosition))
 		{
 			XMStoreFloat3(&m_terrainEditor->GetBrush()->brushPosition, XMVector3TransformCoord(XMLoadFloat3(&m_terrainEditor->GetBrush()->brushPosition), worldMatrix));
-			m_terrainEditor->PaintHeightMap(m_terrainMesh->GetVertexArray(), m_terrainMesh->GetVertexCount(), m_isRaise, m_paintValue);
+			m_terrainEditor->PaintHeightMap(m_terrainQuad, m_isRaise, m_paintValue);
 		}
 	}
 	int brushType = m_terrainEditor->GetBrush()->brushType;
@@ -209,7 +210,7 @@ void TerrainComp::Mesh(ModelNode* node)
 		filePath = Core::ProcessDragAndDropPayloadTexture(payload);
 		if (filePath != L"")
 		{
-			if(Core::GetFileExtension(filePath) == L"bmp")
+			if(Utility::GetInst()->GetFileExtension(filePath) == L"bmp")
 				Initialize(node, filePath);
 		}
 
@@ -252,6 +253,7 @@ void TerrainComp::Mesh(ModelNode* node)
 			}
 			if (ImGui::Button("Save Height Map"))
 			{
+				m_terrainQuad->CreateHeightMap(m_terrainMesh->GetTerrainWidth(), m_terrainMesh->GetTerrainHeight());
 			}
 
 
@@ -366,7 +368,7 @@ void TerrainComp::TextureLayer(ModelNode* node)
 
 				ImGui::TableSetColumnIndex(1);
 				ImRect rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(60.f, ImGui::GetItemRectSize().y));
-				string label = m_layers[i]->GetMaskID() == L"" ? "NONE##Mask" + flag : Core::ConvWcharTochar(m_layers[i]->GetMaskID() + L"##") + flag;
+				string label = m_layers[i]->GetMaskID() == L"" ? "NONE##Mask" + flag : Utility::GetInst()->ConvWcharTochar(m_layers[i]->GetMaskID() + L"##") + flag;
 				if (ImGui::Selectable(label.c_str(), (m_selected_layer == i), 0))
 				{
 					if (m_layers[i]->GetMaskID() != L"")
@@ -383,7 +385,7 @@ void TerrainComp::TextureLayer(ModelNode* node)
 				filePath = ProcessDragAndDropPayloadTexture(payload);
 				if (filePath != L"")
 				{
-					wstring id = Core::GetFileName(filePath);
+					wstring id = Utility::GetInst()->GetFileName(filePath);
 					TextureClass* texture = ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), id, filePath);
 					if(m_layers[i]->SetTextureBuffer(texture))
 						m_layers[i]->SetMaskID(id);
@@ -392,7 +394,7 @@ void TerrainComp::TextureLayer(ModelNode* node)
 				ImGui::TableSetColumnIndex(2);
 				MaterialComp* materialComp1 = m_layers[i]->GetMaterialComp1();
 				rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(60.f, ImGui::GetItemRectSize().y));
-				label = materialComp1 == nullptr ? "NONE##Material1" + flag : Core::ConvWcharTochar(materialComp1->GetMaterialName() + L"##") + flag;
+				label = materialComp1 == nullptr ? "NONE##Material1" + flag : Utility::GetInst()->ConvWcharTochar(materialComp1->GetMaterialName() + L"##") + flag;
 				if (ImGui::Selectable(label.c_str(), (m_selected_layer == i), 0))
 				{
 				}
@@ -409,7 +411,7 @@ void TerrainComp::TextureLayer(ModelNode* node)
 				ImGui::TableSetColumnIndex(3);
 				MaterialComp* materialComp2 = m_layers[i]->GetMaterialComp2();
 				rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(60.f, ImGui::GetItemRectSize().y));
-				label = materialComp2 == nullptr ? "NONE##Material" + flag : Core::ConvWcharTochar(materialComp2->GetMaterialName() + L"##") + flag;
+				label = materialComp2 == nullptr ? "NONE##Material" + flag : Utility::GetInst()->ConvWcharTochar(materialComp2->GetMaterialName() + L"##") + flag;
 				if (ImGui::Selectable(label.c_str(), (m_selected_layer == i), 0))
 				{
 				}
@@ -426,7 +428,7 @@ void TerrainComp::TextureLayer(ModelNode* node)
 				ImGui::TableSetColumnIndex(4);
 				MaterialComp* materialComp3 = m_layers[i]->GetMaterialComp3();
 				rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(60.f, ImGui::GetItemRectSize().y));
-				label = materialComp3 == nullptr ? "NONE##Material3" + flag : Core::ConvWcharTochar(materialComp3->GetMaterialName() + L"##") + flag;
+				label = materialComp3 == nullptr ? "NONE##Material3" + flag : Utility::GetInst()->ConvWcharTochar(materialComp3->GetMaterialName() + L"##") + flag;
 				if (ImGui::Selectable(label.c_str(), (m_selected_layer == i), 0))
 				{
 				}
@@ -558,7 +560,7 @@ wstring TerrainComp::ProcessDragAndDropPayloadTexture(ImGuiPayload* payload)
 		return result;
 
 	wstring fileRelativePath = (wchar_t*)payload->Data;
-	wstring fileExtension = Core::GetFileExtension(fileRelativePath);
+	wstring fileExtension = Utility::GetInst()->GetFileExtension(fileRelativePath);
 
 	for (int i = 0; i < IM_ARRAYSIZE(g_textureExtension); i++)
 	{
@@ -581,7 +583,7 @@ wstring TerrainComp::ProcessDragAndDropPayloadMaterial(ImGuiPayload* payload)
 
 	wstring fileRelativePath = (wchar_t*)payload->Data;
 
-	wstring fileExtension = Core::GetFileExtension(fileRelativePath);
+	wstring fileExtension = Utility::GetInst()->GetFileExtension(fileRelativePath);
 
 	if (fileExtension == L"material")
 		result = fileRelativePath;
@@ -593,7 +595,7 @@ MaterialComp* TerrainComp::PushMaterialToLayer(ModelNode* node, int index, wstri
 {
 	MaterialComp* materialComp = nullptr;
 
-	Material* material = ResMgrClass::GetInst()->LoadMaterial(Core::GetFileName(filePath), filePath);
+	Material* material = ResMgrClass::GetInst()->LoadMaterial(Utility::GetInst()->GetFileName(filePath), filePath);
 	
 	// 현재 컴포넌트에 MaterialComp가 있는지 확인
 	vector<ModelComp*>* comps = node->GetModelComps();
@@ -602,7 +604,7 @@ MaterialComp* TerrainComp::PushMaterialToLayer(ModelNode* node, int index, wstri
 		if (comps->at(i)->GetCompType() == COMPONENT_TYPE::MATERIAL)
 		{
 			MaterialComp* comp = (MaterialComp*)comps->at(i);
-			if (comp->GetMaterialName() == Core::GetFileName(filePath))
+			if (comp->GetMaterialName() == Utility::GetInst()->GetFileName(filePath))
 			{
 				materialComp = comp;
 				materialComp->SetReferComponent(this);

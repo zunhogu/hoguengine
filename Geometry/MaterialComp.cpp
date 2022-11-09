@@ -82,7 +82,7 @@ void MaterialComp::Shutdown()
 void MaterialComp::Render(ModelNode* node)
 {
 	wstring collapsingHeadrName = L"Material : " + m_materialName;
-	if (ImGui::CollapsingHeader(Core::ConvWcharTochar(m_materialName), &m_isDelete, ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader(Utility::GetInst()->ConvWcharTochar(m_materialName), &m_isDelete, ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		bool isChanged = false;
 
@@ -97,8 +97,8 @@ void MaterialComp::Render(ModelNode* node)
 
 		char buffer[255];
 		char buffer2[255] = "Material##";
-		strcpy(buffer, Core::ConvWcharTochar(m_materialName));
-		strcat(buffer2, Core::ConvWcharTochar(m_materialName));
+		strcpy(buffer, Utility::GetInst()->ConvWcharTochar(m_materialName));
+		strcat(buffer2, Utility::GetInst()->ConvWcharTochar(m_materialName));
 
 		ImGui::SetNextItemWidth(150.0f);
 		isChanged = ImGui::InputText(buffer2, buffer, sizeof(buffer));
@@ -117,8 +117,8 @@ void MaterialComp::Render(ModelNode* node)
 
 		//char buffer3[255] = "Shader";
 		//char buffer4[255] = "##Shader_";
-		//strcpy(buffer, Core::ConvWcharTochar(m_materialName));
-		//strcat(buffer2, Core::ConvWcharTochar(m_materialName));
+		//strcpy(buffer, Utility::GetInst()->ConvWcharTochar(m_materialName));
+		//strcat(buffer2, Utility::GetInst()->ConvWcharTochar(m_materialName));
 
 		//ImGui::SetNextItemWidth(200.0f);
 		//isChanged = ImGui::InputText(buffer4, buffer3, sizeof(buffer3));
@@ -138,7 +138,7 @@ void MaterialComp::Render(ModelNode* node)
 
 			ImGuiTreeNodeFlags treeFlag = ImGuiTreeNodeFlags_SpanAvailWidth;
 			wstring treeName = L"Detail##" +  m_materialName;
-			if (ImGui::TreeNodeEx(Core::ConvWcharTochar(treeName), treeFlag))
+			if (ImGui::TreeNodeEx(Utility::GetInst()->ConvWcharTochar(treeName), treeFlag))
 			{
 				// color
 				static bool alpha_preview = true;
@@ -156,7 +156,7 @@ void MaterialComp::Render(ModelNode* node)
 				ImGui::SameLine();
 				ImGui::PushItemWidth(150.0f);
 				wstring str = L"##AmbientColor_" + m_materialName;
-				isChanged = ImGui::ColorEdit3(Core::ConvWcharTochar(str), (float*)&imAmbientColor, misc_flags);
+				isChanged = ImGui::ColorEdit3(Utility::GetInst()->ConvWcharTochar(str), (float*)&imAmbientColor, misc_flags);
 				if (isChanged)
 				{
 					m_material->SetAmibientColor(XMFLOAT4(imAmbientColor.x, imAmbientColor.y, imAmbientColor.z, imAmbientColor.w));
@@ -168,7 +168,7 @@ void MaterialComp::Render(ModelNode* node)
 				ImGui::Text("EmissiveColor");
 				ImGui::SameLine();
 				wstring str2 = L"##EmissiveColor_" + m_materialName;
-				isChanged = ImGui::ColorEdit3(Core::ConvWcharTochar(str2), (float*)&imEmissiveColor, misc_flags);
+				isChanged = ImGui::ColorEdit3(Utility::GetInst()->ConvWcharTochar(str2), (float*)&imEmissiveColor, misc_flags);
 				if (isChanged)
 				{
 					m_material->SetEmissiveColor(XMFLOAT4(imEmissiveColor.x, imEmissiveColor.y, imEmissiveColor.z, imEmissiveColor.w));
@@ -180,7 +180,7 @@ void MaterialComp::Render(ModelNode* node)
 				ImGui::Text("DiffuseColor ");
 				ImGui::SameLine();
 				wstring str3 = L"##DiffuseColor_" + m_materialName;
-				isChanged = ImGui::ColorEdit3(Core::ConvWcharTochar(str3), (float*)&imDiffuseColor, misc_flags);
+				isChanged = ImGui::ColorEdit3(Utility::GetInst()->ConvWcharTochar(str3), (float*)&imDiffuseColor, misc_flags);
 				if (isChanged)
 				{
 					m_material->SetDiffuseColor(XMFLOAT4(imDiffuseColor.x, imDiffuseColor.y, imDiffuseColor.z, imDiffuseColor.w));
@@ -192,7 +192,7 @@ void MaterialComp::Render(ModelNode* node)
 				ImGui::Text("SpecularColor");
 				ImGui::SameLine();
 				wstring str4 = L"##SpecularColor_" + m_materialName;
-				isChanged = ImGui::ColorEdit3(Core::ConvWcharTochar(str4), (float*)&imSpecularColor, misc_flags);
+				isChanged = ImGui::ColorEdit3(Utility::GetInst()->ConvWcharTochar(str4), (float*)&imSpecularColor, misc_flags);
 				if (isChanged)
 				{
 					m_material->SetSpecularColor(XMFLOAT4(imSpecularColor.x, imSpecularColor.y, imSpecularColor.z, imSpecularColor.w));
@@ -202,7 +202,7 @@ void MaterialComp::Render(ModelNode* node)
 				ImGui::SameLine();
 				wstring str5 = L"##shinness" + m_materialName;
 				float shinness = m_material->GetShinness();
-				isChanged = ImGui::SliderFloat(Core::ConvWcharTochar(str5), &shinness, 0.0f, 1.0f);
+				isChanged = ImGui::SliderFloat(Utility::GetInst()->ConvWcharTochar(str5), &shinness, 0.0f, 1.0f);
 				if (isChanged)
 				{
 					m_material->SetShinness(shinness);
@@ -231,7 +231,7 @@ void MaterialComp::Render(ModelNode* node)
 				sprintf_s(buff, "%.2f", 1.0f);   // float -> char*
 				isChanged = ImGui::InputText(("##TileX" + m_material->GetAmbientTextureID()).c_str(), buff, sizeof(buff), input_text_flags);
 				if (isChanged) {
-					//Core::ConvertData(buff, m_tiling.x);
+					//Utility::GetInst()->ConvertData(buff, m_tiling.x);
 					//SetTiling(XMFLOAT2(m_tiling.x, m_tiling.y));
 				}
 				ImGui::SameLine();
@@ -241,7 +241,7 @@ void MaterialComp::Render(ModelNode* node)
 				sprintf_s(buff, "%.2f", 1.0f);
 				isChanged = ImGui::InputText(("##TileY" + m_material->GetAmbientTextureID()).c_str(), buff, sizeof(buff), input_text_flags);
 				if (isChanged) {
-					//Core::ConvertData(buff, m_tiling.y);
+					//Utility::GetInst()->ConvertData(buff, m_tiling.y);
 					//SetTiling(XMFLOAT2(m_tiling.x, m_tiling.y));
 				}
 
@@ -257,7 +257,7 @@ void MaterialComp::Render(ModelNode* node)
 				sprintf_s(buff, "%.2f", 0.0f);   // float -> char*
 				isChanged = ImGui::InputText(("##OffsetX" + m_material->GetAmbientTextureID()).c_str(), buff, sizeof(buff), input_text_flags);
 				if (isChanged) {
-					//Core::ConvertData(buff, m_tiling.x);
+					//Utility::GetInst()->ConvertData(buff, m_tiling.x);
 					//SetTiling(XMFLOAT2(m_tiling.x, m_tiling.y));
 				}
 				ImGui::SameLine();
@@ -267,7 +267,7 @@ void MaterialComp::Render(ModelNode* node)
 				sprintf_s(buff, "%.2f", 0.0f);
 				isChanged = ImGui::InputText(("##OffsetY" + m_material->GetAmbientTextureID()).c_str(), buff, sizeof(buff), input_text_flags);
 				if (isChanged) {
-					//Core::ConvertData(buff, m_tiling.y);
+					//Utility::GetInst()->ConvertData(buff, m_tiling.y);
 					//SetTiling(XMFLOAT2(m_tiling.x, m_tiling.y));
 				}
 
@@ -276,7 +276,7 @@ void MaterialComp::Render(ModelNode* node)
 				ImGui::SameLine();
 				ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 2.0f);
 				ImGui::BeginChild("AmbientTextureRightPane", ImVec2(70.0f, 70.0f), true);
-				TextureClass* texture = m_material->GetAmbientTextureID() != "NONE" ? ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetAmbientTextureID().c_str())) : ResMgrClass::GetInst()->FindTexture(L"defaultTexture");
+				TextureClass* texture = m_material->GetAmbientTextureID() != "NONE" ? ResMgrClass::GetInst()->FindTexture(Utility::GetInst()->Utility::GetInst()->ConvCharToWchar((char*)m_material->GetAmbientTextureID().c_str())) : ResMgrClass::GetInst()->FindTexture(L"defaultTexture");
 
 				texturePos = ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY());
 				ImGui::SetItemAllowOverlap();
@@ -290,8 +290,8 @@ void MaterialComp::Render(ModelNode* node)
 				filePath = Core::ProcessDragAndDropPayloadTexture(payload);
 				if (filePath != L"")
 				{
-					ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Core::GetFileName(filePath), filePath);
-					m_material->SetAmibentTextureID(Core::ConvWcharTochar(Core::GetFileName(filePath)));
+					ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Utility::GetInst()->GetFileName(filePath), filePath);
+					m_material->SetAmibentTextureID(Utility::GetInst()->ConvWcharTochar(Utility::GetInst()->GetFileName(filePath)));
 				}
 				ImGui::PopStyleVar();
 				ImGui::EndChild();
@@ -313,7 +313,7 @@ void MaterialComp::Render(ModelNode* node)
 				sprintf_s(buff, "%.2f", 1.0f);   // float -> char*
 				isChanged = ImGui::InputText(("##TileX" + m_material->GetEmissiveTextureID()).c_str(), buff, sizeof(buff), input_text_flags);
 				if (isChanged) {
-					//Core::ConvertData(buff, m_tiling.x);
+					//Utility::GetInst()->ConvertData(buff, m_tiling.x);
 					//SetTiling(XMFLOAT2(m_tiling.x, m_tiling.y));
 				}
 				ImGui::SameLine();
@@ -323,7 +323,7 @@ void MaterialComp::Render(ModelNode* node)
 				sprintf_s(buff, "%.2f", 1.0f);
 				isChanged = ImGui::InputText(("##TileY" + m_material->GetEmissiveTextureID()).c_str(), buff, sizeof(buff), input_text_flags);
 				if (isChanged) {
-					//Core::ConvertData(buff, m_tiling.y);
+					//Utility::GetInst()->ConvertData(buff, m_tiling.y);
 					//SetTiling(XMFLOAT2(m_tiling.x, m_tiling.y));
 				}
 
@@ -339,7 +339,7 @@ void MaterialComp::Render(ModelNode* node)
 				sprintf_s(buff, "%.2f", 0.0f);   // float -> char*
 				isChanged = ImGui::InputText(("##OffsetX" + m_material->GetEmissiveTextureID()).c_str(), buff, sizeof(buff), input_text_flags);
 				if (isChanged) {
-					//Core::ConvertData(buff, m_tiling.x);
+					//Utility::GetInst()->ConvertData(buff, m_tiling.x);
 					//SetTiling(XMFLOAT2(m_tiling.x, m_tiling.y));
 				}
 				ImGui::SameLine();
@@ -349,7 +349,7 @@ void MaterialComp::Render(ModelNode* node)
 				sprintf_s(buff, "%.2f", 0.0f);
 				isChanged = ImGui::InputText(("##OffsetY" + m_material->GetEmissiveTextureID()).c_str(), buff, sizeof(buff), input_text_flags);
 				if (isChanged) {
-					//Core::ConvertData(buff, m_tiling.y);
+					//Utility::GetInst()->ConvertData(buff, m_tiling.y);
 					//SetTiling(XMFLOAT2(m_tiling.x, m_tiling.y));
 				}
 
@@ -358,7 +358,7 @@ void MaterialComp::Render(ModelNode* node)
 				ImGui::SameLine();
 				ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 2.0f);
 				ImGui::BeginChild("EmissiveTextureRightPane", ImVec2(70.0f, 70.0f), true);
-				texture = m_material->GetEmissiveTextureID() != "NONE" ? ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetEmissiveTextureID().c_str())) : ResMgrClass::GetInst()->FindTexture(L"defaultTexture");
+				texture = m_material->GetEmissiveTextureID() != "NONE" ? ResMgrClass::GetInst()->FindTexture(Utility::GetInst()->Utility::GetInst()->ConvCharToWchar((char*)m_material->GetEmissiveTextureID().c_str())) : ResMgrClass::GetInst()->FindTexture(L"defaultTexture");
 
 				texturePos = ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY());
 				ImGui::SetItemAllowOverlap();
@@ -372,8 +372,8 @@ void MaterialComp::Render(ModelNode* node)
 				filePath = Core::ProcessDragAndDropPayloadTexture(payload);
 				if (filePath != L"")
 				{
-					ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Core::GetFileName(filePath), filePath);
-					m_material->SetEmissiveTextureID(Core::ConvWcharTochar(Core::GetFileName(filePath)));
+					ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Utility::GetInst()->GetFileName(filePath), filePath);
+					m_material->SetEmissiveTextureID(Utility::GetInst()->ConvWcharTochar(Utility::GetInst()->GetFileName(filePath)));
 				}
 				
 				ImGui::PopStyleVar();
@@ -396,7 +396,7 @@ void MaterialComp::Render(ModelNode* node)
 				sprintf_s(buff, "%.2f", 1.0f);   // float -> char*
 				isChanged = ImGui::InputText(("##TileX" + m_material->GetDiffuseTextureID()).c_str(), buff, sizeof(buff), input_text_flags);
 				if (isChanged) {
-					//Core::ConvertData(buff, m_tiling.x);
+					//Utility::GetInst()->ConvertData(buff, m_tiling.x);
 					//SetTiling(XMFLOAT2(m_tiling.x, m_tiling.y));
 				}
 				ImGui::SameLine();
@@ -406,7 +406,7 @@ void MaterialComp::Render(ModelNode* node)
 				sprintf_s(buff, "%.2f", 1.0f);
 				isChanged = ImGui::InputText(("##TileY" + m_material->GetDiffuseTextureID()).c_str(), buff, sizeof(buff), input_text_flags);
 				if (isChanged) {
-					//Core::ConvertData(buff, m_tiling.y);
+					//Utility::GetInst()->ConvertData(buff, m_tiling.y);
 					//SetTiling(XMFLOAT2(m_tiling.x, m_tiling.y));
 				}
 
@@ -422,7 +422,7 @@ void MaterialComp::Render(ModelNode* node)
 				sprintf_s(buff, "%.2f", 0.0f);   // float -> char*
 				isChanged = ImGui::InputText(("##OffsetX" + m_material->GetDiffuseTextureID()).c_str(), buff, sizeof(buff), input_text_flags);
 				if (isChanged) {
-					//Core::ConvertData(buff, m_tiling.x);
+					//Utility::GetInst()->ConvertData(buff, m_tiling.x);
 					//SetTiling(XMFLOAT2(m_tiling.x, m_tiling.y));
 				}
 				ImGui::SameLine();
@@ -432,7 +432,7 @@ void MaterialComp::Render(ModelNode* node)
 				sprintf_s(buff, "%.2f", 0.0f);
 				isChanged = ImGui::InputText(("##OffsetY" + m_material->GetDiffuseTextureID()).c_str(), buff, sizeof(buff), input_text_flags);
 				if (isChanged) {
-					//Core::ConvertData(buff, m_tiling.y);
+					//Utility::GetInst()->ConvertData(buff, m_tiling.y);
 					//SetTiling(XMFLOAT2(m_tiling.x, m_tiling.y));
 				}
 
@@ -441,7 +441,7 @@ void MaterialComp::Render(ModelNode* node)
 				ImGui::SameLine();
 				ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 2.0f);
 				ImGui::BeginChild("DiffuseTextureRightPane", ImVec2(70.0f, 70.0f), true);
-				texture = m_material->GetDiffuseTextureID() != "NONE" ? ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetDiffuseTextureID().c_str())) : ResMgrClass::GetInst()->FindTexture(L"defaultTexture");
+				texture = m_material->GetDiffuseTextureID() != "NONE" ? ResMgrClass::GetInst()->FindTexture(Utility::GetInst()->Utility::GetInst()->ConvCharToWchar((char*)m_material->GetDiffuseTextureID().c_str())) : ResMgrClass::GetInst()->FindTexture(L"defaultTexture");
 				
 				texturePos = ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY());
 				ImGui::SetItemAllowOverlap();
@@ -455,8 +455,8 @@ void MaterialComp::Render(ModelNode* node)
 				filePath = Core::ProcessDragAndDropPayloadTexture(payload);
 				if (filePath != L"")
 				{
-					ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Core::GetFileName(filePath), filePath);
-					m_material->SetDiffuseTextureID(Core::ConvWcharTochar(Core::GetFileName(filePath)));
+					ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Utility::GetInst()->GetFileName(filePath), filePath);
+					m_material->SetDiffuseTextureID(Utility::GetInst()->ConvWcharTochar(Utility::GetInst()->GetFileName(filePath)));
 				}
 
 				ImGui::PopStyleVar();
@@ -479,7 +479,7 @@ void MaterialComp::Render(ModelNode* node)
 				sprintf_s(buff, "%.2f", 1.0f);   // float -> char*
 				isChanged = ImGui::InputText(("##TileX" + m_material->GetSpecularTextureID()).c_str(), buff, sizeof(buff), input_text_flags);
 				if (isChanged) {
-					//Core::ConvertData(buff, m_tiling.x);
+					//Utility::GetInst()->ConvertData(buff, m_tiling.x);
 					//SetTiling(XMFLOAT2(m_tiling.x, m_tiling.y));
 				}
 				ImGui::SameLine();
@@ -489,7 +489,7 @@ void MaterialComp::Render(ModelNode* node)
 				sprintf_s(buff, "%.2f", 1.0f);
 				isChanged = ImGui::InputText(("##TileY" + m_material->GetSpecularTextureID()).c_str(), buff, sizeof(buff), input_text_flags);
 				if (isChanged) {
-					//Core::ConvertData(buff, m_tiling.y);
+					//Utility::GetInst()->ConvertData(buff, m_tiling.y);
 					//SetTiling(XMFLOAT2(m_tiling.x, m_tiling.y));
 				}
 
@@ -505,7 +505,7 @@ void MaterialComp::Render(ModelNode* node)
 				sprintf_s(buff, "%.2f", 0.0f);   // float -> char*
 				isChanged = ImGui::InputText(("##OffsetX" + m_material->GetSpecularTextureID()).c_str(), buff, sizeof(buff), input_text_flags);
 				if (isChanged) {
-					//Core::ConvertData(buff, m_tiling.x);
+					//Utility::GetInst()->ConvertData(buff, m_tiling.x);
 					//SetTiling(XMFLOAT2(m_tiling.x, m_tiling.y));
 				}
 				ImGui::SameLine();
@@ -515,7 +515,7 @@ void MaterialComp::Render(ModelNode* node)
 				sprintf_s(buff, "%.2f", 0.0f);
 				isChanged = ImGui::InputText(("##OffsetY" + m_material->GetSpecularTextureID()).c_str(), buff, sizeof(buff), input_text_flags);
 				if (isChanged) {
-					//Core::ConvertData(buff, m_tiling.y);
+					//Utility::GetInst()->ConvertData(buff, m_tiling.y);
 					//SetTiling(XMFLOAT2(m_tiling.x, m_tiling.y));
 				}
 
@@ -524,7 +524,7 @@ void MaterialComp::Render(ModelNode* node)
 				ImGui::SameLine();
 				ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 2.0f);
 				ImGui::BeginChild("SpecularTextureRightPane", ImVec2(70.0f, 70.0f), true);
-				texture = m_material->GetSpecularTextureID() != "NONE" ? ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetSpecularTextureID().c_str())) : ResMgrClass::GetInst()->FindTexture(L"defaultTexture");
+				texture = m_material->GetSpecularTextureID() != "NONE" ? ResMgrClass::GetInst()->FindTexture(Utility::GetInst()->Utility::GetInst()->ConvCharToWchar((char*)m_material->GetSpecularTextureID().c_str())) : ResMgrClass::GetInst()->FindTexture(L"defaultTexture");
 				
 				texturePos = ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY());
 				ImGui::SetItemAllowOverlap();
@@ -538,8 +538,8 @@ void MaterialComp::Render(ModelNode* node)
 				filePath = Core::ProcessDragAndDropPayloadTexture(payload);
 				if (filePath != L"")
 				{
-					ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Core::GetFileName(filePath), filePath);
-					m_material->SetSpecularTextureID(Core::ConvWcharTochar(Core::GetFileName(filePath)));
+					ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Utility::GetInst()->GetFileName(filePath), filePath);
+					m_material->SetSpecularTextureID(Utility::GetInst()->ConvWcharTochar(Utility::GetInst()->GetFileName(filePath)));
 				}
 				ImGui::PopStyleVar();
 				ImGui::EndChild();
@@ -561,7 +561,7 @@ void MaterialComp::Render(ModelNode* node)
 				sprintf_s(buff, "%.2f", 1.0f);   // float -> char*
 				isChanged = ImGui::InputText(("##TileX" + m_material->GetNormalTextureID()).c_str(), buff, sizeof(buff), input_text_flags);
 				if (isChanged) {
-					//Core::ConvertData(buff, m_tiling.x);
+					//Utility::GetInst()->ConvertData(buff, m_tiling.x);
 					//SetTiling(XMFLOAT2(m_tiling.x, m_tiling.y));
 				}
 				ImGui::SameLine();
@@ -571,7 +571,7 @@ void MaterialComp::Render(ModelNode* node)
 				sprintf_s(buff, "%.2f", 1.0f);
 				isChanged = ImGui::InputText(("##TileY" + m_material->GetNormalTextureID()).c_str(), buff, sizeof(buff), input_text_flags);
 				if (isChanged) {
-					//Core::ConvertData(buff, m_tiling.y);
+					//Utility::GetInst()->ConvertData(buff, m_tiling.y);
 					//SetTiling(XMFLOAT2(m_tiling.x, m_tiling.y));
 				}
 
@@ -587,7 +587,7 @@ void MaterialComp::Render(ModelNode* node)
 				sprintf_s(buff, "%.2f", 0.0f);   // float -> char*
 				isChanged = ImGui::InputText(("##OffsetX" + m_material->GetNormalTextureID()).c_str(), buff, sizeof(buff), input_text_flags);
 				if (isChanged) {
-					//Core::ConvertData(buff, m_tiling.x);
+					//Utility::GetInst()->ConvertData(buff, m_tiling.x);
 					//SetTiling(XMFLOAT2(m_tiling.x, m_tiling.y));
 				}
 				ImGui::SameLine();
@@ -597,7 +597,7 @@ void MaterialComp::Render(ModelNode* node)
 				sprintf_s(buff, "%.2f", 0.0f);
 				isChanged = ImGui::InputText(("##OffsetY" + m_material->GetNormalTextureID()).c_str(), buff, sizeof(buff), input_text_flags);
 				if (isChanged) {
-					//Core::ConvertData(buff, m_tiling.y);
+					//Utility::GetInst()->ConvertData(buff, m_tiling.y);
 					//SetTiling(XMFLOAT2(m_tiling.x, m_tiling.y));
 				}
 
@@ -606,7 +606,7 @@ void MaterialComp::Render(ModelNode* node)
 				ImGui::SameLine();
 				ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, 2.0f);
 				ImGui::BeginChild("NormalMapTextureRightPane", ImVec2(70.0f, 70.0f), true);
-				texture = m_material->GetNormalTextureID() != "NONE" ? ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetNormalTextureID().c_str())) : ResMgrClass::GetInst()->FindTexture(L"defaultTexture");
+				texture = m_material->GetNormalTextureID() != "NONE" ? ResMgrClass::GetInst()->FindTexture(Utility::GetInst()->Utility::GetInst()->ConvCharToWchar((char*)m_material->GetNormalTextureID().c_str())) : ResMgrClass::GetInst()->FindTexture(L"defaultTexture");
 
 				texturePos = ImVec2(ImGui::GetCursorPosX(), ImGui::GetCursorPosY());
 				ImGui::SetItemAllowOverlap();
@@ -619,8 +619,8 @@ void MaterialComp::Render(ModelNode* node)
 				filePath = Core::ProcessDragAndDropPayloadTexture(payload);
 				if (filePath != L"")
 				{
-					ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Core::GetFileName(filePath), filePath);
-					m_material->SetNormalTextureID(Core::ConvWcharTochar(Core::GetFileName(filePath)));
+					ResMgrClass::GetInst()->LoadTexture(Core::GetDevice(), Utility::GetInst()->GetFileName(filePath), filePath);
+					m_material->SetNormalTextureID(Utility::GetInst()->ConvWcharTochar(Utility::GetInst()->GetFileName(filePath)));
 				}
 				ImGui::PopStyleVar();
 				ImGui::EndChild();
@@ -659,15 +659,15 @@ bool MaterialComp::RenderMaterial(ID3D11DeviceContext* deviceContext, XMMATRIX b
 	shiness = m_material->GetShinness();
 
 	if (m_material->GetAmbientTextureID() != "NONE")
-		textures[0] = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetAmbientTextureID().c_str()))->GetShaderResourceView();
+		textures[0] = ResMgrClass::GetInst()->FindTexture(Utility::GetInst()->Utility::GetInst()->ConvCharToWchar((char*)m_material->GetAmbientTextureID().c_str()))->GetShaderResourceView();
 	if (m_material->GetEmissiveTextureID() != "NONE")
-		textures[1] = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetEmissiveTextureID().c_str()))->GetShaderResourceView();
+		textures[1] = ResMgrClass::GetInst()->FindTexture(Utility::GetInst()->Utility::GetInst()->ConvCharToWchar((char*)m_material->GetEmissiveTextureID().c_str()))->GetShaderResourceView();
 	if (m_material->GetDiffuseTextureID() != "NONE")
-		textures[2] = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetDiffuseTextureID().c_str()))->GetShaderResourceView();
+		textures[2] = ResMgrClass::GetInst()->FindTexture(Utility::GetInst()->Utility::GetInst()->ConvCharToWchar((char*)m_material->GetDiffuseTextureID().c_str()))->GetShaderResourceView();
 	if (m_material->GetSpecularTextureID() != "NONE")
-		textures[3] = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetSpecularTextureID().c_str()))->GetShaderResourceView();
+		textures[3] = ResMgrClass::GetInst()->FindTexture(Utility::GetInst()->Utility::GetInst()->ConvCharToWchar((char*)m_material->GetSpecularTextureID().c_str()))->GetShaderResourceView();
 	if (m_material->GetNormalTextureID() != "NONE")
-		textures[4] = ResMgrClass::GetInst()->FindTexture(Core::ConvCharToWchar((char*)m_material->GetNormalTextureID().c_str()))->GetShaderResourceView();
+		textures[4] = ResMgrClass::GetInst()->FindTexture(Utility::GetInst()->Utility::GetInst()->ConvCharToWchar((char*)m_material->GetNormalTextureID().c_str()))->GetShaderResourceView();
 
 	GraphicsClass::GetInst()->RenderMaterialShader(deviceContext, m_bitmap->GetIndexCount(), XMMatrixIdentity(), baseViewMatrix, m_renderTexture->GetOrthoMatirx(), ambientColor, emissiveColor, diffuseColor, specularColor, shiness, textures);
 

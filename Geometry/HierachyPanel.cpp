@@ -114,7 +114,7 @@ void HierachyPanel::NodeUpdate(ModelNode* node)
 void HierachyPanel::ShowNodeTree(ModelNode* modelNode, int num)
 {
 	ModelInfoComp* comp = modelNode->GetModelInfoComp();
-	string nodeName = Core::ConvWcharTochar(comp->GetModelName());
+	string nodeName = Utility::GetInst()->ConvWcharTochar(comp->GetModelName());
 	
 	nodeName += ("##" + to_string(num));
 
@@ -246,8 +246,8 @@ void HierachyPanel::ProcessDragAndDropPayload(ImGuiPayload* payload)
 		return;
 
 	wstring fileRelativePath = (wchar_t*)payload->Data;
-	wstring fileFileName = Core::GetFileName(fileRelativePath);
-	wstring fileExtension = Core::GetFileExtension(fileRelativePath);
+	wstring fileFileName = Utility::GetInst()->GetFileName(fileRelativePath);
+	wstring fileExtension = Utility::GetInst()->GetFileExtension(fileRelativePath);
 
 	for (int i = 0; i < IM_ARRAYSIZE(g_modelExtension); i++)
 	{

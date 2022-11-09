@@ -6,11 +6,13 @@
 #include "ImGuiRenderClass.h"
 #include "../Collision/Collision.h"
 #include "../FileSystem/PathMgr.h"
+#include "../Utility/Utility.h"
 
 // debug 버전
 #pragma comment (lib, "../Output/bin_debug/Renderer.lib")
 #pragma comment (lib, "../Output/bin_debug/Collision.lib")
 #pragma comment (lib, "../Output/bin_debug/FileSystem.lib")
+#pragma comment (lib, "../Output/bin_debug/Utility.lib")
 
 // release 버전
 //#pragma comment (lib, "../Output/bin/Collision.lib")
@@ -69,16 +71,6 @@ public:
 	static void ResetViewport();
 
 	static HWND GetMainHwnd() { return m_hWnd; }
-
-	static char* ConvWcharTochar(wstring _wstr);
-	static wchar_t* ConvCharToWchar(char* _str);
-
-	static wstring GetFileName(wstring filePath);
-	static wstring GetFileExtension(wstring filePath);
-
-	static void ConvertData(char* buff, float& dest);
-
-	static wstring GetRandomKey();
 
 	static wstring ProcessDragAndDropPayloadTexture(ImGuiPayload* payload);
 	static wstring ProcessDragAndDropPayloadMaterial(ImGuiPayload* payload);

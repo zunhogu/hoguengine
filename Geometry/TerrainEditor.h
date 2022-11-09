@@ -3,6 +3,7 @@
 #include "ComputePickingShader.h"
 #include "ComputePaintingShader.h"
 #include "StructuredBuffer.h"
+#include "TerrainQuadTreeClass.h"
 
 class TerrainLayer;
 
@@ -15,7 +16,7 @@ private:
 	Brush m_brush;
 
 	// picking을 위한 shader
-	ComputePickingShader* m_computeShader;
+	ComputePickingShader* m_computePickingShader;
 	StructuredBuffer* m_structuredBuffer;
 
 	struct InputDesc
@@ -36,6 +37,9 @@ private:
 	ID3D11Texture2D* m_prevResource;
 	stack<ID3D11Texture2D*> m_weightStack;
 
+	map<int, TerrainVertexType*> m_prevVertex;
+	stack<map<int, TerrainVertexType*>> m_vertexStack;
+
 	// weight map painting을 위한 shader -> rtt에 렌더링
 	ComputePaintingShader* m_computePaintingShader;
 
@@ -55,7 +59,7 @@ public:
 	void CreateComputeShader();
 	bool GetBrushPosition(XMMATRIX worldMatrix, XMFLOAT3 cameraPos, XMMATRIX viewMatrix, XMFLOAT3& position);
 	void PaintWeightMap(XMMATRIX baseViewMatrix);
-	void PaintHeightMap(TerrainVertexType* vertices, int vertexSize, bool isRaise, int paintValue);
+	void PaintHeightMap(TerrainQuadTreeClass* quadTree, bool isRaise, int paintValue);
 	XMFLOAT2 CalculateUV(XMFLOAT3 position, float width, float heigth);
 };
 

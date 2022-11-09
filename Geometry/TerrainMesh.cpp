@@ -34,7 +34,7 @@ bool TerrainMesh::Initialize(ID3D11Device* device, char* heightFileName, float m
 	// Gird와 Height맵의 사이즈가 다르기 때문에 보간을 통해서 새로운 정점 배열을 만든뒤 쿼드트리로 던져줘야한다.
 	// 또 현재는 기본도형 위상구조가 Line인데, 텍스쳐 맵핑을 위해서는 Triangle로 바꿔야한다. 이에 대해서는 좀 더 고민해보자
 
-	string path = Core::ConvWcharTochar(PathMgr::GetInst()->GetContentPath());
+	string path = Utility::GetInst()->ConvWcharTochar(PathMgr::GetInst()->GetContentPath());
 	path += heightFileName;
 
 	// Load in the height map for the terrain.
@@ -75,6 +75,23 @@ void TerrainMesh::CopyVertexArray(void* vertexList)
 {
 	memcpy(vertexList, m_vertices, sizeof(TerrainVertexType) * m_vertexCount);
 	return;
+}
+
+bool TerrainMesh::SaveHeightMap(unsigned char* bitMapImage, char* path)
+{
+	FILE* filePtr;
+	int error;
+
+	error = fopen_s(&filePtr, path, "wb");
+	if (error != 0)
+		return false;
+
+
+
+
+	fclose(filePtr);
+	
+	return true;
 }
 
 bool TerrainMesh::LoadHeightMap(char* path)

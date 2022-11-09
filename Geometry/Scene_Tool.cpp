@@ -532,14 +532,14 @@ void Scene_Tool::OpenSaveProjectDialog()
 
 	//wstring strTileFolder = PathMgr::GetInst()->GetContentPath();
 	//strTileFolder += L"project";
-	//ofn.lpstrInitialDir = Core::ConvWcharTochar(strTileFolder); // 초기경로
+	//ofn.lpstrInitialDir = Utility::GetInst()->ConvWcharTochar(strTileFolder); // 초기경로
 
 	//ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
 	//// 채워 넣은 구조체를 가지고 다이얼로그 생성 (Modal 방식 : 해당 창이 모든 포커싱을 가져가고 다른 창은 동작하지 않음) 
 	//if (GetSaveFileName(&ofn))  // 저장을 누르면 true, 취소를 누르면 false 반환
 	//{
-	//	return SaveProject(Core::ConvCharToWchar(strName));
+	//	return SaveProject(Utility::GetInst()->Utility::GetInst()->ConvCharToWchar(strName));
 	//}
 
 }
@@ -618,14 +618,14 @@ void Scene_Tool::OpenLoadProjectDialog()
 
 	//wstring strTileFolder = PathMgr::GetInst()->GetContentPath();
 	//strTileFolder += L"project";
-	//ofn.lpstrInitialDir = ConvWcharTochar(strTileFolder); // 초기경로
+	//ofn.lpstrInitialDir = Utility::GetInst()->ConvWcharTochar(strTileFolder); // 초기경로
 
 	//ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
 	//// 채워 넣은 구조체를 가지고 다이얼로그 생성 (Modal 방식 : 해당 창이 모든 포커싱을 가져가고 다른 창은 동작하지 않음) 
 	//if (GetOpenFileName(&ofn))  // 저장을 누르면 true, 취소를 누르면 false 반환
 	//{
-	//	return LoadProject(ConvCharToWchar(strName));
+	//	return LoadProject(Utility::GetInst()->Utility::GetInst()->ConvCharToWchar(strName));
 	//}
 
 }

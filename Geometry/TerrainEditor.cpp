@@ -30,7 +30,7 @@ TerrainEditor::TerrainEditor(TerrainVertexType* vertexArray, int triangleSize, i
 	m_terrainHeight = terrainHeight;
 
 	// Shader Setting
-	m_computeShader = 0;
+	m_computePickingShader = 0;
 	CreateComputeShader();
 }
 
@@ -50,10 +50,10 @@ TerrainEditor::~TerrainEditor()
 		m_structuredBuffer = 0;
 	}
 
-	if (m_computeShader)
+	if (m_computePickingShader)
 	{
-		delete m_computeShader;
-		m_computeShader = 0;
+		delete m_computePickingShader;
+		m_computePickingShader = 0;
 	}
 
 }
@@ -96,8 +96,8 @@ void TerrainEditor::CreateComputeShader()
 	wstring filePath = PathMgr::GetInst()->GetContentPath();
 	wstring path;
 
-	path = filePath + L"contents\\shader\\ComputeShader.hlsl";
-	m_computeShader = new ComputePickingShader(path);
+	path = filePath + L"contents\\shader\\ComputePickingCheckShader.hlsl";
+	m_computePickingShader = new ComputePickingShader(path);
 
 	path = filePath + L"contents\\shader\\ComputePaintingShader.hlsl";
 	m_computePaintingShader = new ComputePaintingShader(path);
@@ -133,8 +133,8 @@ bool TerrainEditor::GetBrushPosition(XMMATRIX worldMatrix, XMFLOAT3 cameraPos, X
 	XMStoreFloat3(&dir, rayDir);
 
 	// 셰이더와 상수버퍼 설정
-	m_computeShader->SetShader();
-	m_computeShader->SetConstantBuffer(pos, m_triangleSize, dir);
+	m_computePickingShader->SetShader();
+	m_computePickingShader->SetConstantBuffer(pos, m_triangleSize, dir);
 
 	// CS에서 사용하는 구조체 버퍼를 설정한다.
 	Core::GetDeviceContext()->CSSetShaderResources(0, 1, &m_structuredBuffer->GetSRV());  // 입력자원의 경우 셰이더 자원 뷰를 생성한다.
@@ -243,7 +243,7 @@ void TerrainEditor::PaintWeightMap(XMMATRIX baseViewMatrix)
 
 		Core::GetDeviceContext()->CopyResource(input, m_prevResource);
 		m_weightStack.push(input);
-
+	
 		isPushToStack = false;
 	}
 
@@ -260,31 +260,117 @@ void TerrainEditor::PaintWeightMap(XMMATRIX baseViewMatrix)
 	}
 }
 
-void TerrainEditor::PaintHeightMap(TerrainVertexType* vertices, int vertexSize, bool isRaise, int paintValue)
+void TerrainEditor::PaintHeightMap(TerrainQuadTreeClass* quadTree, bool isRaise, int paintValue)
 {
-	float range = m_brush.brushRange / m_terrainWidth;
+	static bool isPushToStack = false;
 
 	if (MOUSE_HOLD(0))
 	{
-		for (int i = 0; i < vertexSize; i++)
+		XMFLOAT3 pos1 = XMFLOAT3(m_brush.brushPosition.x + m_brush.brushRange, 0.0f, m_brush.brushPosition.z + m_brush.brushRange);
+		XMFLOAT3 pos2 = XMFLOAT3(m_brush.brushPosition.x + m_brush.brushRange, 0.0f, m_brush.brushPosition.z - m_brush.brushRange);
+		XMFLOAT3 pos3 = XMFLOAT3(m_brush.brushPosition.x - m_brush.brushRange, 0.0f, m_brush.brushPosition.z - m_brush.brushRange);
+		XMFLOAT3 pos4 = XMFLOAT3(m_brush.brushPosition.x - m_brush.brushRange, 0.0f, m_brush.brushPosition.z + m_brush.brushRange);
+
+		vector<NodeType*> nodes;
+		NodeType* currNode = quadTree->GetParentNode();
+		quadTree->NodeTraversal(nodes, currNode);
+		
+		// pos1~4가 쿼드 내에 존재하는지 확인한다.
+		for (int i = 0; i < nodes.size(); i++)
 		{
-			XMFLOAT3 vertexPos = vertices[i].position;
-			XMFLOAT3 brushPos = m_brush.brushPosition;
+			float width = nodes[i]->width / 2;
+			float quadMaxPosX = nodes[i]->positionX + width;
+			float quadMinPosX = nodes[i]->positionX - width;
+			float quadMaxPosZ = nodes[i]->positionZ + width;
+			float quadMinPosZ = nodes[i]->positionZ - width;
 
-			float distX = abs(brushPos.x - vertexPos.x);
-			float distZ = abs(brushPos.z - vertexPos.z);
-
-			if (distX <= range && distZ <= range)
+			if ((pos1.x >= quadMinPosX && pos1.x <= quadMaxPosX && pos1.z >= quadMinPosZ && pos1.z <= quadMaxPosZ) ||
+				(pos2.x >= quadMinPosX && pos2.x <= quadMaxPosX && pos2.z >= quadMinPosZ && pos2.z <= quadMaxPosZ) || 
+				(pos3.x >= quadMinPosX && pos3.x <= quadMaxPosX && pos3.z >= quadMinPosZ && pos3.z <= quadMaxPosZ) || 
+				(pos4.x >= quadMinPosX && pos4.x <= quadMaxPosX && pos4.z >= quadMinPosZ && pos4.z <= quadMaxPosZ))
 			{
-				if (isRaise)
-					vertices[i].position.y += paintValue * TimeMgrClass::GetInst()->GetDT();
-				else
-					vertices[i].position.y -= paintValue * TimeMgrClass::GetInst()->GetDT();
+				TerrainVertexType* vertices = nodes[i]->vertices;
+				int vertexSize = nodes[i]->triangleCount * 3;
 
-				// saturate
-				vertices[i].position.y = max(0.0f, min(1.0f, vertices[i].position.y));
+				// 값을 수정하기 전에 미리 map에 넣어줌 한번 map에 들어간 쿼드는 마우스가 AWAY 될때까지 다시 들어가지 않음
+				if (m_prevVertex.find(i) == m_prevVertex.end())
+				{
+					TerrainVertexType* temp = new TerrainVertexType[vertexSize];
+					memcpy(temp, vertices, sizeof(TerrainVertexType) * vertexSize);
+					m_prevVertex.insert(make_pair(i, temp));
+				}
+
+				for (int j = 0; j < vertexSize; j++)
+				{
+					XMFLOAT3 vertexPos = vertices[j].position;
+					XMFLOAT3 brushPos = m_brush.brushPosition;
+
+					if (m_brush.brushType == 1)
+					{
+						float distance = sqrt(pow(brushPos.x - vertexPos.x, 2) + pow(brushPos.z - vertexPos.z, 2));
+						float cosValue = cos(XM_PIDIV2 * distance / m_brush.brushRange);
+						float temp = paintValue * max(0, cosValue);
+
+						if (distance <= m_brush.brushRange)
+						{
+							if (isRaise) vertices[j].position.y += temp * TimeMgrClass::GetInst()->GetDT();
+							else vertices[j].position.y -= temp * TimeMgrClass::GetInst()->GetDT();
+						}
+					}
+					else if (m_brush.brushType == 2)
+					{
+						float distanceX = abs(brushPos.x - vertexPos.x);
+						float distanceZ = abs(brushPos.z - vertexPos.z);
+
+						if (distanceX <= m_brush.brushRange && distanceZ <= m_brush.brushRange)
+						{
+							if (isRaise) vertices[j].position.y += paintValue * TimeMgrClass::GetInst()->GetDT();
+							else vertices[j].position.y -= paintValue * TimeMgrClass::GetInst()->GetDT();
+						}
+					}
+				}
+
+				// VertexBuffer Update
+				Core::GetDeviceContext()->UpdateSubresource(nodes[i]->vertexBuffer, 0, nullptr, nodes[i]->vertices, sizeof(TerrainVertexType), nodes[i]->triangleCount * 3);
 			}
 		}
+	}
+
+	if (MOUSE_AWAY(0))
+	{
+		map<int, TerrainVertexType*> temp = m_prevVertex;
+		m_vertexStack.push(temp);
+
+		m_prevVertex.clear();
+	}
+
+	if ((KEY_HOLD(DIK_LCONTROL) && KEY_TAP(DIK_Z)))
+	{
+		vector<NodeType*> nodes;
+		NodeType* currNode = quadTree->GetParentNode();
+		quadTree->NodeTraversal(nodes, currNode);
+
+		if (!m_vertexStack.empty())
+		{
+			map<int, TerrainVertexType*> maps= m_vertexStack.top();
+			m_vertexStack.pop();
+
+			for (map<int, TerrainVertexType*>::iterator iter = maps.begin(); iter != maps.end(); iter++)
+			{
+				int vertexSize = nodes[iter->first]->triangleCount * 3;
+				memcpy(nodes[iter->first]->vertices, iter->second, sizeof(TerrainVertexType) * vertexSize);
+
+				Core::GetDeviceContext()->UpdateSubresource(nodes[iter->first]->vertexBuffer, 0, nullptr, nodes[iter->first]->vertices, sizeof(TerrainVertexType), vertexSize);
+
+				delete iter->second;
+			}
+			maps.clear();
+		}
+
+		//for (int i = 0; i < nodes.size(); i++)
+		//{
+
+		//}
 	}
 }
 

@@ -40,12 +40,12 @@ void ModelInfoComp::Render(ModelNode* node)
 		ImGui::SameLine();
 
 		char buffer[255];
-		strcpy(buffer, Core::ConvWcharTochar(m_modelName));
+		strcpy(buffer, Utility::GetInst()->ConvWcharTochar(m_modelName));
 
 		isChanged = ImGui::InputText("##name", buffer, sizeof(buffer));  // ##을 붙이면 뒤에 쓰여지는 글자 name은 invisible 
 		if (isChanged)
 		{
-			SetModelName(Core::ConvCharToWchar(buffer));
+			SetModelName(Utility::GetInst()->Utility::GetInst()->ConvCharToWchar(buffer));
 		}
 		ImGui::Dummy(ImVec2(0.0f, 2.0f));
 	}

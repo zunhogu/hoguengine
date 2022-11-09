@@ -145,7 +145,7 @@ void MeshComp::Render(ModelNode* node)
 		filePath = Core::ProcessDragAndDropPayloadMesh(payload);
 		if (filePath != L"")
 		{
-			m_meshID = Core::ConvWcharTochar(Core::GetFileName(filePath));
+			m_meshID = Utility::GetInst()->ConvWcharTochar(Utility::GetInst()->GetFileName(filePath));
 			m_meshParts.clear();
 
 			for (int i = node->GetModelComps()->size()-1; i >=0; i--)
@@ -154,7 +154,7 @@ void MeshComp::Render(ModelNode* node)
 					node->GetModelComps()->erase(node->GetModelComps()->begin() + i);
 			}
 
-			Mesh* mesh = ResMgrClass::GetInst()->LoadMesh(Core::GetDevice(), Core::GetFileName(filePath), filePath);
+			Mesh* mesh = ResMgrClass::GetInst()->LoadMesh(Core::GetDevice(), Utility::GetInst()->GetFileName(filePath), filePath);
 			vector<MeshPart*> meshParts = *mesh->GetMeshParts();  // src
 
 			MeshComp* meshComp = new MeshComp;
@@ -209,7 +209,7 @@ void MeshComp::Render(ModelNode* node)
 					ImGui::SameLine();
 
 					char buffer2[255];
-					strcpy(buffer2, Core::ConvWcharTochar(m_meshParts[i]->GetMaterial()));
+					strcpy(buffer2, Utility::GetInst()->ConvWcharTochar(m_meshParts[i]->GetMaterial()));
 
 					ImGui::SetNextItemWidth(220.0f);
 					ImRect rect = ImRect(ImGui::GetCursorScreenPos(), ImVec2(textWidth, ImGui::GetItemRectSize().y));
@@ -235,13 +235,13 @@ void MeshComp::Render(ModelNode* node)
 						}
 
 						// »õ·Î¿î materialComp »ðÀÔ 
-						Material* material = ResMgrClass::GetInst()->LoadMaterial(Core::GetFileName(filePath), filePath);
+						Material* material = ResMgrClass::GetInst()->LoadMaterial(Utility::GetInst()->GetFileName(filePath), filePath);
 
 						MaterialComp* materialComp = new MaterialComp;
 						materialComp->SetMateriaName(material->GetMaterialName());
 						materialComp->SetMaterial(material);
 
-						m_meshParts[i]->SetMaterial(Core::GetFileName(filePath));
+						m_meshParts[i]->SetMaterial(Utility::GetInst()->GetFileName(filePath));
 						comps->push_back(materialComp);
 					}
 				}
