@@ -34,14 +34,15 @@ bool TerrainMesh::Initialize(ID3D11Device* device, char* heightFileName, float m
 	// Gird와 Height맵의 사이즈가 다르기 때문에 보간을 통해서 새로운 정점 배열을 만든뒤 쿼드트리로 던져줘야한다.
 	// 또 현재는 기본도형 위상구조가 Line인데, 텍스쳐 맵핑을 위해서는 Triangle로 바꿔야한다. 이에 대해서는 좀 더 고민해보자
 
-	string path = Utility::GetInst()->ConvWcharTochar(PathMgr::GetInst()->GetContentPath());
-	path += heightFileName;
+	m_heightMapPath = Utility::GetInst()->ConvWcharTochar(PathMgr::GetInst()->GetContentPath());
+	m_heightMapPath += heightFileName;
 
 	// Load in the height map for the terrain.
-	result = LoadHeightMap((char*)path.c_str());
+	result = LoadHeightMap((char*)m_heightMapPath.c_str());
 	if (!result)
 		return false;
 
+	m_maximumHeight = maximumHeight;
 	// Normalize the height of the height map.
 	NormalizeHeightMap(maximumHeight);
 
@@ -77,17 +78,18 @@ void TerrainMesh::CopyVertexArray(void* vertexList)
 	return;
 }
 
-bool TerrainMesh::SaveHeightMap(unsigned char* bitMapImage, char* path)
+bool TerrainMesh::SaveHeightMap(unsigned char* bitMapImage)
 {
 	FILE* filePtr;
 	int error;
 
-	error = fopen_s(&filePtr, path, "wb");
+	error = fopen_s(&filePtr, m_heightMapPath.c_str(), "wb");
 	if (error != 0)
 		return false;
 
-
-
+	fwrite(&m_bitmapFileHeader, 1, sizeof(BITMAPFILEHEADER), filePtr);
+	fwrite(&m_bitmapInfoHeader, 1, sizeof(BITMAPINFOHEADER), filePtr);
+	fwrite(bitMapImage, 1, m_terrainWidth * m_terrainWidth * 3, filePtr);
 
 	fclose(filePtr);
 	
@@ -99,8 +101,6 @@ bool TerrainMesh::LoadHeightMap(char* path)
 	FILE* filePtr;
 	int error;
 	unsigned int count;
-	BITMAPFILEHEADER bitmapFileHeader;
-	BITMAPINFOHEADER bitmapInfoHeader;
 	int imageSize, i, j, k, index;
 	unsigned char* bitmapImage;
 	unsigned char height;
@@ -109,17 +109,17 @@ bool TerrainMesh::LoadHeightMap(char* path)
 	if (error != 0)
 		return false;
 
-	count = fread(&bitmapFileHeader, sizeof(BITMAPFILEHEADER), 1, filePtr);
+	count = fread(&m_bitmapFileHeader, sizeof(BITMAPFILEHEADER), 1, filePtr);
 	if (count != 1)
 		return false;
 
-	count = fread(&bitmapInfoHeader, sizeof(BITMAPINFOHEADER), 1, filePtr);
+	count = fread(&m_bitmapInfoHeader, sizeof(BITMAPINFOHEADER), 1, filePtr);
 	if (count != 1)
 		return false;
 
 	// 원래는 terrain과 heightMap 의 Size를 다르게 설정해서 보간의 방식을 사용했는데 편의를 위해 같다고 둔다.
-	m_terrainWidth = bitmapInfoHeader.biWidth;
-	m_terrainHeight = bitmapInfoHeader.biHeight;
+	m_terrainWidth = m_bitmapInfoHeader.biWidth;
+	m_terrainHeight = m_bitmapInfoHeader.biHeight;
 
 	// Bitmap 자료구조 상 가로 길이는 2의 지수승이 되야한다. 
 	if (m_terrainWidth & m_terrainWidth - 1)
@@ -134,7 +134,7 @@ bool TerrainMesh::LoadHeightMap(char* path)
 	if (!bitmapImage)
 		return false;
 
-	fseek(filePtr, bitmapFileHeader.bfOffBits, SEEK_SET);
+	fseek(filePtr, m_bitmapFileHeader.bfOffBits, SEEK_SET);
 
 	count = fread(bitmapImage, 1, imageSize, filePtr);
 	if (count != imageSize)

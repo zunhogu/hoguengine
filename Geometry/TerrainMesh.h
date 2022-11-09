@@ -44,6 +44,11 @@ private:
 	int m_vertexCount;
 	TerrainVertexType* m_vertices;
 
+	BITMAPFILEHEADER m_bitmapFileHeader;
+	BITMAPINFOHEADER m_bitmapInfoHeader;
+	float m_maximumHeight;
+	string m_heightMapPath;
+
 	HeightMapType* m_heightMap;
 	ModelType* m_model;
 
@@ -61,13 +66,14 @@ public:
 	void SetTerrainWidth(int width) { m_terrainWidth = width; }
 	int GetTerrainHeight() { return m_terrainHeight; }
 	void SetTerrainHeight(int height) { m_terrainHeight = height; }
+	float GetMaximumHeight() { return m_maximumHeight; }
 
 	int GetVertexCount();
 	void CopyVertexArray(void* vertexList);
 
 	TerrainVertexType* GetVertexArray() { return m_vertices; }
 
-	bool SaveHeightMap(unsigned char* bitMapImage, char* path);
+	bool SaveHeightMap(unsigned char* bitMapImage);
 	bool LoadHeightMap(char* path);
 	void NormalizeHeightMap(float maximumHeight);
 	bool CalculateNormals();

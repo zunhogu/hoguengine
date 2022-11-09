@@ -253,9 +253,11 @@ void TerrainComp::Mesh(ModelNode* node)
 			}
 			if (ImGui::Button("Save Height Map"))
 			{
-				m_terrainQuad->CreateHeightMap(m_terrainMesh->GetTerrainWidth(), m_terrainMesh->GetTerrainHeight());
+				if (!m_terrainMesh->SaveHeightMap(m_terrainQuad->CreateHeightMap(m_terrainMesh->GetTerrainWidth(), m_terrainMesh->GetTerrainHeight(), m_terrainMesh->GetMaximumHeight())))
+				{
+					MessageBox(nullptr, "Can't Save HeightMap", "Error", 0);
+				}
 			}
-
 
 			ImGui::EndGroup();
 		}

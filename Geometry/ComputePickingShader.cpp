@@ -16,7 +16,7 @@ ComputePickingShader::ComputePickingShader(wstring file)
 
 	result = D3DCompileFromFile(file.c_str(), NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, "ComputePickingCheckShader", "cs_5_0", flags, 0, &computeShader, &errorMessage);
 	if (FAILED(result))
-		MessageBox(nullptr, "Compute shasder", "Compie Error", MB_OK);
+		MessageBox(nullptr, "Compute shader", "Compie Error", MB_OK);
 
 	result = Core::GetDevice()->CreateComputeShader(computeShader->GetBufferPointer(), computeShader->GetBufferSize(), NULL, &m_shaderBuffer);
 	if (FAILED(result))

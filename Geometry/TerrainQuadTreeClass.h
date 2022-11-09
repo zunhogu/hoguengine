@@ -40,7 +40,7 @@ public:
 	NodeType* GetParentNode() { return m_parentNode; }
 	void NodeTraversal(vector<NodeType*>& result, NodeType* node);
 
-	unsigned char* CreateHeightMap(int terrainWidth, int terrainHeight);
+	unsigned char* CreateHeightMap(int terrainWidth, int terrainHeight, float maximumHeight);
 private:
 	void CalculateMeshDimensions(int vertexCount, float& centerX, float& centerZ, float& meshWidth);
 	void CreateTreeNode(NodeType* node, float positionX, float positionZ, float width, ID3D11Device* device);

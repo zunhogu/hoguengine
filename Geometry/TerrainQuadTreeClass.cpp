@@ -479,7 +479,7 @@ void TerrainQuadTreeClass::NodeTraversal(vector<NodeType*>& result, NodeType* no
 	}
 }
 
-unsigned char* TerrainQuadTreeClass::CreateHeightMap(int terrainWidth, int terrainHeight)
+unsigned char* TerrainQuadTreeClass::CreateHeightMap(int terrainWidth, int terrainHeight, float maximumHeight)
 {
 	unsigned char* bitMapImage;
 	int imageSize;
@@ -494,14 +494,38 @@ unsigned char* TerrainQuadTreeClass::CreateHeightMap(int terrainWidth, int terra
 	NodeTraversal(nodes, m_parentNode);
 
 	k = 0;
-	for (int i = 0; i < nodes.size(); i++)
+	for (int n = 0; n < nodes.size(); n++)
 	{
-		TerrainVertexType* vertices = nodes[i]->vertices;
-		int triangleSize = nodes[i]->triangleCount;
+		TerrainVertexType* vertices = nodes[n]->vertices;
+		int triangleSize = nodes[n]->triangleCount;
 
-		for (int j = 0; j<triangleSize; j += 6)
+		for (int i = 0; i < triangleSize * 3; i+=6)
 		{
+			// top left
+			k = vertices[i].position.z * terrainWidth + vertices[i].position.x;
+			bitMapImage[k + 1] = vertices[i].position.x;
+			bitMapImage[k] = vertices[i].position.y * maximumHeight;
+			bitMapImage[k + 2] = vertices[i].position.z * terrainWidth;
 
+			// top right
+			k = vertices[i+1].position.z * terrainWidth + vertices[i+1].position.x;
+			bitMapImage[k + 1] = vertices[i + 1].position.x;
+			bitMapImage[k] = vertices[i + 1].position.y * maximumHeight;
+			bitMapImage[k + 2] = vertices[i + 1].position.z * terrainWidth;
+
+			// bottom left
+			k = vertices[i + 3].position.z * terrainWidth + vertices[i + 3].position.x;
+			bitMapImage[k + 1] = vertices[i + 3].position.x;
+			bitMapImage[k] = vertices[i + 3].position.y * maximumHeight;
+			bitMapImage[k + 2] = vertices[i + 3].position.z * terrainWidth;
+
+			// bottom right
+			k = vertices[i + 5].position.z * terrainWidth + vertices[i + 5].position.x;
+			bitMapImage[k + 1] = vertices[i + 5].position.x;
+			bitMapImage[k] = vertices[i + 5].position.y * maximumHeight;
+			bitMapImage[k + 2] = vertices[i + 5].position.z * terrainWidth;
 		}
 	}
+
+	return bitMapImage;
 }
