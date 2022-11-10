@@ -502,28 +502,28 @@ unsigned char* TerrainQuadTreeClass::CreateHeightMap(int terrainWidth, int terra
 		for (int i = 0; i < triangleSize * 3; i+=6)
 		{
 			// top left
-			k = vertices[i].position.z * terrainWidth + vertices[i].position.x;
-			bitMapImage[k + 1] = vertices[i].position.x;
+			k = (vertices[i].position.z * terrainWidth + vertices[i].position.x) * 3;
 			bitMapImage[k] = vertices[i].position.y * maximumHeight;
-			bitMapImage[k + 2] = vertices[i].position.z * terrainWidth;
+			bitMapImage[k + 1] = vertices[i].position.y * maximumHeight;
+			bitMapImage[k + 2] = vertices[i].position.y * maximumHeight;
 
 			// top right
-			k = vertices[i+1].position.z * terrainWidth + vertices[i+1].position.x;
-			bitMapImage[k + 1] = vertices[i + 1].position.x;
+			k = (vertices[i+1].position.z * terrainWidth + vertices[i+1].position.x) * 3;
 			bitMapImage[k] = vertices[i + 1].position.y * maximumHeight;
-			bitMapImage[k + 2] = vertices[i + 1].position.z * terrainWidth;
+			bitMapImage[k + 1] = vertices[i + 1].position.y * maximumHeight;
+			bitMapImage[k + 2] = vertices[i + 1].position.y * maximumHeight;
 
 			// bottom left
-			k = vertices[i + 3].position.z * terrainWidth + vertices[i + 3].position.x;
-			bitMapImage[k + 1] = vertices[i + 3].position.x;
+			k = (vertices[i + 3].position.z * terrainWidth + vertices[i + 3].position.x) * 3;
 			bitMapImage[k] = vertices[i + 3].position.y * maximumHeight;
-			bitMapImage[k + 2] = vertices[i + 3].position.z * terrainWidth;
+			bitMapImage[k + 1] = vertices[i + 3].position.y * maximumHeight;
+			bitMapImage[k + 2] = vertices[i + 3].position.y * maximumHeight;
 
 			// bottom right
-			k = vertices[i + 5].position.z * terrainWidth + vertices[i + 5].position.x;
-			bitMapImage[k + 1] = vertices[i + 5].position.x;
+			k = (vertices[i + 5].position.z * terrainWidth + vertices[i + 5].position.x) * 3;
 			bitMapImage[k] = vertices[i + 5].position.y * maximumHeight;
-			bitMapImage[k + 2] = vertices[i + 5].position.z * terrainWidth;
+			bitMapImage[k + 1] = vertices[i + 5].position.y * maximumHeight;
+			bitMapImage[k + 2] = vertices[i + 5].position.y * maximumHeight;
 		}
 	}
 

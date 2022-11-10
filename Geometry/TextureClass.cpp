@@ -63,19 +63,46 @@ DirectX::ScratchImage TextureClass::LoadTexture(const wstring& _strFilePath)
 	WCHAR ext[_MAX_EXT];
 	DirectX::ScratchImage image;
 
+	m_filePath = _strFilePath;
+
 	_wsplitpath_s(_strFilePath.c_str(), nullptr, 0, nullptr, 0, nullptr, 0, ext, _MAX_EXT);
 
 	if (_wcsicmp(ext, L".dds") == 0) {
+		m_fileExtension = L".dds";
 		result = DirectX::LoadFromDDSFile(_strFilePath.c_str(), DirectX::DDS_FLAGS_NONE, nullptr, image);
 	}
 	else if (_wcsicmp(ext, L".tga") == 0) {
+		m_fileExtension = L".tga";
 		result = DirectX::LoadFromTGAFile(_strFilePath.c_str(), nullptr, image);
 	}
 	else {
+		m_fileExtension = Utility::GetInst()->GetFileExtension(_strFilePath);
 		result = DirectX::LoadFromWICFile(_strFilePath.c_str(), DirectX::WIC_FLAGS_NONE, nullptr, image);
 	}
 
 	return image;
+}
+
+bool TextureClass::SaveTexture()
+{
+	HRESULT hr;
+	bool result = true;
+	DirectX::ScratchImage image;
+
+	ID3D11Resource* resource;
+	m_shaderResourceView->GetResource(&resource);
+	hr = DirectX::CaptureTexture(m_device, Core::GetDeviceContext(), resource, image);
+	
+	if(SUCCEEDED(hr))
+	{
+		if (m_fileExtension ==  L".dds")
+			DirectX::SaveToDDSFile(image.GetImages(), image.GetImageCount(), image.GetMetadata(), DirectX::DDS_FLAGS_NONE, m_filePath.c_str());
+		else if (m_fileExtension == L".tga")
+			DirectX::SaveToTGAFile(*image.GetImages(), m_filePath.c_str());
+		else 
+			DirectX::SaveToWICFile(image.GetImages(), image.GetImageCount(), WIC_FLAGS_NONE, GUID_ContainerFormatPng, m_filePath.c_str());
+	}
+	return result;
 }
 
 void TextureClass::Copy(ID3D11Resource* resource)

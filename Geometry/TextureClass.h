@@ -12,6 +12,8 @@ protected:
 
     TextureBuffer* m_textureBuffer;
 
+    wstring m_filePath;
+    wstring m_fileExtension;
 public:
     TextureClass();
     virtual ~TextureClass();
@@ -21,6 +23,7 @@ public:
     void Shutdown();
 
     DirectX::ScratchImage LoadTexture(const wstring& _strFilePath);
+    bool SaveTexture();
 
     ID3D11Texture2D* GetTexture() { return m_texture; }
     ID3D11ShaderResourceView*& GetShaderResourceView() { return m_shaderResourceView; }

@@ -89,7 +89,9 @@ bool TerrainMesh::SaveHeightMap(unsigned char* bitMapImage)
 
 	fwrite(&m_bitmapFileHeader, 1, sizeof(BITMAPFILEHEADER), filePtr);
 	fwrite(&m_bitmapInfoHeader, 1, sizeof(BITMAPINFOHEADER), filePtr);
-	fwrite(bitMapImage, 1, m_terrainWidth * m_terrainWidth * 3, filePtr);
+
+	fseek(filePtr, m_bitmapFileHeader.bfOffBits, SEEK_SET);
+	fwrite(bitMapImage, 1, m_terrainWidth * m_terrainHeight * 3, filePtr);
 
 	fclose(filePtr);
 	

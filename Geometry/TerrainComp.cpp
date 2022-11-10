@@ -254,9 +254,9 @@ void TerrainComp::Mesh(ModelNode* node)
 			if (ImGui::Button("Save Height Map"))
 			{
 				if (!m_terrainMesh->SaveHeightMap(m_terrainQuad->CreateHeightMap(m_terrainMesh->GetTerrainWidth(), m_terrainMesh->GetTerrainHeight(), m_terrainMesh->GetMaximumHeight())))
-				{
 					MessageBox(nullptr, "Can't Save HeightMap", "Error", 0);
-				}
+				else
+					MessageBox(nullptr, "Complete saving the texture", "Complete", 0);
 			}
 
 			ImGui::EndGroup();
@@ -286,7 +286,7 @@ void TerrainComp::TextureLayer(ModelNode* node)
 		ImGui::SameLine();
 		if (ImGui::Button("Edit Layer"))
 		{
-			if (m_selected_layer != -1 && !m_isWeightEditMode && !m_isHeightEditMode)
+			if (m_selected_layer != -1 && !m_isWeightEditMode && !m_isHeightEditMode && m_layers[m_selected_layer]->GetMaskID() != L"")
 			{
 				m_isWeightEditMode = true;
 				m_terrainEditor->StartTerrainEditMode(m_layers[m_selected_layer]);
@@ -484,9 +484,8 @@ void TerrainComp::BrushWeightMap(ModelNode* node)
 		ImGui::BeginGroup();
 		if (ImGui::Button("Save Texture "))
 		{
-		}
-		if (ImGui::Button("Reset Texture"))
-		{
+			if (texture->SaveTexture())
+				MessageBox(nullptr, "Complete saving the texture", "Complete", 0);
 		}
 
 		ImGui::EndGroup();

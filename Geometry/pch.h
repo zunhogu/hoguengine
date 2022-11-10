@@ -74,4 +74,7 @@ using namespace ImGui;
 #include <DirectXTex.h>
 #include <DirectXCollision.h>
 using namespace DirectX;
+
+#include <wincodec.h>
+
 #endif //PCH_H
