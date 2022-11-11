@@ -6,20 +6,21 @@ hoguengine은 DirectX11을 기반으로하는 3D 게임 개발을 위한 게임�
 
 프로젝트의 구조는 다음과 같다.
 
-![structure](https://user-images.githubusercontent.com/97880907/193234230-b50a2010-93e3-43b0-9de8-04e0f6835ce0.png)
+![structure](https://user-images.githubusercontent.com/97880907/201290163-d17da171-8277-4f35-83d3-7dedbc3e9a33.png)
 
 각각의 dll은 상위 Layer에 Implicit Linking 되어 사용된다.
 
-Client.exe : Win32 응용프로그램의 윈도우가 생성되고 출력되고 루프되는 Layer
+Client.exe : Win32 응용프로그램의 윈도우가 생성되고 출력되고 루프되는 dll
 
-Geometry.dll : 엔진의 Core가 되는 부분으로 해당 dll에서 Manager Class들이 동작하면서 모든 작업을 관리하는 Layer
+Geometry.dll : 엔진의 Core가 되는 부분으로 해당 dll에서 Manager Class들이 동작하면서 모든 작업을 관리하는 dll
 
-Renderer.dll : Rendering을 담당하는 dll로 DirectX11를 초기화 하거나 렌더 타겟 뷰 변경, 그래픽 파이프라인 바인딩 등 렌더링에 관련된 작업을 수행하는 Layer
+Renderer.dll : Rendering을 담당하는 dll로 DirectX11를 초기화 하거나 렌더 타겟 뷰 변경, 그래픽 파이프라인 바인딩 등 렌더링에 관련된 작업을 수행하는 dll
 
-Collision.dll : Geometry상에서 정보를 받아 Collision Test를 담당하는 Layer
+Collision.dll : Geometry상에서 정보를 받아 Collision Test를 담당하는 dll
 
-FileSystem.dll : 로컬 영역에 존재하는 파일을 Store / Load 등의 기능을 수행하는 Layer
+FileSystem.dll : 로컬 영역에 존재하는 파일을 Store / Load 등의 기능을 수행하는 dll
 
+Utility.dll : 프로젝트에서 사용하는 수학이나, 문자열처리 등과 같은 매개변수나 함수를 모아두는 dll
 
 상세 링크 : <https://blog.naver.com/junhogoo/222886954474>
 
