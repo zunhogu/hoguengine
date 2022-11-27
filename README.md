@@ -8,7 +8,7 @@ hoguengine은 DirectX11을 기반으로하는 3D 게임 개발을 위한 게임�
 
 ![structure](https://user-images.githubusercontent.com/97880907/201290163-d17da171-8277-4f35-83d3-7dedbc3e9a33.png)
 
-Client.exe : 엔진의 기본 동작을 수행하는 윈도우 창을 생성 및 출력하는 dll
+Client.exe : WinAPI 응용프로그램이 동작하는 exe
 
 Geometry.dll : 엔진의 Core가 되는 부분으로 해당 dll에서 Scene내에 Object들이 배치되고 Render.dll과 Collision.dll과 상호작용하며 엔진의 동작을 수행하는 dll
 
