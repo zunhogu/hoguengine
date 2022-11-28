@@ -75,7 +75,8 @@ Utility.dll : 프로젝트에서 사용하는 수학이나, 문자열처리 등�
 ![Terrain Editor](https://user-images.githubusercontent.com/97880907/200875212-ca0611c0-d1e1-4627-b03a-1cc14a0f343c.gif)
 
 지형렌더링 쿼드 트리
-![image](https://user-images.githubusercontent.com/97880907/204195039-dad979ec-99bd-4515-9234-134dbed03fd4.png)
+![쿼드트리](https://user-images.githubusercontent.com/97880907/204195752-172c6bd3-11b7-423b-94d0-e17e90aac645.gif)
+
 
 
 ## 업데이트 내역
